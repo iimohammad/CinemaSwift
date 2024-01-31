@@ -1,7 +1,7 @@
 import datetime
 from enum import Enum
 
-
+# database
 class UserType(Enum):
     USER = "User"
     MANAGER = "Manager"
