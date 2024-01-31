@@ -30,12 +30,6 @@ class wallets_model:
         self.name = name
         self.user_id = user_id
 
-
-class movie_showtimes_model:
-    def __init__(self) -> None:
-        pass
-
-
 class seats_showtimes_model:
     def __init__(self,id,sans_id,status) -> None:
         self.id = id
