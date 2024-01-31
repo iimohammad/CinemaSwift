@@ -2,7 +2,7 @@ from settings import local_settings
 
 import psycopg2
 from psycopg2 import sql
-
+# database
 # This function create our desire tables 
 def create_table(table_name, columns):
     # Connect to DBMS
