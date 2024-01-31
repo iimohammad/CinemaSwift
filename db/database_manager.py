@@ -56,6 +56,70 @@ def create_table(table_name, columns):
             connection.close()
 
 
+
+
+def insert_into_table(table_name, columns, values):
+    """
+    How to use this fucntions :
+    table_name = "person_model"
+    columns = ["username", "email", "birthday", "phone"]
+    values = ["JohnDoe", "john.doe@example.com", "1990-01-01", "+123456789"]
+    insert_into_table(table_name, columns, values)
+    """
+    # Connect to DBMS
+    dbname = local_settings.DATABASE['database'],
+    user = local_settings.DATABASE['user'],
+    password = local_settings.DATABASE['password'],
+    host = local_settings.DATABASE['host'],
+    port = local_settings.DATABASE['port']
+
+    # Generate the INSERT INTO query dynamically
+    insert_query = sql.SQL("""
+        INSERT INTO {} ({})
+        VALUES ({});
+    """).format(
+        sql.Identifier(table_name),
+        sql.SQL(', ').join(map(sql.Identifier, columns)),
+        sql.SQL(', ').join(map(sql.Literal, values))
+    )
+
+    try:
+        # Establish a connection to the PostgreSQL database
+        connection = psycopg2.connect(
+            dbname=dbname, user=user, password=password, host=host, port=port
+        )
+
+        # Create a cursor object to execute SQL queries
+        cursor = connection.cursor()
+
+        # Execute the SQL query to insert into the table
+        cursor.execute(insert_query)
+
+        # Commit the changes
+        connection.commit()
+
+        print(f"Data inserted into '{table_name}' successfully!")
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgreSQL:", error)
+
+    finally:
+        # Close the cursor and connection
+        if connection:
+            cursor.close()
+            connection.close()
+
+
+# table_name = "person_model"
+# columns = ["username", "email", "birthday", "phone"]
+# values = ["JohnDoe", "john.doe@example.com", "1990-01-01", "+123456789"]
+
+# insert_into_table(table_name, columns, values)
+
+
+
+
+
 # Define columns for each class
 person_model_columns = [
     ("username", "VARCHAR(255) NOT NULL"),
