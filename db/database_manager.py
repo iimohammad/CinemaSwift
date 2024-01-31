@@ -4,7 +4,9 @@ import psycopg2
 from psycopg2 import sql
 from pymongo import MongoClient
 # database
-# This function create our desire tables 
+# This function create our desire tables
+
+
 def create_table(table_name, columns):
     # Connect to DBMS
     dbname = local_settings.DATABASE['database'],
@@ -100,4 +102,3 @@ def create_collection(database_name, collection_name, fields):
 
 # document_id = create_collection(database_name, collection_name, fields)
 # print(f"Collection '{collection_name}' created with document ID: {document_id}")
-
