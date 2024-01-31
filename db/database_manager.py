@@ -56,16 +56,51 @@ def create_table(table_name, columns):
             connection.close()
 
 
-# # Example usage:
-# table_name = "desire_table"
-# columns = [
-#     ("column1", "VARCHAR(255)"),
-#     ("column2", "INTEGER"),
-#     ("column3", "DATE"),
-#     # Add more columns as needed
-# ]
+person_model = "person_model"
+person_model_columns = [
+    ("username", "VARCHAR(255) NOT NULL"),
+    ("password", "VARCHAR(255) NOT NULL"),
+    ("email", "INTEGER NOT NULL"),
+    ("birthday_date", "DATE"),
+    ("phone_number", "DATE NOT NULL"),
+    ("signup_date", "DATE"),
+    ("last_login", "DATE"),
+    # Add more columns as needed
+]
 
-# create_table(table_name, columns)
+create_table(person_model, person_model_columns)
+
+person_model = "person_model"
+person_model_columns = [
+    ("username", "VARCHAR(255) NOT NULL"),
+    ("password", "VARCHAR(255) NOT NULL"),
+    ("email", "INTEGER NOT NULL"),
+    ("birthday_date", "DATE"),
+    ("phone_number", "DATE NOT NULL"),
+    ("signup_date", "DATE"),
+    ("last_login", "DATE"),
+]
+
+create_table(person_model, person_model_columns)
+
+bank_accounts_models_columns = [
+    ("username", "VARCHAR(255) NOT NULL"),
+    ("password", "VARCHAR(255) NOT NULL"),
+    ("email", "INTEGER NOT NULL"),
+    ("birthday_date", "DATE"),
+    ("phone_number", "DATE NOT NULL"),
+    ("signup_date", "DATE"),
+    ("last_login", "DATE"),
+]
+
+wallets_columns = [
+    ("id", "SERIAL"),
+    ("balance", "DECIMAL(10, 2)"),
+    ("name", "VARCHAR(255)"),
+    ("user_id", "INTEGER"),
+]
+
+
 
 def create_collection(database_name, collection_name, fields):
     # Connect to MongoDB
