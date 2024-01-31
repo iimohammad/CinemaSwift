@@ -2,8 +2,11 @@ from settings import local_settings
 
 import psycopg2
 from psycopg2 import sql
+from pymongo import MongoClient
 # database
-# This function create our desire tables 
+# This function create our desire tables
+
+
 def create_table(table_name, columns):
     # Connect to DBMS
     dbname = local_settings.DATABASE['database'],
@@ -53,13 +56,49 @@ def create_table(table_name, columns):
             connection.close()
 
 
-# Example usage:
-table_name = "desire_table"
-columns = [
-    ("column1", "VARCHAR(255)"),
-    ("column2", "INTEGER"),
-    ("column3", "DATE"),
-    # Add more columns as needed
-]
+# # Example usage:
+# table_name = "desire_table"
+# columns = [
+#     ("column1", "VARCHAR(255)"),
+#     ("column2", "INTEGER"),
+#     ("column3", "DATE"),
+#     # Add more columns as needed
+# ]
 
-create_table(table_name, columns)
+# create_table(table_name, columns)
+
+def create_collection(database_name, collection_name, fields):
+    # Connect to MongoDB
+    client = MongoClient('mongodb://localhost:27017/')
+
+    # Select or create the database
+    db = client[database_name]
+
+    # Select or create the collection
+    collection = db[collection_name]
+
+    # Create a sample document with specified fields
+    sample_document = {}
+    for field_name, field_type in fields:
+        sample_document[field_name] = None
+
+    # Insert the sample document into the collection
+    result = collection.insert_one(sample_document)
+
+    # Close the connection
+    client.close()
+
+    return result.inserted_id
+
+# # Example usage:
+# database_name = "your_database_name"
+# collection_name = "your_collection_name"
+# fields = [
+#     ("field1", "string"),
+#     ("field2", "int"),
+#     ("field3", "date"),
+#     # Add more fields as needed
+# ]
+
+# document_id = create_collection(database_name, collection_name, fields)
+# print(f"Collection '{collection_name}' created with document ID: {document_id}")
