@@ -39,9 +39,9 @@ class chairs_showtimes_model:
 
 
 class admin_model(person_model):
-    def __init__(self,username:str,email:str,birthday:datetime,phone:str) -> None:
+    def __init__(self,username:str,email:str,birthday:datetime,phone:str,user_type:UserType) -> None:
         super().__init__(username,email,birthday,phone)
-        self.user_type = UserType.Admin
+        self.user_type = user_type
 
 
 class users_model(person_model):
