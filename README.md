@@ -16,3 +16,8 @@ now use this command to install all of the requirements:
 pip install -r requirements.txt
 ```
 
+## Project Details 
+In this project, the backend development follows the MVC (Model-View-Controller) architecture, where the backend is separated into different parts. Each of these parts will be explained in detail here to provide a comprehensive understanding of the project's structural design and organization.
+
+### db -> Database Management
+The models in this section encapsulate the essential structural components of each database table, providing a clear and organized representation of the data schema. Meanwhile, the database manager, following a singleton design pattern, plays a pivotal role in database interactions. It establishes and maintains connections to the database, ensures data is regularly refreshed, and employs caching mechanisms to optimize data retrieval and storage performance. By effectively managing the interplay between models and the database, this project establishes a robust foundation for data storage and retrieval within the MVC architecture.
