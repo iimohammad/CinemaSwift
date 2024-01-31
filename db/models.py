@@ -6,6 +6,11 @@ class UserType(Enum):
     USER = "User"
     MANAGER = "Manager"
     Admin = "Admin"
+    
+class SubscriptopnType(Enum):
+    Golden = "Golden"
+    Silver = "Silver"
+    Bronze = "Bronze"
 class person_model:
     def __init__(self,username:str,email:str,birthday:datetime,phone:str) -> None:
         self.username = username
@@ -40,9 +45,10 @@ class admin_model(person_model):
 
 
 class users_model(person_model):
-    def __init__(self,username:str,email:str,birthday:datetime,phone:str) -> None:
+    def __init__(self,username:str,email:str,birthday:datetime,phone:str,suscription_type : SubscriptopnType) -> None:
         super().__init__(username,email,birthday,phone)
         self.user_type = UserType.USER
+        self.suscription_type = suscription_type
 
 class comments_model:
     def __init__(self) -> None:
