@@ -7,13 +7,13 @@ from pymongo import MongoClient
 # This function create our desire tables
 
 
-class DatabaseManager_withour_ORM:
-    def __init__(self, database_name, user, password, host, port):
-        self.database_name = database_name
-        self.user = user
-        self.password = password
-        self.host = host
-        self.port = port
+class DatabaseManagerwithoutORM:
+    def __init__(self):
+        self.database_name = local_settings.DATABASE['database']
+        self.user = local_settings.DATABASE['user']
+        self.password = local_settings.DATABASE['password']
+        self.host = local_settings.DATABASE['host']
+        self.port = local_settings.DATABASE['port']
 
         self.database_connection = self.connect_to_database()
 
@@ -52,16 +52,15 @@ class DatabaseManager_withour_ORM:
 
 
 
+class dabaseManagerwithORM:
 
-
-class DatabaseManagerwithORM:
-    def create_table(table_name, columns):
-        # Connect to DBMS
-        dbname = local_settings.DATABASE['database'],
-        user = local_settings.DATABASE['user'],
-        password = local_settings.DATABASE['password'],
-        host = local_settings.DATABASE['host'],
-        port = local_settings.DATABASE['port']
+def create_table(table_name, columns):
+    # Connect to DBMS
+    dbname = local_settings.DATABASE['database'],
+    user = local_settings.DATABASE['user'],
+    password = local_settings.DATABASE['password'],
+    host = local_settings.DATABASE['host'],
+    port = local_settings.DATABASE['port']
 
         # Generate the CREATE TABLE query dynamically
         create_table_query = sql.SQL("""

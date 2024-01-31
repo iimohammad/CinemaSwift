@@ -21,6 +21,44 @@ class BaseForUsersAndAdmins:
         if match:
             return True
         return False
+
+
+
+
+
+
+# if __name__ == "__main__":
+#     database_manager = DatabaseManager()
+
+#     try:
+#         if database_manager.database_connection:
+#             # Creating Post table
+#             sql_command_create_table = '''CREATE TABLE IF NOT EXISTS POST(
+#                                 post_id SERIAL PRIMARY KEY,
+#                                 post_title VARCHAR(255) NOT NULL,
+#                                 post_description VARCHAR(255) NOT NULL
+#                 )'''
+
+#             database_manager.execute_sql_command(sql_command=sql_command_create_table)
+
+#             sql_command_insert_into_post_table = """INSERT INTO post(post_id,
+#                 post_title, post_description) 
+#                 VALUES (%s,%s,%s)
+#                 ON CONFLICT DO NOTHING"""
+#             record_to_insert = [
+#                 (i, f'Post{i}', f'Post{i} Description') for i in range(50)
+#             ]
+#             for i in record_to_insert:
+#                 database_manager.execute_sql_command(sql_command_insert_into_post_table, i)
+
+#     except Exception as error:
+#         print("Failed to insert record into post table", error)
+#     finally:
+#         # closing database connection.
+#         if database_manager.database_connection:
+#             database_manager.database_connection.close()
+#             print("Database connection is closed")
+
     @staticmethod
     def PasswordValidator(password:str):
         if len(password) < 8:
@@ -74,42 +112,3 @@ class Admins(BaseForUsersAndAdmins):
         #also add to database
         return True
     
-
-
-    # if __name__ == "__main__":
-    # database_manager = DatabaseManager(
-    #     database_name=local_settings.DATABASE['name'],
-    #     user=local_settings.DATABASE['user'],
-    #     password=local_settings.DATABASE['password'],
-    #     host=local_settings.DATABASE['host'],
-    #     port=local_settings.DATABASE['port']
-    # )
-
-    # try:
-    #     if database_manager.database_connection:
-    #         # Creating Post table
-    #         sql_command_create_table = '''CREATE TABLE IF NOT EXISTS POST(
-    #                             post_id SERIAL PRIMARY KEY,
-    #                             post_title VARCHAR(255) NOT NULL,
-    #                             post_description VARCHAR(255) NOT NULL
-    #             )'''
-
-    #         database_manager.execute_sql_command(sql_command=sql_command_create_table)
-
-    #         sql_command_insert_into_post_table = """INSERT INTO post(post_id,
-    #             post_title, post_description) 
-    #             VALUES (%s,%s,%s)
-    #             ON CONFLICT DO NOTHING"""
-    #         record_to_insert = [
-    #             (i, f'Post{i}', f'Post{i} Description') for i in range(50)
-    #         ]
-    #         for i in record_to_insert:
-    #             database_manager.execute_sql_command(sql_command_insert_into_post_table, i)
-
-    # except Exception as error:
-    #     print("Failed to insert record into post table", error)
-    # finally:
-    #     # closing database connection.
-    #     if database_manager.database_connection:
-    #         database_manager.database_connection.close()
-    #         print("Database connection is closed")
