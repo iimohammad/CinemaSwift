@@ -29,7 +29,7 @@ class dabaseManagerwithORM:
                 ])
             )
 
-            try:
+        try:
                 connection = psycopg2.connect(
                     dbname=dbname, user=user, password=password, host=host, port=port
                 )
@@ -39,10 +39,10 @@ class dabaseManagerwithORM:
 
                 print(f"Table '{table_name}' created successfully!")
 
-            except (Exception, psycopg2.Error) as error:
+        except (Exception, psycopg2.Error) as error:
                 print("Error while connecting to PostgreSQL:", error)
 
-            finally:
+        finally:
                 # Close the cursor and connection
                 if connection:
                     cursor.close()
