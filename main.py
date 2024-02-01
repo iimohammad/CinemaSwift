@@ -10,7 +10,7 @@ class TCPServer:
         self.port = port
         self.sel = selectors.DefaultSelector()
 
-    def start(self):
+    def run_server(self):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.bind((self.host, self.port))
         server_socket.listen()
@@ -58,8 +58,11 @@ class TCPServer:
                 data = data[sent:]
 
 if __name__ == "__main__":
-    server = TCPServer()
-    server.start()
+    parser = argparse.ArgumentParser(description="Run TCP Server")
+    parser.add_argument('--runserver', action='store_true', help='Run the TCP server')
 
+    args = parser.parse_args()
 
-
+    if args.runserver:
+        server = TCPServer()
+        server.run_server()
