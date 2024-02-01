@@ -4,9 +4,10 @@ import os
 import selectors
 import socket
 from settings import local_settings
+from intractions import clear_screen
+
 class TCPServer:
-    
-    def __init__(self, host=local_settings.Network['host'], port = local_settings.Network['port']):
+    def __init__(self, host=local_settings.Network['host'], port=local_settings.Network['port']):
         self.host = host
         self.port = port
         self.sel = selectors.DefaultSelector()
@@ -63,6 +64,9 @@ if __name__ == "__main__":
     parser.add_argument('--runserver', action='store_true', help='Run the TCP server')
 
     args = parser.parse_args()
+    
+    # Use the imported clear_screen function
+    clear_screen.clear_screen_func()
 
     if args.runserver:
         server = TCPServer()
