@@ -3,9 +3,10 @@ import threading
 import os
 import selectors
 import socket
-
+from settings import local_settings
 class TCPServer:
-    def __init__(self, host='127.0.0.1', port=8080):
+    
+    def __init__(self, host=local_settings.Network['host'], port = local_settings.Network['port']):
         self.host = host
         self.port = port
         self.sel = selectors.DefaultSelector()
