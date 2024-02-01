@@ -1,6 +1,11 @@
 import argparse
 import socket
 import threading
+import os
+
+def clear_screen():
+    # os.system('clear')
+    os.system('cls')
 
 def create_admin():
     print("Creating admin...")
