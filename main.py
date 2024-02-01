@@ -1,56 +1,65 @@
 import argparse
-import socket
 import threading
+import os
+import selectors
+import socket
 
-def create_admin():
-    print("Creating admin...")
+class TCPServer:
+    def __init__(self, host='127.0.0.1', port=8080):
+        self.host = host
+        self.port = port
+        self.sel = selectors.DefaultSelector()
 
-def argsinput():
-    parser = argparse.ArgumentParser(description='Script for various operations')
-    parser.add_argument('command', help='Specify the command to execute')
+    def start(self):
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.bind((self.host, self.port))
+        server_socket.listen()
 
-    args = parser.parse_args()
+        server_socket.setblocking(False)
+        self.sel.register(server_socket, selectors.EVENT_READ, data=None)
 
-    if args.command == 'create_admin':
-        create_admin()
-    else:
-        print(f"Unknown command: {args.command}")
+        print(f"Server listening on {self.host}:{self.port}")
 
+        try:
+            while True:
+                events = self.sel.select(timeout=None)
+                for key, mask in events:
+                    if key.data is None:
+                        self.accept_connection(key.fileobj)
+                    else:
+                        self.handle_data(key, mask)
+        finally:
+            self.sel.close()
 
+    def accept_connection(self, server_socket):
+        client_socket, client_address = server_socket.accept()
+        print(f"Accepted connection from {client_address}")
+        client_socket.setblocking(False)
+        events = selectors.EVENT_READ | selectors.EVENT_WRITE
+        data = {'socket': client_socket, 'data': b''}
+        self.sel.register(client_socket, events, data=data)
 
+    def handle_data(self, key, mask):
+        client_socket = key.fileobj
+        data = key.data['data']
 
-def handle_client(client_socket, user_data):
-    while True:
-        request = client_socket.recv(1024).decode()
+        if mask & selectors.EVENT_READ:
+            recv_data = client_socket.recv(1024)
+            if recv_data:
+                data += recv_data
+            else:
+                print(f"Closing connection to {client_socket.getpeername()}")
+                self.sel.unregister(client_socket)
+                client_socket.close()
 
-        if request.lower() == 'logout':
-            break
-
-        response = f"Server received: {request}"
-        client_socket.send(response.encode())
-
-    print(f"User {user_data['username']} logged out.")
-    user_data['logged_in'] = False
-    client_socket.close()
-
-def main():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('0.0.0.0', 12345))
-    server.listen(5)
-
-    print("Server listening on 0.0.0.0:12345")
-
-    while True:
-        client, addr = server.accept()
-        print(f"Accepted connection from {addr[0]}:{addr[1]}")
-
-        user_data = {'username': 'sample_user', 'logged_in': True}
-
-        client_handler = threading.Thread(target=handle_client, args=(client, user_data))
-        client_handler.start()
+        if mask & selectors.EVENT_WRITE:
+            if data:
+                sent = client_socket.send(data)
+                data = data[sent:]
 
 if __name__ == "__main__":
-    argsinput()
-    main()
+    server = TCPServer()
+    server.start()
+
 
 
