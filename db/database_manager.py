@@ -7,13 +7,13 @@ from pymongo import MongoClient
 
 class dabaseManagerwithORM:
 
-    def create_table(table_name, columns):
-        # Connect to DBMS
-        dbname = local_settings.DATABASE['database'],
-        user = local_settings.DATABASE['user'],
-        password = local_settings.DATABASE['password'],
-        host = local_settings.DATABASE['host'],
-        port = local_settings.DATABASE['port']
+def create_table(table_name, columns):
+    # Connect to DBMS
+    dbname = local_settings.DATABASE['database'],
+    user = local_settings.DATABASE['user'],
+    password = local_settings.DATABASE['password'],
+    host = local_settings.DATABASE['host'],
+    port = local_settings.DATABASE['port']
 
         # Generate the CREATE TABLE query dynamically
         create_table_query = sql.SQL("""
@@ -96,6 +96,67 @@ class dabaseManagerwithORM:
             if connection:
                 cursor.close()
                 connection.close()
+
+
+
+    # table_name = "person_model"
+    # columns = ["username", "email", "birthday", "phone"]
+    # values = ["JohnDoe", "john.doe@example.com", "1990-01-01", "+123456789"]
+
+    # insert_into_table(table_name, columns, values)
+
+    def select_column_from_table(table_name, column_name):
+        """
+        # Example usage:
+        table_name = "person_model"
+        column_name = "username"
+
+        select_column_from_table(table_name, column_name)
+        """
+        # Connect to DBMS
+        dbname = local_settings.DATABASE['database'],
+        user = local_settings.DATABASE['user'],
+        password = local_settings.DATABASE['password'],
+        host = local_settings.DATABASE['host'],
+        port = local_settings.DATABASE['port']
+
+        # Generate the SELECT query dynamically
+        select_query = sql.SQL("""
+            SELECT {} FROM {};
+        """).format(
+            sql.Identifier(column_name),
+            sql.Identifier(table_name)
+        )
+
+        try:
+            # Establish a connection to the PostgreSQL database
+            connection = psycopg2.connect(
+                dbname=dbname, user=user, password=password, host=host, port=port
+            )
+
+            # Create a cursor object to execute SQL queries
+            cursor = connection.cursor()
+
+            # Execute the SQL query to select the column
+            cursor.execute(select_query)
+
+            # Fetch all rows from the result set
+            rows = cursor.fetchall()
+
+            # Print the values of the selected column
+            print(f"Values in '{column_name}' column of '{table_name}':")
+            for row in rows:
+                print(row[0])
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error while connecting to PostgreSQL:", error)
+
+        finally:
+            # Close the cursor and connection
+            if connection:
+                cursor.close()
+                connection.close()
+
 
 
     person_model_columns = [
