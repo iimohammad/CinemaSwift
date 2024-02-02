@@ -1,14 +1,20 @@
 import mysql.connector
-import local_settings
-import models
+from db import local_settings
+from db import models
 import inspect
 
 class DatabaseManager:
-    def __init__(self, host, user, password, database):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def __init__(self):
+        self.host = local_settings.DATABASE['host']
+        self.user = local_settings.DATABASE['user']
+        self.password = local_settings.DATABASE['password']
+        self.database = local_settings.DATABASE['name']
         self.connection = None
 
         self.dict = {
@@ -37,7 +43,8 @@ class DatabaseManager:
     def execute_query(self, query, params=None):
         try:
             self.connect()
-            cursor = self.connection.cursor()
+            
+            cursor = self.connection.cursor(buffered = True)
             cursor.execute(query, params)
             self.connection.commit()
             return cursor.lastrowid  # Return the last inserted ID
@@ -54,7 +61,7 @@ class DatabaseManager:
         create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_str})"
 
         try:
-            cursor = self.connection.cursor()
+            cursor = self.connection.cursor(buffered = True)
             cursor.execute(create_table_query)
             self.connection.commit()
             print(f"Table '{table_name}' created successfully!")
@@ -64,11 +71,10 @@ class DatabaseManager:
 
     def insert_into_table(self, table_name, columns, values):
         # Generate the INSERT INTO query dynamically
-        insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({
-            ', '.join(['%s' for _ in values])}"
+        insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(['%s' for _ in values])}"
 
         try:
-            cursor = self.connection.cursor()
+            cursor = self.connection.cursor(buffered = True)
             cursor.execute(insert_query, values)
             self.connection.commit()
             print(f"Data inserted into '{table_name}' successfully!")
@@ -81,7 +87,7 @@ class DatabaseManager:
         select_query = f"SELECT {column_name} FROM {table_name}"
 
         try:
-            cursor = self.connection.cursor()
+            cursor = self.connection.cursor(buffered = True)
             cursor.execute(select_query)
             rows = cursor.fetchall()
 
@@ -99,24 +105,17 @@ class DatabaseManager:
         model_columns = [(name, self.dict.get(param_type.__name__, 'VARCHAR(255)')) for name, param_type in init_params.items()]
         return model_columns
 
-if __name__ == "__main__":
-    db_manager = DatabaseManager(
-        host=local_settings.DATABASE['host'],
-        user=local_settings.DATABASE['user'],
-        password=local_settings.DATABASE['password'],
-        database=local_settings.DATABASE['name']
-    )
-
+# if __name__ == "__main__":
     # Connect to MySQL
-    db_manager.connect()
+    # db_manager.connect()
 
-    db_manager.create_table("person_model", db_manager.create_columns(models.person_model))
-    db_manager.create_table("bank_accounts_models", db_manager.create_columns(models.bank_account_model))
-    db_manager.create_table("wallets_model", db_manager.create_columns(models.wallet_model))
+    # db_manager.create_table("person_model", db_manager.create_columns(models.person_model))
+    # db_manager.create_table("bank_accounts_models", db_manager.create_columns(models.bank_account_model))
+    # db_manager.create_table("wallets_model", db_manager.create_columns(models.wallet_model))
     # db_manager.create_table("seats_showtimes_model", db_manager.create_columns(models.seats_showtimes_model))
     # db_manager.create_table("sans_model", db_manager.create_columns(models.sans_model))
     # db_manager.create_table("admin_model", db_manager.create_columns(models.admin_model))
-    db_manager.create_table("users_model", db_manager.create_columns(models.user_model))
+    # db_manager.create_table("users_model", db_manager.create_columns(models.user_model))
     # db_manager.create_table("subscription_model", db_manager.create_columns(models.subscription_model))
     # db_manager.create_table("comments_model", db_manager.create_columns(models.comments_model))
     # db_manager.create_table("free_drinks_model", db_manager.create_columns(models.free_drinks_model))
@@ -124,26 +123,24 @@ if __name__ == "__main__":
     # db_manager.create_table("films_model", db_manager.create_columns(models.films_model))
 
     # Disconnect from MySQL
-    db_manager.disconnect()
-    db_manager.connect()
-    insert_query = """
-    INSERT INTO users_model
-    (id, username, email, birthday, phone, suscription_type, password)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """
+    # db_manager.disconnect()
+    # db_manager.connect()
+# insert_query = """
+#     INSERT INTO users
+#     (id, user_name, email, birthday, phone, subscription_type, password)
+#     VALUES (%s, %s, %s, %s, %s, %s, %s)
+#     """
 
-    user_data = (
-        1,
-        'JohnDoe',
-        'john.doe@example.com',
-        '1990-01-01',
-        '1234567890',
-        'basic',
-        'hashed_password'  
-    )
-    # Execute the query
-    inserted_id = db_manager.execute_query(insert_query, user_data)
-        
+# user_data = (
+#         1,
+#         'JohnDoe',
+#         'john.doe@example.com',
+#         '1990-01-01',
+#         '1234567890',
+#         'basic',
+#         'hashed_password'  
+# )
+#     # Execute the query
+# db = DatabaseManager()
+# db.execute_query(insert_query, user_data)
 
-
-    db_manager.disconnect()
