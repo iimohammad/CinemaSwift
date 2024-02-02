@@ -1,109 +1,124 @@
 from db import models
+from db.database_manager import DatabaseManager
 import re
 import uuid
+import personalized_exceptions
+
 
 class BaseForUsersAndAdmins:
+    
+    database_manager = DatabaseManager('127.0.0.1','root',"M@sih2012",'cinemaswift')
+    
     @staticmethod
     def hashPassword(password: str):
         return hash(password)
-    @staticmethod
-    def emailValidator(email: str):
-        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        match = re.match(pattern, email)
-        if match:
-            return True
-        return False
 
     @staticmethod
     def phoneValidator(phone: str):
         pattern = r'^09\d{9}$'
         match = re.match(pattern, phone)
-        if match:
-            return True
-        return False
-
-
-
-
-
-
-# if __name__ == "__main__":
-#     database_manager = DatabaseManager()
-
-#     try:
-#         if database_manager.database_connection:
-#             # Creating Post table
-#             sql_command_create_table = '''CREATE TABLE IF NOT EXISTS POST(
-#                                 post_id SERIAL PRIMARY KEY,
-#                                 post_title VARCHAR(255) NOT NULL,
-#                                 post_description VARCHAR(255) NOT NULL
-#                 )'''
-
-#             database_manager.execute_sql_command(sql_command=sql_command_create_table)
-
-#             sql_command_insert_into_post_table = """INSERT INTO post(post_id,
-#                 post_title, post_description) 
-#                 VALUES (%s,%s,%s)
-#                 ON CONFLICT DO NOTHING"""
-#             record_to_insert = [
-#                 (i, f'Post{i}', f'Post{i} Description') for i in range(50)
-#             ]
-#             for i in record_to_insert:
-#                 database_manager.execute_sql_command(sql_command_insert_into_post_table, i)
-
-#     except Exception as error:
-#         print("Failed to insert record into post table", error)
-#     finally:
-#         # closing database connection.
-#         if database_manager.database_connection:
-#             database_manager.database_connection.close()
-#             print("Database connection is closed")
-
+        if not match:
+            raise personalized_exceptions.InvalidPhoneError()
+        return True
+    
     @staticmethod
     def PasswordValidator(password:str):
         if len(password) < 8:
-            return False
+            raise personalized_exceptions.ShortPasswordError(len(password),8)
         if sum(1 for char in password if char in ['@', '#', '&', '$']) < 2:
-            return False
+            raise personalized_exceptions.NoSpecialCharacterError()
 
         if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$', password):
-            return False
+            raise personalized_exceptions.ComplexityError()
         return True
     
     @staticmethod
     def UserNameValidator(username:str):
         if len(username)>100:
-            return False
-        if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$', username):
-            return True
+            raise personalized_exceptions.LongUserNmaeError(len(username),100)
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$', username):
+            raise personalized_exceptions.ComplexityError()
+        query = f"""
+            SELECT user_name
+            FROM users
+            WHERE user_name = '{username}'
+            UNION
+            SELECT user_name
+            FROM admins
+            WHERE user_name = '{username}';
+            """
+        r = BaseForUsersAndAdmins.database_manager.execute_query(query)
+        if len(r)>0:
+            raise personalized_exceptions.UsernameTakenError()
+        return True
         
-        #also username should be uniqe
-        
-        return False
-    @staticmethod
-    def updateUserEmail(user_id:str,email:str):
-        if Users.emailValidator(email):
-            #update
-            return True
-        return False
     
 class Users(BaseForUsersAndAdmins):
+    @staticmethod
+    def emailValidatorUser(email: str):
+        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        match = re.match(pattern, email)
+        if not match:
+            raise personalized_exceptions.InvalidEmailError()
+        query = f"""
+            SELECT email
+            FROM users
+            WHERE email = '{email}'
+            """
+        r = BaseForUsersAndAdmins.database_manager.execute_query(query)
+        if len(r)!=0:
+            raise personalized_exceptions.InvalidEmailError()
+        return True
+    @staticmethod
+    def AddUser(user:models.user_model):
+        if Users.UserNameValidator(user.username):
+            if Users.emailValidatorUser(user.email):
+                if user.phone ==None or Users.phoneValidator(user.phone):
+                    user_id = str(uuid.uuid4())
+                    print(user_id)
+                    user_data = {'id': user_id,
+                            'user_name': user.username,
+                            'email': user.email,
+                            'birthday': user.birthday,
+                            'phone': user.phone,
+                            'subscription_type': user.suscription_type,
+                            'password': Users.hashPassword(user.password)}
+
+                    insert_query = """
+                        INSERT INTO users
+                        (id, user_name, email, birthday, phone, subscription_type, password)
+                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(subscription_type)s, %(password)s)
+                    """
+                    Users.database_manager.execute_query(insert_query,user_data)
+        return True
     
     @staticmethod
-    def AddUser(user:models.users_model):
-        if not Users.emailValidator(user.email):
-            return False
-        if user.phone !=None and not Users.phoneValidator(user.phone):
-            return False
-        
-        user_id = uuid.uuid4()
-        #also add to database
-        
-        return True
+    def updateUserEmail(user_id:str,email:str):
+        if Users.emailValidatorUser(email):
+            query = f"""
+            SELECT email
+            FROM users
+            WHERE email = '{email}'
+            """
 class Admins(BaseForUsersAndAdmins):
     @staticmethod
-    def AddAdmin(user:models.users_model):
-        if not Users.emailValidator(user.email):
+    def emailValidatorAdmin(email: str):
+        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        match = re.match(pattern, email)
+        if not match:
+            raise personalized_exceptions.InvalidEmailError()
+        query = f"""
+            SELECT email
+            FROM admins
+            WHERE email = '{email}'
+            """
+        r = BaseForUsersAndAdmins.database_manager.execute_query(query)
+        if len(r)!=0:
+            raise personalized_exceptions.InvalidEmailError()
+        return True
+    @staticmethod
+    def AddAdmin(user:models.user_model):
+        if not Admins.emailValidatorAdmin(user.email):
             return False
         if user.phone !=None and not Users.phoneValidator(user.phone):
             return False
@@ -111,4 +126,23 @@ class Admins(BaseForUsersAndAdmins):
         user_id = uuid.uuid4()
         #also add to database
         return True
-    
+    @staticmethod
+    def updateAdminEmail(user_id:str,email:str):
+        if Admins.emailValidatorAdmin(email):
+            query = f"""
+            SELECT email
+            FROM admins
+            WHERE email = '{email}';
+            """
+            BaseForUsersAndAdmins.database_manager.connect()
+            r = BaseForUsersAndAdmins.database_manager.execute_query(query)
+            BaseForUsersAndAdmins.database_manager.disconnect()
+            if len(r)==0:
+                query = f"""
+                SELECT email
+                FROM users
+                WHERE email = '{email}'
+                """
+
+
+Users.AddUser(models.user_model(-1,'Masih1','masih@abc.com','1999-12-12','09131231234','M@@@sih123',models.SubscriptopnType.Bronze.value))
