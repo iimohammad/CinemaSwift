@@ -1,6 +1,6 @@
 import mysql.connector
-import local_settings
-import models
+# import local_settings
+from db import models
 import inspect
 
 class DatabaseManager:
@@ -36,6 +36,7 @@ class DatabaseManager:
 
     def execute_query(self, query, params=None):
         try:
+            self.connect()
             cursor = self.connection.cursor()
             cursor.execute(query, params)
             result = cursor.fetchall()
@@ -45,6 +46,7 @@ class DatabaseManager:
             return None
         finally:
             cursor.close()
+            self.disconnect()
 
     def create_table(self, table_name, columns):
         # Generate the CREATE TABLE query dynamically
@@ -63,7 +65,7 @@ class DatabaseManager:
     def insert_into_table(self, table_name, columns, values):
         # Generate the INSERT INTO query dynamically
         insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({
-            ', '.join(['%s' for _ in values])})"
+            ', '.join(['%s' for _ in values])}"
 
         try:
             cursor = self.connection.cursor()
@@ -97,31 +99,31 @@ class DatabaseManager:
         model_columns = [(name, self.dict.get(param_type.__name__, 'VARCHAR(255)')) for name, param_type in init_params.items()]
         return model_columns
 
-if __name__ == "__main__":
-    db_manager = DatabaseManager(
-        host=local_settings.DATABASE['host'],
-        user=local_settings.DATABASE['user'],
-        password=local_settings.DATABASE['password'],
-        database=local_settings.DATABASE['name']
-    )
+# if __name__ == "__main__":
+#     db_manager = DatabaseManager(
+#         host=local_settings.DATABASE['host'],
+#         user=local_settings.DATABASE['user'],
+#         password=local_settings.DATABASE['password'],
+#         database=local_settings.DATABASE['name']
+#     )
 
-    # Connect to MySQL
-    db_manager.connect()
+#     # Connect to MySQL
+#     db_manager.connect()
 
-    db_manager.create_table("person_model", db_manager.create_columns(models.person_model))
-    db_manager.create_table("bank_accounts_models", db_manager.create_columns(models.bank_accounts_models))
-    db_manager.create_table("wallets_model", db_manager.create_columns(models.wallets_model))
-    db_manager.create_table("seats_showtimes_model", db_manager.create_columns(models.seats_showtimes_model))
-    db_manager.create_table("sans_model", db_manager.create_columns(models.sans_model))
-    db_manager.create_table("admin_model", db_manager.create_columns(models.admin_model))
-    db_manager.create_table("users_model", db_manager.create_columns(models.users_model))
-    db_manager.create_table("subscription_model", db_manager.create_columns(models.subscription_model))
-    db_manager.create_table("comments_model", db_manager.create_columns(models.comments_model))
-    db_manager.create_table("free_drinks_model", db_manager.create_columns(models.free_drinks_model))
-    db_manager.create_table("screens_mode", db_manager.create_columns(models.screens_mode))
-    db_manager.create_table("films_model", db_manager.create_columns(models.films_model))
+#     db_manager.create_table("person_model", db_manager.create_columns(models.person_model))
+#     db_manager.create_table("bank_accounts_models", db_manager.create_columns(models.bank_accounts_models))
+#     db_manager.create_table("wallets_model", db_manager.create_columns(models.wallets_model))
+#     db_manager.create_table("seats_showtimes_model", db_manager.create_columns(models.seats_showtimes_model))
+#     db_manager.create_table("sans_model", db_manager.create_columns(models.sans_model))
+#     db_manager.create_table("admin_model", db_manager.create_columns(models.admin_model))
+#     db_manager.create_table("users_model", db_manager.create_columns(models.users_model))
+#     db_manager.create_table("subscription_model", db_manager.create_columns(models.subscription_model))
+#     db_manager.create_table("comments_model", db_manager.create_columns(models.comments_model))
+#     db_manager.create_table("free_drinks_model", db_manager.create_columns(models.free_drinks_model))
+#     db_manager.create_table("screens_mode", db_manager.create_columns(models.screens_mode))
+#     db_manager.create_table("films_model", db_manager.create_columns(models.films_model))
 
-    # Disconnect from MySQL
-    db_manager.disconnect()
+#     # Disconnect from MySQL
+#     db_manager.disconnect()
 
 
