@@ -7,7 +7,7 @@ import personalized_exceptions
 
 class BaseForUsersAndAdmins:
     
-    database_manager = DatabaseManager('127.0.0.1','root',"M@sih2012",'cinemaswift')
+    database_manager = DatabaseManager('localhost','question6Quera',"Mail1375#",'database')
     
     @staticmethod
     def hashPassword(password: str):
