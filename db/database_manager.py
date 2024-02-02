@@ -1,5 +1,5 @@
 import mysql.connector
-from settings import local_settings
+import local_settings
 import models
 import inspect
 
@@ -48,8 +48,8 @@ class DatabaseManager:
 
     def create_table(self, table_name, columns):
         # Generate the CREATE TABLE query dynamically
-        create_table_query = f"CREATE TABLE IF NOT EXISTS {
-            table_name} (id INT AUTO_INCREMENT PRIMARY KEY, {', '.join(columns)})"
+        columns_str = ', '.join([f"{name} {column_type}" for name, column_type in columns])
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_str})"
 
         try:
             cursor = self.connection.cursor()
@@ -91,18 +91,18 @@ class DatabaseManager:
         except mysql.connector.Error as error:
             print("Error while selecting data:", error)
 
-    def create_columns(self,model_name):
+    def create_columns(self, model_name):
         init_signature = inspect.signature(model_name.__init__)
         init_params = {param.name: param.annotation for param in init_signature.parameters.values() if param.name != 'self'}
-        person_model_columns = [(name, self.dict.get(param_type.__name__, 'UNKNOWN')) for name, param_type in init_params.items()]
-        return person_model_columns
+        model_columns = [(name, self.dict.get(param_type.__name__, 'VARCHAR(255)')) for name, param_type in init_params.items()]
+        return model_columns
 
 if __name__ == "__main__":
     db_manager = DatabaseManager(
         host=local_settings.DATABASE['host'],
         user=local_settings.DATABASE['user'],
         password=local_settings.DATABASE['password'],
-        database=local_settings.DATABASE['database']
+        database=local_settings.DATABASE['name']
     )
 
     # Connect to MySQL
