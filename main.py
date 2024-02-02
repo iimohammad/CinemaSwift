@@ -3,7 +3,7 @@ import threading
 import os
 import selectors
 import socket
-from settings import local_settings
+from db import local_settings
 from intractions import clear_screen
 
 class TCPServer:
