@@ -1,9 +1,7 @@
 import datetime
 from enum import Enum
-
 # database
-class UserType(Enum):
-    USER = "User"
+class AdminType(Enum):
     MANAGER = "Manager"
     Admin = "Admin"
     
@@ -12,86 +10,104 @@ class SubscriptopnType(Enum):
     Silver = "Silver"
     Bronze = "Bronze"
 class person_model:
-    def __init__(self,username:str,email:str,birthday:datetime,phone:str) -> None:
+    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str) -> None:
+        self.id = id
         self.username = username
         self.email = email
         self.birthday = birthday
         self.phone = phone
-class bank_accounts_models:
-    def __init__(self,id,user_id,balance,name,cvv2,password) -> None:
-        self.id = id
-        self.user_id = user_id
-        self.balance = balance
-        self.name = name
-        self.cvv2 = cvv2
-        self.password = password
-
-
-
-class wallets_model:
-    def __init__(self,id,balance,name,user_id) -> None:
-        self.id = id
-        self.balance = balance
-        self.name = name
-        self.user_id = user_id
-
-class seats_showtimes_model:
-    def __init__(self,id,sans_id,status) -> None:
-        self.id = id
-        self.sans_id = sans_id
-        self.status = status
-
-class sans_model:
-    def __init__(self,id,screen_id,start_time,capacity) -> None:
-        self.id = id
-        self.screen_id = screen_id
-        self.start_time = start_time
-        self.capacity = capacity
+        
 class admin_model(person_model):
-    def __init__(self,username:str,email:str,birthday:datetime,phone:str,user_type:UserType) -> None:
-        super().__init__(username,email,birthday,phone)
-        self.user_type = user_type
-
-
-class users_model(person_model):
-    def __init__(self,username:str,email:str,birthday:datetime,phone:str,suscription_type : SubscriptopnType) -> None:
-        super().__init__(username,email,birthday,phone)
-        self.user_type = UserType.USER
+    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,admin_type:AdminType) -> None:
+        super().__init__(id,username,email,birthday,phone)
+        self.admin_type = admin_type
+        
+class user_model(person_model):
+    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,suscription_type : SubscriptopnType) -> None:
+        super().__init__(id,username,email,birthday,phone)
         self.suscription_type = suscription_type
-
-
-
+        
 class subscription_model:
-    def __init__(self,id,name,descount_number,discount_value,drink_number) -> None:
+    def __init__(self,id:int,name:str,discount_number:int,discount_value:int,drink_number:int) -> None:
         self.id = id
         self.name = name
-        self.descount_number = descount_number
+        self.descount_number = discount_number
         self.discount_value = discount_value
         self.drink_number = drink_number
-class comments_model:
-    def __init__(self,id,film_id,user_id,text,date,parent_comments_id) -> None:
-        self.id = id
-        self.film_id = film_id
+        
+class user_subscriptions_model:
+    def __init__(self,user_id:str,subscription_id:int,start_date:str) -> None:
         self.user_id = user_id
-        self.text = text
-        self.date = date
-        self.parent_comments_id = parent_comments_id
-
-class free_drinks_model:
-    def __init__(self,id,datetime) -> None:
+        self.subscription_id = subscription_id
+        self.start_date = start_date
+class film_model:
+    def __init__(self,id:int,name:str,age_rating:int,duration:int,rate:int) -> None:
         self.id = id
-        self.datetime = datetime
-
-class screens_mode:
-    def __init__(self,id,film_id,number_of_screens) -> None:
-        self.id = id
-        self.film_id = film_id
-        self.number_of_screens = number_of_screens
-
-class films_model:
-    def __init__(self,id,name,age_rating,duration,rate) -> None:
-        self.id - id
         self.name = name
         self.age_rating = age_rating
         self.duration = duration
         self.rate = rate
+        
+class comment_model:
+    def __init__(self,id:int,film_id:int,user_id:str,text:str,created_at:datetime,parent_comments_id:int) -> None:
+        self.id = id
+        self.film_id = film_id
+        self.user_id = user_id
+        self.text = text
+        self.created_at = created_at
+        self.parent_comments_id = parent_comments_id
+
+class film_point_model:
+    def __init__(self,film_id:int,user_id:str,point:int) -> None:
+        self.film_id = film_id
+        self.user_id = user_id
+        self.point = point
+
+class bank_account_model:
+    def __init__(self,id:int,user_id:str,name:str,balance:int,cvv2:int,password:str) -> None:
+        self.id = id
+        self.user_id = user_id
+        self.name = name
+        self.balance = balance
+        self.cvv2 = cvv2
+        self.password = password
+
+
+class wallet_model:
+    def __init__(self,id:int,user_id:str,balance:int) -> None:
+        self.id = id
+        self.user_id = user_id
+        self.balance = balance
+        
+class screen_mode:
+    def __init__(self,id:int,film_id:int,number_of_screens:int) -> None:
+        self.id = id
+        self.film_id = film_id
+        self.number_of_screens = number_of_screens
+        
+class session_model:
+    def __init__(self,id:int,screen_id:int,start_time:datetime,capacity:int) -> None:
+        self.id = id
+        self.screen_id = screen_id
+        self.start_time = start_time
+        self.capacity = capacity
+        
+class seat_model:
+    def __init__(self,id:int,sessions_id:int,status:str) -> None:
+        self.id = id
+        self.sessions_id = sessions_id
+        self.status = status
+
+class free_drink_model:
+    def __init__(self,id:int,user_id:str,datetime:datetime,number:int) -> None:
+        self.id = id
+        self.user_id = user_id
+        self.datetime = datetime
+        self.number = number
+
+class refun_droll_model:
+    def __init__(self,id:int,name:str,percent_value:int):
+        self.id = id
+        self.name = name
+        self.percent_value = percent_value
+
