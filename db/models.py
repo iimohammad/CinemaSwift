@@ -10,21 +10,22 @@ class SubscriptopnType(Enum):
     Silver = "Silver"
     Bronze = "Bronze"
 class person_model:
-    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str) -> None:
+    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,password:str) -> None:
         self.id = id
         self.username = username
         self.email = email
         self.birthday = birthday
         self.phone = phone
+        self.password = password
         
 class admin_model(person_model):
-    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,admin_type:AdminType) -> None:
-        super().__init__(id,username,email,birthday,phone)
+    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,password:str,admin_type:AdminType) -> None:
+        super().__init__(id,username,email,birthday,phone,password)
         self.admin_type = admin_type
         
 class user_model(person_model):
-    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,suscription_type : SubscriptopnType) -> None:
-        super().__init__(id,username,email,birthday,phone)
+    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,password:str,suscription_type : SubscriptopnType) -> None:
+        super().__init__(id,username,email,birthday,phone,password)
         self.suscription_type = suscription_type
         
 class subscription_model:
@@ -99,10 +100,10 @@ class seat_model:
         self.status = status
 
 class free_drink_model:
-    def __init__(self,id:int,user_id:str,datetime:datetime,number:int) -> None:
+    def __init__(self,id:int,user_id:str,date:datetime,number:int) -> None:
         self.id = id
         self.user_id = user_id
-        self.datetime = datetime
+        self.datetime = date
         self.number = number
 
 class refun_droll_model:
