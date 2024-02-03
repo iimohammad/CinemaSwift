@@ -28,15 +28,22 @@ class TCPClient:
 
 class handle_users:
     def __init__(self) -> None:
-        pass
+        self.logged_in = False
     
     def signup(self,username):
-        pass
+        self.users[username]
+        print(f"User {username} signed up successfully.")
+        self.logged_in = True
+
     def login(self,username,password):
-        pass
+        if username in self.users:
+            print(f"User {username} logged in successfully.")
+            self.logged_in = True
+        else:
+            print("Error: Invalid username.")
 
     def is_login(self) -> bool:
-        pass
+        return  self.logged_in
 
     def is_manager(self) -> bool:
         pass
@@ -46,9 +53,10 @@ class handle_users:
 class manager_services:
     def __init__(self,username) -> None:
         self.username = username
+        self.showtimes = []
 
     def add_showtimes(self):
-        pass
+        self.showtimes.append()
 
 
 class users_services:
