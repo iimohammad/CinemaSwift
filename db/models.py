@@ -42,21 +42,21 @@ class user_subscriptions_model:
         self.subscription_id = subscription_id
         self.start_date = start_date
 class film_model:
-    def __init__(self,id:int,name:str,age_rating:int,duration:int,rate:int) -> None:
+    def __init__(self,id:int,name:str,age_rating:int,duration:int,point:int) -> None:
         self.id = id
         self.name = name
         self.age_rating = age_rating
         self.duration = duration
-        self.rate = rate
+        self.point = point
         
 class comment_model:
-    def __init__(self,id:int,film_id:int,user_id:str,text:str,created_at:datetime,parent_comments_id:int) -> None:
+    def __init__(self,id:int,film_id:int,user_id:str,text:str,parent_comments_id:int,created_at:datetime) -> None:
         self.id = id
         self.film_id = film_id
         self.user_id = user_id
         self.text = text
-        self.created_at = created_at
         self.parent_comments_id = parent_comments_id
+        self.created_at = created_at
 
 class film_point_model:
     def __init__(self,film_id:int,user_id:str,point:int) -> None:
