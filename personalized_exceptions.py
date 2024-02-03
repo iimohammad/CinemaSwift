@@ -24,3 +24,15 @@ class InvalidPhoneError(Exception):
 class UsernameTakenError(Exception):
     def __init__(self):
         super().__init__("The username is already taken.")
+        
+class CreateWalletError(Exception):
+    def __init__(self):
+        super().__init__("A wallet has already been created for the user.")
+
+class WalletNotFound(Exception):
+    def __init__(self):
+        super().__init__("No wallet with given user id.")
+        
+class NotEnoughBalance(Exception):
+    def __init__(self):
+        super().__init__("Withdrawal amount is more than balance.")

@@ -121,8 +121,8 @@ class Users(BaseForUsersAndAdmins):
 
     @staticmethod
     def _update_last_login(user_id: str):
-        query = f"UPDATE users SET last_login = '{
-            datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"
+        query = f"""UPDATE users SET last_login = '{
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"""
         Users.database_manager.execute_query(query)
 
     @staticmethod
@@ -213,8 +213,8 @@ class Admins(BaseForUsersAndAdmins):
 
     @staticmethod
     def _update_last_login(user_id: str):
-        query = f"UPDATE admins SET last_login = '{
-            datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"
+        query = f"""UPDATE admins SET last_login = '{
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"""
         Admins.database_manager.execute_query(query)
 
     @staticmethod
