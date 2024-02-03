@@ -54,7 +54,23 @@ class DatabaseManager:
         finally:
             cursor.close()
             self.disconnect()
+    def execute_query_select(self, query, params=None):
+        try:
+            self.connect()
 
+            cursor = self.connection.cursor(buffered=True)
+            cursor.execute(query, params)
+
+            # For SELECT queries, fetch the results
+            result = cursor.fetchall()
+
+            return result
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+            self.disconnect()
     def create_table(self, table_name, columns):
         # Generate the CREATE TABLE query dynamically
         columns_str = ', '.join([f"{name} {column_type}" for name, column_type in columns])
