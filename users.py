@@ -8,9 +8,9 @@ from datetime import datetime
 
 
 class BaseForUsersAndAdmins:
-    
+
     database_manager = DatabaseManager()
-    
+
     @staticmethod
     def _hashPassword(password: str):
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -22,22 +22,22 @@ class BaseForUsersAndAdmins:
         if not match:
             raise personalized_exceptions.InvalidPhoneError()
         return True
-    
+
     @staticmethod
-    def _PasswordValidator(password:str):
+    def _PasswordValidator(password: str):
         if len(password) < 8:
-            raise personalized_exceptions.ShortPasswordError(len(password),8)
+            raise personalized_exceptions.ShortPasswordError(len(password), 8)
         if sum(1 for char in password if char in ['@', '#', '&', '$']) < 2:
             raise personalized_exceptions.NoSpecialCharacterError()
 
         if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$', password):
             raise personalized_exceptions.ComplexityError()
         return True
-    
+
     @staticmethod
-    def _UserNameValidator(username:str):
-        if len(username)>100:
-            raise personalized_exceptions.LongUserNmaeError(len(username),100)
+    def _UserNameValidator(username: str):
+        if len(username) > 100:
+            raise personalized_exceptions.LongUserNmaeError(len(username), 100)
         if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$', username):
             raise personalized_exceptions.ComplexityError()
         query = f"""
@@ -50,11 +50,11 @@ class BaseForUsersAndAdmins:
             WHERE user_name = '{username}';
             """
         r = Users.database_manager.execute_query_select(query)
-        if len(r)>0:
+        if len(r) > 0:
             raise personalized_exceptions.UsernameTakenError()
         return True
-        
-    
+
+
 class Users(BaseForUsersAndAdmins):
     @staticmethod
     def _emailValidatorUser(email: str):
@@ -68,33 +68,37 @@ class Users(BaseForUsersAndAdmins):
             WHERE email = '{email}'
             """
         r = BaseForUsersAndAdmins.database_manager.execute_query_select(query)
-        if len(r)>0:
+        if len(r) > 0:
             raise personalized_exceptions.InvalidEmailError()
         return True
+
     @staticmethod
-    def AddUser(user:models.user_model):
+    def AddUser(user: models.user_model):
         if Users._UserNameValidator(user.username):
             if Users._emailValidatorUser(user.email):
-                if user.phone ==None or Users._phoneValidator(user.phone):
+                if user.phone is None or Users._phoneValidator(user.phone):
                     user_id = str(uuid.uuid4())
-                    user_data = {'id': user_id,
-                            'user_name': user.username,
-                            'email': user.email,
-                            'birthday': user.birthday,
-                            'phone': user.phone,
-                            'subscription_type': user.suscription_type,
-                            'password': Users._hashPassword(user.password)}
+                    user_data = {
+                        'id': user_id,
+                        'user_name': user.username,
+                        'email': user.email,
+                        'birthday': user.birthday,
+                        'phone': user.phone,
+                        'subscription_type': user.suscription_type,
+                        'password': Users._hashPassword(
+                            user.password)}
 
                     insert_query = """
                         INSERT INTO users
                         (id, user_name, email, birthday, phone, subscription_type, password)
                         VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(subscription_type)s, %(password)s)
                     """
-                    Users.database_manager.execute_query(insert_query,user_data)
+                    Users.database_manager.execute_query(
+                        insert_query, user_data)
         return True
-    
+
     @staticmethod
-    def updateUserEmail(user_id:str,email:str):
+    def updateUserEmail(user_id: str, email: str):
         if not Users._emailValidatorUser(email):
             raise personalized_exceptions.InvalidEmailError()
         query = f"""
@@ -103,9 +107,9 @@ class Users(BaseForUsersAndAdmins):
             WHERE id = '{user_id}';
         """
         Users.database_manager.execute_query(query)
-    
+
     @staticmethod
-    def updateUserPhone(user_id:str,phone:str):
+    def updateUserPhone(user_id: str, phone: str):
         if not Users._phoneValidator(phone):
             raise personalized_exceptions.InvalidPhoneError()
         query = f"""
@@ -114,22 +118,27 @@ class Users(BaseForUsersAndAdmins):
             WHERE id = '{user_id}';
         """
         Users.database_manager.execute_query(query)
+
     @staticmethod
-    def _update_last_login(user_id:str):
-        query = f"UPDATE users SET last_login = '{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"
+    def _update_last_login(user_id: str):
+        query = f"UPDATE users SET last_login = '{
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"
         Users.database_manager.execute_query(query)
+
     @staticmethod
-    def log_in(user_name:str,password:str):
+    def log_in(user_name: str, password: str):
         query = f"""
                     SELECT id,password FROM cinemaswift.users
                     WHERE user_name = '{user_name}'
                 """
         r = Users.database_manager.execute_query_select(query)
-        if bcrypt.checkpw(password.encode('utf-8'),r[0][1].encode('utf-8')):
+        if bcrypt.checkpw(password.encode('utf-8'), r[0][1].encode('utf-8')):
             user_id = r[0][0]
             Users._update_last_login(user_id)
             return user_id
         return False
+
+
 class Admins(BaseForUsersAndAdmins):
     @staticmethod
     def _emailValidatorAdmin(email: str):
@@ -143,32 +152,37 @@ class Admins(BaseForUsersAndAdmins):
             WHERE email = '{email}'
             """
         r = BaseForUsersAndAdmins.database_manager.execute_query_select(query)
-        if len(r)>0:
+        if len(r) > 0:
             raise personalized_exceptions.InvalidEmailError()
         return True
+
     @staticmethod
-    def AddAdmin(user:models.admin_model):
+    def AddAdmin(user: models.admin_model):
         if Admins._UserNameValidator(user.username):
             if Admins._emailValidatorAdmin(user.email):
-                if user.phone ==None or Admins._phoneValidator(user.phone):
+                if user.phone is None or Admins._phoneValidator(user.phone):
                     user_id = str(uuid.uuid4())
-                    user_data = {'id': user_id,
-                            'user_name': user.username,
-                            'email': user.email,
-                            'birthday': user.birthday,
-                            'phone': user.phone,
-                            'admin_type': user.admin_type,
-                            'password': Admins._hashPassword(user.password)}
+                    user_data = {
+                        'id': user_id,
+                        'user_name': user.username,
+                        'email': user.email,
+                        'birthday': user.birthday,
+                        'phone': user.phone,
+                        'admin_type': user.admin_type,
+                        'password': Admins._hashPassword(
+                            user.password)}
 
                     insert_query = """
                         INSERT INTO admins
                         (id, user_name, email, birthday, phone, admin_type, password)
                         VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(admin_type)s, %(password)s)
                     """
-                    Admins.database_manager.execute_query(insert_query,user_data)
+                    Admins.database_manager.execute_query(
+                        insert_query, user_data)
         return True
+
     @staticmethod
-    def updateAdminUserName(user_id:str,user_name:str):
+    def updateAdminUserName(user_id: str, user_name: str):
         if Admins._UserNameValidator(user_name):
             query = f"""
             UPDATE admins
@@ -176,8 +190,9 @@ class Admins(BaseForUsersAndAdmins):
             WHERE id = '{user_id}';
             """
         Users.database_manager.execute_query(query)
+
     @staticmethod
-    def updateAdminEmail(user_id:str,email:str):
+    def updateAdminEmail(user_id: str, email: str):
         if Admins._emailValidatorAdmin(email):
             query = f"""
             UPDATE admins
@@ -185,8 +200,9 @@ class Admins(BaseForUsersAndAdmins):
             WHERE id = '{user_id}';
             """
         Users.database_manager.execute_query(query)
+
     @staticmethod
-    def updateAdminPhone(user_id:str,phone:str):
+    def updateAdminPhone(user_id: str, phone: str):
         if Admins._phoneValidator(phone):
             query = f"""
             UPDATE admins
@@ -194,19 +210,21 @@ class Admins(BaseForUsersAndAdmins):
             WHERE id = '{user_id}';
             """
         Users.database_manager.execute_query(query)
-    
+
     @staticmethod
-    def _update_last_login(user_id:str):
-        query = f"UPDATE admins SET last_login = '{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"
+    def _update_last_login(user_id: str):
+        query = f"UPDATE admins SET last_login = '{
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"
         Admins.database_manager.execute_query(query)
+
     @staticmethod
-    def log_in(user_name:str,password:str):
+    def log_in(user_name: str, password: str):
         query = f"""
                     SELECT id,password FROM cinemaswift.admins
                     WHERE user_name = '{user_name}'
                 """
         r = Admins.database_manager.execute_query_select(query)
-        if bcrypt.checkpw(password.encode('utf-8'),r[0][1].encode('utf-8')):
+        if bcrypt.checkpw(password.encode('utf-8'), r[0][1].encode('utf-8')):
             user_id = r[0][0]
             Admins._update_last_login(user_id)
             return user_id
