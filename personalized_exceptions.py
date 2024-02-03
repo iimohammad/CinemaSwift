@@ -36,3 +36,11 @@ class WalletNotFound(Exception):
 class NotEnoughBalance(Exception):
     def __init__(self):
         super().__init__("Withdrawal amount is more than balance.")
+        
+class FilmNotFount(Exception):
+    def __init__(self):
+        super().__init__("Film not found!")
+
+class RemoveFilmNotPossible(Exception):
+    def __init__(self):
+        super().__init__("It is not possible to delete the film because the screen is defined for it!")

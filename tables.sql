@@ -7,11 +7,12 @@ CREATE TABLE IF NOT EXISTS `cinemaswift`.`users` (
   `email` VARCHAR(255) NOT NULL,
   `birthday` DATE NULL,
   `phone` VARCHAR(255) NULL,
-  `subscription_type` VARCHAR(255) NULL,
+  `subscription_type_id` INT NULL,
   `password` VARCHAR(255) NOT NULL,
   `last_login` TIMESTAMP NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  FOREIGN KEY (subscription_type_id) REFERENCES userssubscriptions (id)
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `cinemaswift`.`users` (
   `name` VARCHAR(255) NOT NULL,
   `age_rating` INT NOT NULL,
   `duration` INT NOT NULL,
-  `rate` DECIMAL NOT NULL,
+  `point` DECIMAL(3,1) NOT NULL,
   PRIMARY KEY (`id`)
   );
 
@@ -66,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `cinemaswift`.`comments` (
   `film_id` INT NOT NULL,
   `user_id` VARCHAR(255) NOT NULL,
   `text` MEDIUMTEXT NOT NULL,
-  `created_at` DATETIME NOT NULL,
   `parent_comment` INT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`film_id`) REFERENCES `films` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
@@ -79,8 +80,8 @@ CREATE TABLE IF NOT EXISTS `cinemaswift`.`filmspoints` (
   `user_id` VARCHAR(255) NOT NULL,
   `point` INT NOT NULL,
   PRIMARY KEY (`film_id`,`user_id`),
-  FOREIGN KEY (`film_id`) REFERENCES `films` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  FOREIGN KEY (`film_id`) REFERENCES `films` (`id`)ON DELETE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `cinemaswift`.`bankaccounts` (
