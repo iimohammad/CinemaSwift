@@ -27,36 +27,67 @@ class TCPClient:
 
 
 class handle_users:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, host='127.0.0.1', port=8080) :
+        self.client = TCPClient(host, port)
+        self.username = None
+        self.is_logged_in = False
     
     def signup(self,username):
-        pass
+        
+        if not self.is_logged_in:
+            data_to_send = {'action': 'signup', 'username': username}
+            self.client.connect()
+            response = self.client.send_dict_to_server(data_dict=data_to_send)
+            if response.get('status') == 'success':
+                print(f"User '{username}' successfully signed up.")
+            else:
+                print(f"Error: {response.get('error_message')}")
+        else:
+            print("Error: You are already logged in. Logout first.")
+
     def login(self,username,password):
-        pass
 
-    def is_login(self) -> bool:
-        pass
+        if not self.is_logged_in:
+            data_to_send = {'action': 'login', 'username': username, 'password': password}
+            self.client.connect()
+            self.client.send_dict_to_server(data_to_send)
+            response = json.loads(self.client.client_socket.recv(1024).decode('utf-8'))
+            self.client.close_connection()
 
-    def is_manager(self) -> bool:
-        pass
+            if response.get('status') == 'success':
+                self.is_logged_in = True
+                self.username = username
+                print(f"Logged in as {username}")
+            else:
+                print("Login failed. Check your username and password.")
+        else:
+            print("Error: You are already logged in. Logout first.")
+
+    def is_login(self) :
+       
+        return self.is_logged_in
+    
+    def is_manager(self):
+
+        if self.is_logged_in:
+            data_to_send = {'action': 'is_manager', 'username': self.username}
+            self.client.connect()
+            self.client.send_dict_to_server(data_to_send)
+            response = json.loads(self.client.client_socket.recv(1024).decode('utf-8'))
+            self.client.close_connection()
+            return response.get('is_manager', False)
+        else:
+            print("Error: You are not logged in.")
+            return False
+        
     def help(self):
-        pass
 
-class manager_services:
-    def __init__(self,username) -> None:
-        self.username = username
-
-    def add_showtimes(self):
-        pass
-
-
-class users_services:
-    def __init__(self,username) -> None:
-        self.username = username
-
-    def reserve_showtime(self):
-        pass
+        print("Available commands:")
+        print("  signup <username>")
+        print("  login <username> <password>")
+        print("  is_login")
+        print("  is_manager")
+        print("  help")
 
 
 
