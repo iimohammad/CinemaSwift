@@ -1,6 +1,9 @@
 import mysql.connector
+import models
+import sys
+sys.path.append('../')
 from settings import local_settings
-from db import models
+
 import inspect
 
 class DatabaseManager:
@@ -40,6 +43,8 @@ class DatabaseManager:
             self.connection.close()
             print("Connection closed.")
 
+
+
     def execute_query(self, query, params=None):
         try:
             self.connect()
@@ -54,6 +59,8 @@ class DatabaseManager:
         finally:
             cursor.close()
             self.disconnect()
+
+            
     def execute_query_select(self, query, params=None):
         try:
             self.connect()
