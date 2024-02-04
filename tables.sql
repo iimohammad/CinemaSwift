@@ -124,10 +124,11 @@ CREATE TABLE IF NOT EXISTS `cinemaswift`.`sessions` (
 
 CREATE TABLE IF NOT EXISTS `cinemaswift`.`seats` (
   `id` INT  AUTO_INCREMENT,
-  `sessions_id` INT NOT NULL,
+  `session_id` INT NOT NULL,
   `status` VARCHAR(10) NOT NULL,
+  `number` int NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`sessions_id`) REFERENCES `sessions` (`id`)
+  FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `cinemaswift`.`freedrinks` (
