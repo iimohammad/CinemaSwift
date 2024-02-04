@@ -80,7 +80,7 @@ class wallet_model:
         self.user_id = user_id
         self.balance = balance
         
-class screen_mode:
+class screen_model:
     def __init__(self,id:int,film_id:int,number_of_screens:int) -> None:
         self.id = id
         self.film_id = film_id
@@ -94,9 +94,9 @@ class session_model:
         self.capacity = capacity
         
 class seat_model:
-    def __init__(self,id:int,sessions_id:int,status:str) -> None:
+    def __init__(self,id:int,session_id:int,status:str) -> None:
         self.id = id
-        self.sessions_id = sessions_id
+        self.session_id = session_id
         self.status = status
 
 class free_drink_model:
