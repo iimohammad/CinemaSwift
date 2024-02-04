@@ -44,3 +44,25 @@ class FilmNotFount(Exception):
 class RemoveFilmNotPossible(Exception):
     def __init__(self):
         super().__init__("It is not possible to delete the film because the screen is defined for it!")
+        
+class RemoveScreenNotPossible(Exception):
+    def __init__(self):
+        super().__init__("It is not possible to delete the screen because the session is defined for it!")
+        
+class UpdateScreenNotPossible(Exception):
+    def __init__(self):
+        super().__init__("It is not possible to update the screen because the number of defined sessions are more!")
+
+class RemoveSessionNotPossible(Exception):
+    def __init__(self):
+        super().__init__("The session cannot be deleted because there are reserved seats for this session!")
+class CreateSessionNotPossible(Exception):
+    def __init__(self):
+        super().__init__("It is not possible to create a session because there is another session with the same time for the same screen!")
+class CreateSessionNotPossibleCapacity(Exception):
+    def __init__(self):
+        super().__init__("It is not possible to create a session because capacity not acceptable!")
+
+class CreateSessionNotPossibleMaxNumber(Exception):
+    def __init__(self):
+        super().__init__("It is not possible to create a session because maximum number of sessions already defined!")
