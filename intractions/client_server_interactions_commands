@@ -29,6 +29,13 @@ Interaction_Commands = {
     'add_screens' : 'add_screens_func' ,
     'show_watched_films' : 'show_watche_films_func',
     'send_score_film' : 'send_score_film_func',
-    'show_films_scores' : 'show_films_scores'
+    'show_films_scores' : 'show_films_scores',
+    'show_comments_film' : 'show_comments_film_func',
+    'send_comment' :'send_comment',
+    'reply_comment' : 'reply_comment_func',
+    'send_Message_employee' :'send_Message_employee',
+    'send_message_to_support' : 'send_message_to_support_func',
+    'auto_reservation': 'auto_reservation_func'
+
 
 }
