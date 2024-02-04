@@ -1,6 +1,9 @@
 import socket
 import json
 import argparse
+import getpass
+# from intractions import clear_screen
+
 class TCPClient:
     def __init__(self, host='127.0.0.1', port=8080):
         self.host = host
@@ -24,42 +27,6 @@ class TCPClient:
         self.client_socket.close()
         print("Connection closed.")
 
-
-
-class handle_users:
-    def __init__(self) -> None:
-        pass
-    
-    def signup(self,username):
-        pass
-    def login(self,username,password):
-        pass
-
-    def is_login(self) -> bool:
-        pass
-
-    def is_manager(self) -> bool:
-        pass
-    def help(self):
-        pass
-
-class manager_services:
-    def __init__(self,username) -> None:
-        self.username = username
-
-    def add_showtimes(self):
-        pass
-
-
-class users_services:
-    def __init__(self,username) -> None:
-        self.username = username
-
-    def reserve_showtime(self):
-        pass
-
-
-
 def main():
     parser = argparse.ArgumentParser(description="Client for Movie Reservation System")
     parser.add_argument('action', choices=['signup', 'login'], help='Specify the action to perform (signup or login)')
@@ -67,31 +34,54 @@ def main():
 
     args = parser.parse_args()
 
-    if args.action == 'signup':
-        if not args.username:
-            print("Error: Username is required for signup.")
-            return
-        client = TCPClient()
-        try:
-            client.connect()
-            data_to_send = {'action': 'signup', 'username': args.username}
-            client.send_dict_to_server(data_dict=data_to_send)
-        finally:
-            client.close_connection()
+    client = TCPClient()
+    try:
+        client.connect()
 
-    elif args.action == 'login':
-        if not args.username:
-            print("Error: Username is required for login.")
-            return
-        # Perform login
-        client = TCPClient()
-        try:
-            client.connect()
-            data_to_send = {'action': 'login', 'username': args.username}
-            client.send_dict_to_server(data_dict=data_to_send)
-        finally:
-            client.close_connection()
+        if args.action == 'signup':
+            if not args.username:
+                print("Error: Username is required for signup.")
+                return
 
+            password = getpass.getpass("Enter password: ")
+            email = input("Enter email: ")
+            phone = input("Enter phone: ")
+            birthday = input("Enter birthday: ")
+
+            data_to_send = {
+                'action': 'signup',
+                'username': args.username,
+                'password': password,
+                'email': email,
+                'phone': phone,
+                'birthday': birthday
+            }
+
+        elif args.action == 'login':
+            if not args.username:
+                print("Error: Username is required for login.")
+                return
+
+            password = getpass.getpass("Enter password: ")
+            data_to_send = {'action': 'login', 'username': args.username, 'password': password}
+
+        else:
+            print("Invalid action.")
+            return
+
+        client.send_dict_to_server(data_dict=data_to_send)
+
+        # Enter a loop to send commands after login
+        while args.action == 'login':
+            command = input("Enter a command: ")
+            if command.lower() == 'exit':
+                break
+
+            data_to_send = {'command': command}
+            client.send_dict_to_server(data_dict=data_to_send)
+
+    finally:
+        client.close_connection()
 
 if __name__ == "__main__":
     main()
