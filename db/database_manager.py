@@ -1,5 +1,5 @@
 import mysql.connector
-from db import local_settings
+from settings import local_settings
 from db import models
 import inspect
 
