@@ -1,0 +1,14 @@
+# This file has all of the commands which interact with client and server:
+# Any other command that not in this file reuturn a message that client send a wrong command. 
+
+Interaction_Commands = {
+    'sign_up': 'sign_up_func',
+    'login' : 'login_func',
+    'add_bank_Account' : 'add_bank_Account_func',
+    'wallet_recharge' : 're_charge_func',
+    'buy_subsctiption' : 'buy_buy_subsctiption_func',
+    'add_banck_account' : 'add_bank_account_func',
+    ''
+
+
+}
