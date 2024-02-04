@@ -3,8 +3,16 @@ import threading
 import os
 import selectors
 import socket
-from db import local_settings
+from settings import local_settings
 from intractions import clear_screen
+import json
+
+class UserDatabase:
+    users = {}
+
+    @classmethod
+    def check_credentials(cls, username, password):
+        return cls.users.get(username) == password
 
 class TCPServer:
     def __init__(self, host=local_settings.Network['host'], port=local_settings.Network['port']):
@@ -49,23 +57,62 @@ class TCPServer:
             recv_data = client_socket.recv(1024)
             if recv_data:
                 data += recv_data
+                try:
+                    self.parse_data(data.decode('utf-8'), client_socket)
+                except json.decoder.JSONDecodeError as e:
+                    print(f"Error decoding JSON data: {e}")
+
             else:
                 print(f"Closing connection to {client_socket.getpeername()}")
                 self.sel.unregister(client_socket)
                 client_socket.close()
+                return  # Exit early if no data received
 
         if mask & selectors.EVENT_WRITE:
             if data:
                 sent = client_socket.send(data)
                 data = data[sent:]
 
+    def parse_data(self, received_data, client_socket):
+        data_dict = json.loads(received_data)
+
+        if data_dict['action'] == 'signup':
+            username = data_dict['username']
+            password = data_dict['password']
+            email = data_dict['email']
+            phone = data_dict['phone']
+            birthday = data_dict['birthday']
+
+            # Perform signup logic
+            UserDatabase.users[username] = password
+
+            print(f"User '{username}' signed up successfully with email {email}, phone {phone}, and birthday {birthday}!")
+            response = "Signup successful!"
+
+        elif data_dict['action'] == 'login':
+            username = data_dict['username']
+            password = data_dict['password']
+
+            # Perform login logic
+            if UserDatabase.check_credentials(username, password):
+                print(f"User '{username}' logged in successfully!")
+                response = "Login successful!"
+            else:
+                print(f"Login failed for user '{username}'")
+                response = "Login failed. Check your credentials."
+
+        else:
+            response = "Invalid action!"
+
+        # Send response to the client
+        client_socket.sendall(response.encode('utf-8'))
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run TCP Server")
     parser.add_argument('--runserver', action='store_true', help='Run the TCP server')
 
     args = parser.parse_args()
-    
-    # Use the imported clear_screen function
+
     clear_screen.clear_screen_func()
 
     if args.runserver:
