@@ -94,6 +94,7 @@ class TCPServer:
                 print(f"User '{username}' logged in successfully!")
                 with self.lock:
                     self.logged_in_users[client_socket] = username
+
                 response = "Login successful!"
             else:
                 print(f"Login failed for user '{username}'")
@@ -101,8 +102,8 @@ class TCPServer:
 
         elif client_socket in self.logged_in_users:
             if action in interation_commands.Interaction_Commands:
-                function_name = interation_commands.Interaction_Commands[action]
-                response = function_name(username)
+                response = interation_commands.Interaction_Commands[action]()
+                
             else:
                 response = "Invalid action!"
 
