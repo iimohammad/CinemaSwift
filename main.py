@@ -6,6 +6,9 @@ import socket
 from settings import local_settings
 from intractions import clear_screen
 import json
+from users_module.users import Users
+from db import models
+from datetime import datetime
 
 class UserDatabase:
     users = {}
@@ -14,8 +17,12 @@ class UserDatabase:
     def check_credentials(cls, username, password):
         return cls.users.get(username) == password
 
+
 class TCPServer:
-    def __init__(self, host=local_settings.Network['host'], port=local_settings.Network['port']):
+    def __init__(
+            self,
+            host=local_settings.Network['host'],
+            port=local_settings.Network['port']):
         self.host = host
         self.port = port
         self.sel = selectors.DefaultSelector()
@@ -84,9 +91,31 @@ class TCPServer:
             birthday = data_dict['birthday']
 
             # Perform signup logic
+            user = models.user_model(
+                1,
+                username=username,
+                email=email,
+                birthday=birthday,
+                phone=phone,
+                password=password)
+            print(user.username)
+            birthday = datetime(year=1990, month=1, day=1)
+
+            print("--------------------")
+            # Users.AddUser(
+            #     models.user_model(
+            #         id=1,
+            #         username="Masih11",
+            #         email="john@example.com",
+            #         birthday=birthday,
+            #         phone="09125397806",
+            #         password="Mail1375#@#"))
+
+            Users.AddUser(user=user)
             UserDatabase.users[username] = password
 
-            print(f"User '{username}' signed up successfully with email {email}, phone {phone}, and birthday {birthday}!")
+            print(f"User '{username}' signed up successfully with email {
+                  email}, phone {phone}, and birthday {birthday}!")
             response = "Signup successful!"
 
         elif data_dict['action'] == 'login':
@@ -107,9 +136,13 @@ class TCPServer:
         # Send response to the client
         client_socket.sendall(response.encode('utf-8'))
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run TCP Server")
-    parser.add_argument('--runserver', action='store_true', help='Run the TCP server')
+    parser.add_argument(
+        '--runserver',
+        action='store_true',
+        help='Run the TCP server')
 
     args = parser.parse_args()
 

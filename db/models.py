@@ -24,9 +24,10 @@ class admin_model(person_model):
         self.admin_type = admin_type
         
 class user_model(person_model):
-    def __init__(self,id:str,username:str,email:str,birthday:datetime,phone:str,suscription_type : SubscriptopnType,password:str) -> None:
-        super().__init__(id,username,email,birthday,phone,password)
-        self.suscription_type = suscription_type
+    def __init__(self, id: str, username: str, email: str, birthday: datetime, phone: str, password: str) -> None:
+        super().__init__(id, username, email, birthday, phone, password)
+        
+
         
 class subscription_model:
     def __init__(self,id:int,name:str,discount_number:int,discount_value:int,drink_number:int) -> None:

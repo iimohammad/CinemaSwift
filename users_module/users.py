@@ -2,7 +2,7 @@ from db import models
 from db.database_manager import DatabaseManager
 import re
 import uuid
-import personalized_exceptions
+from users_module import personalized_exceptions
 import bcrypt
 from datetime import datetime
 
@@ -84,17 +84,14 @@ class Users(BaseForUsersAndAdmins):
                         'email': user.email,
                         'birthday': user.birthday,
                         'phone': user.phone,
-                        'subscription_type': user.suscription_type,
-                        'password': Users._hashPassword(
-                            user.password)}
+                        'password': Users._hashPassword(user.password)}
 
                     insert_query = """
                         INSERT INTO users
-                        (id, user_name, email, birthday, phone, subscription_type, password)
-                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(subscription_type)s, %(password)s)
+                        (id, user_name, email, birthday, phone,  password)
+                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
                     """
-                    Users.database_manager.execute_query(
-                        insert_query, user_data)
+                    Users.database_manager.execute_query(insert_query, user_data)
         return True
 
     @staticmethod
