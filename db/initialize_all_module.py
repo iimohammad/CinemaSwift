@@ -6,30 +6,28 @@ db = database_manager.DatabaseManager()
 db.connect()
 
 # Define SQL statements for creating tables
-create_tables_queries = """
-    CREATE TABLE IF NOT EXISTS `users` (
-      `id` VARCHAR(255) NOT NULL,
-      `user_name` VARCHAR(255) NOT NULL,
-      `email` VARCHAR(255) NOT NULL,
-      `birthday` DATE NULL,
-      `phone` VARCHAR(255) NULL,
-      `subscription_type_id` INT NULL,
-      `password` VARCHAR(255) NOT NULL,
-      `last_login` TIMESTAMP NULL,
-      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (`id`),
-      FOREIGN KEY (subscription_type_id) REFERENCES userssubscriptions (id),
-      UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-      UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC) VISIBLE,
-      UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
-    );
+create_users_table_query = """
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` VARCHAR(255) NOT NULL,
+  `user_name` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `birthday` DATE NULL,
+  `phone` VARCHAR(255) NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `last_login` TIMESTAMP NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
 
-    
-    
+);
+
+
 """
 
-# Execute the queries
-db.execute_query(create_tables_queries)
+# Execute the query
+db.execute_query(create_users_table_query)
 
 create_tables_queries = """
     CREATE TABLE IF NOT EXISTS `admins` (
@@ -72,6 +70,7 @@ create_tables_queries = """
   `subscription_id` INT NOT NULL,
   `start_date` DATETIME NOT NULL,
   PRIMARY KEY (`user_id`),
+
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (subscription_id) REFERENCES subscriptions (id)
   );
@@ -81,7 +80,7 @@ create_tables_queries = """
 db.execute_query(create_tables_queries)
 
 create_tables_queries = """
-CREATE TABLE IF NOT EXISTS ``films` (
+CREATE TABLE IF NOT EXISTS `films` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `age_rating` INT NOT NULL,
@@ -93,7 +92,7 @@ CREATE TABLE IF NOT EXISTS ``films` (
 db.execute_query(create_tables_queries)
 
 create_tables_queries = """
-CREATE TABLE IF NOT EXISTS ``comments` (
+CREATE TABLE IF NOT EXISTS `comments` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `film_id` INT NOT NULL,
   `user_id` VARCHAR(255) NOT NULL,
@@ -203,3 +202,4 @@ CREATE TABLE IF NOT EXISTS `refundrolls` (
 );
 """
 db.execute_query(create_tables_queries)
+db.disconnect()
