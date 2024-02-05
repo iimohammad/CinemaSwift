@@ -1,12 +1,37 @@
+def change_username_func():
+    pass
+
+def change_password_func():
+    pass
+
+
+def change_email_func():
+    pass
+
+
+def change_phpneNumber():
+    pass
+
+
+def remove_bank_account_func():
+    pass
+
+
+
+
+
+
+
+
+
+
 
 Interaction_Commands = {
-    'sign_up': 'sign_up_func',
-    'login' : 'login_func',
-    'change_username' :'change_username',
-    'change_password':'change_password',
-    'change_email':'change_email',
-    'change_phpneNumber' : 'change_phpneNumber',
-    'remove_banch_account' :'remove_banch_account_func',
+    'change_username' :change_username_func,
+    'change_password':change_password_func,
+    'change_email':change_email_func,
+    'change_phpneNumber' : change_phpneNumber,
+    'remove_bank_account' :remove_bank_account_func,
     'show_ballance' : 'show_ballance_func',
     'show_bank_accounts': 'show_bank_accounts_func',
     'show_reservation':'show_reservation_func',
