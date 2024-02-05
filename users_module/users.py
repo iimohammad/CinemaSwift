@@ -2,7 +2,7 @@ from db import models
 from db.database_manager import DatabaseManager
 import re
 import uuid
-from users_module import personalized_exceptions
+import personalized_exceptions
 import bcrypt
 from datetime import datetime
 
@@ -24,7 +24,7 @@ class BaseForUsersAndAdmins:
         return True
 
     @staticmethod
-    def _PasswordValidator(password: str):
+    def PasswordValidator(password: str):
         if len(password) < 8:
             raise personalized_exceptions.ShortPasswordError(len(password), 8)
         if sum(1 for char in password if char in ['@', '#', '&', '$']) < 2:
@@ -84,14 +84,17 @@ class Users(BaseForUsersAndAdmins):
                         'email': user.email,
                         'birthday': user.birthday,
                         'phone': user.phone,
-                        'password': Users._hashPassword(user.password)}
+                        'subscription_type': user.suscription_type,
+                        'password': Users._hashPassword(
+                            user.password)}
 
                     insert_query = """
                         INSERT INTO users
-                        (id, user_name, email, birthday, phone,  password)
-                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
+                        (id, user_name, email, birthday, phone, subscription_type, password)
+                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(subscription_type)s, %(password)s)
                     """
-                    Users.database_manager.execute_query(insert_query, user_data)
+                    Users.database_manager.execute_query(
+                        insert_query, user_data)
         return True
 
     @staticmethod
@@ -226,13 +229,3 @@ class Admins(BaseForUsersAndAdmins):
             Admins._update_last_login(user_id)
             return user_id
         return False
-
-# Users.AddUser(models.user_model(-1,'Masih11','masih12@abc.com','1999-12-12','09131231234','M@@@sih123',models.SubscriptopnType.Bronze.value))
-# r = Users.database_manager.execute_query_select("SELECT user_name FROM users WHERE user_name = 'Masih1' UNION SELECT user_name FROM admins WHERE user_name = 'Masih1';")
-# print(r)
-# Users.updateUserEmail('7a91adf0-bcb9-4e29-bba1-171e310aa30e','masih1234@abc.com')
-# Admins.AddAdmin(models.admin_model(-1,'Ali1','masih1211@abc.com','1999-12-12','09131231234','M@@@sih123',models.AdminType.MANAGER.value))
-# Admins.updateAdminEmail('df3cf799-ca17-41e2-a566-9bac7a67f633','masih123@abc.com')
-# Admins.log_in('Ali1','M@@@sih123')
-# print(Users.log_in('Masih11','M@@@sih1233'))
-# Admins.updateAdminUserName('df3cf799-ca17-41e2-a566-9bac7a67f633','Masih111')
