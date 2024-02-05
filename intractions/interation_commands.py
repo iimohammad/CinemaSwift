@@ -1,5 +1,3 @@
-# This file has all of the commands which interact with client and server:
-# Any other command that not in this file reuturn a message that client send a wrong command. 
 
 Interaction_Commands = {
     'sign_up': 'sign_up_func',
