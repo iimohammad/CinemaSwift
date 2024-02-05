@@ -9,14 +9,12 @@ from intractions import interation_commands
 from datetime import datetime
 from settings import local_settings
 
-
 class UserDatabase:
     users = {}
 
     @classmethod
     def check_credentials(cls, username, password):
         return cls.users.get(username) == password
-
 
 class ClientThread(threading.Thread):
     def __init__(self, client_socket, server):
@@ -33,14 +31,10 @@ class ClientThread(threading.Thread):
         finally:
             self.client_socket.close()
 
-
 class TCPServer:
-    def __init__(
-            self,
-            host=local_settings.Network['host'],
-            port=local_settings.Network['port']):
+    def __init__(self, host=local_settings.Network['host'], port=local_settings.Network['port']):
         self.host = host
-        self.port = port
+        self.port = int(port)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
@@ -67,13 +61,13 @@ class TCPServer:
         username = data_dict.get('username')
 
         if action == 'signup':
+            print("------------------")
             username = data_dict['username']
             password = data_dict['password']
             email = data_dict['email']
             phone = data_dict['phone']
             birthday = data_dict['birthday']
 
-            # Perform signup logic
             user = models.user_model(
                 -1,
                 username=username,
@@ -82,6 +76,7 @@ class TCPServer:
                 phone=phone,
                 password=password)
 
+            print(user)
             Users.AddUser(user=user)
 
             response = "Signup successful!"
@@ -103,27 +98,18 @@ class TCPServer:
         elif client_socket in self.logged_in_users:
             if action in interation_commands.Interaction_Commands:
                 response = interation_commands.Interaction_Commands[action]()
-                
             else:
                 response = "Invalid action!"
 
         else:
-            # User is not logged in, deny certain actions
             response = "Please log in first!"
 
-        # Print the response
         print(response)
-
-        # Send response to the client
         client_socket.sendall(response.encode('utf-8'))
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run TCP Server")
-    parser.add_argument(
-        '--runserver',
-        action='store_true',
-        help='Run the TCP server')
+    parser.add_argument('--runserver', action='store_true', help='Run the TCP server')
 
     args = parser.parse_args()
 
