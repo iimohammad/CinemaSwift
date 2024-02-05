@@ -66,3 +66,20 @@ class CreateSessionNotPossibleCapacity(Exception):
 class CreateSessionNotPossibleMaxNumber(Exception):
     def __init__(self):
         super().__init__("It is not possible to create a session because maximum number of sessions already defined!")
+        
+
+class InvalidCvv2(Exception):
+    def __init__(self):
+        super().__init__("Entred cvv2 is not valid!")
+        
+class InvalidNameForBankAccount(Exception):
+    def __init__(self):
+        super().__init__("The user already has an account with this name!")
+        
+class BankAccountNotFound(Exception):
+    def __init__(self):
+        super().__init__("Bank account with given user and account name not found!")
+
+class InvalidAccountSecurityInformation(Exception):
+    def __init__(self):
+        super().__init__("The account security information is incorrect!")
