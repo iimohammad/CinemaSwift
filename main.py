@@ -11,6 +11,7 @@ from users_module.users import Users
 from db import models
 from datetime import datetime
 
+
 class UserDatabase:
     users = {}
 
@@ -27,6 +28,7 @@ class TCPServer:
         self.host = host
         self.port = port
         self.sel = selectors.DefaultSelector()
+        self.login_clients = {}
 
     def run_server(self):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -84,7 +86,10 @@ class TCPServer:
     def parse_data(self, received_data, client_socket):
         data_dict = json.loads(received_data)
 
-        if data_dict['action'] == 'signup':
+        action = data_dict.get('action')
+        username = data_dict.get('username')  
+
+        if action == 'signup':
             username = data_dict['username']
             password = data_dict['password']
             email = data_dict['email']
@@ -93,46 +98,43 @@ class TCPServer:
 
             # Perform signup logic
             user = models.user_model(
-                1,
+                -1,
                 username=username,
                 email=email,
                 birthday=birthday,
                 phone=phone,
                 password=password)
-            print(user.username)
-            birthday = datetime(year=1990, month=1, day=1)
-
-            print("--------------------")
-            # Users.AddUser(
-            #     models.user_model(
-            #         id=1,
-            #         username="Masih11",
-            #         email="john@example.com",
-            #         birthday=birthday,
-            #         phone="09125397806",
-            #         password="Mail1375#@#"))
 
             Users.AddUser(user=user)
-            UserDatabase.users[username] = password
 
-            print(f"User '{username}' signed up successfully with email {
-                  email}, phone {phone}, and birthday {birthday}!")
             response = "Signup successful!"
 
-        elif data_dict['action'] == 'login':
+        elif action == 'login':
             username = data_dict['username']
             password = data_dict['password']
 
-            # Perform login logic
-            if UserDatabase.check_credentials(username, password):
+            if Users.log_in(username, password):
                 print(f"User '{username}' logged in successfully!")
+                self.logged_in_users[client_socket] = username
                 response = "Login successful!"
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."
 
+        elif client_socket in self.logged_in_users:
+            if action in interation_commands.Interaction_Commands:
+                function_name = interation_commands.Interaction_Commands[action]
+                # response = getattr(interation_commands, function_name)(username)
+                response = function_name(username,*argparse)
+            else:
+                response = "Invalid action!"
+
         else:
-            response = "Invalid action!"
+            # User is not logged in, deny certain actions
+            response = "Please log in first!"
+
+        # Print the response
+        print(response)
 
         # Send response to the client
         client_socket.sendall(response.encode('utf-8'))

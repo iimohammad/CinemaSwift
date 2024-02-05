@@ -96,7 +96,7 @@ def main():
         response = client.send_dict_to_server(data_dict=data_to_send)
 
         # Enter a loop to send commands after login
-        if response == "Login Successfully":
+        if response == "Login successful!":
             while args.action == 'login':
                 command = input(
                     "Enter a command or if you want to see all of our services enter -show services ")
