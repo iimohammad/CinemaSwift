@@ -7,19 +7,46 @@ from settings import local_settings
 
 
 class TCPClient:
+    """
+    A TCP client for interacting with the Movie Reservation System server.
+
+    Attributes:
+        host (str): The host address of the server.
+        port (int): The port number of the server.
+        client_socket (socket.socket): The client socket used for communication with the server.
+    """
     def __init__(
             self,
             host=local_settings.Network['host'],
             port=local_settings.Network['port']):
+        """
+        Initializes the TCP client with the specified host and port.
+
+        Args:
+            host (str): The host address of the server.
+            port (int): The port number of the server.
+        """
         self.host = host
         self.port = int(port)
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):
+        """
+        Connects to the server.
+        """
         self.client_socket.connect((self.host, self.port))
         print(f"Connected to {self.host}:{self.port}")
 
     def send_dict_to_server(self, data_dict):
+        """
+        Sends a dictionary to the server and receives the response.
+
+        Args:
+            data_dict (dict): The dictionary to be sent to the server.
+
+        Returns:
+            bytes: The response received from the server.
+        """
         try:
             json_string = json.dumps(data_dict)
             self.client_socket.sendall(json_string.encode('utf-8'))
@@ -39,16 +66,33 @@ class TCPClient:
             return b''  # Return an empty byte string or han
 
     def close_connection(self):
+        """
+        Closes the connection with the server.
+        """
         self.client_socket.close()
         print("Connection closed.")
 
 
 def show_services():
+    """
+    Displays all available services.
+    """
     for key, value in interation_commands.Interaction_Commands.items():
         print(key)
 
 
 def main():
+    """
+    Main function to run the TCP client for the Movie Reservation System.
+
+    This function parses command-line arguments to determine the action to perform
+    (signup or login) and gathers necessary user inputs. It then communicates
+    with the server using a TCP client, sending appropriate data based on the
+    specified action, and processes server responses accordingly.
+
+    Raises:
+        argparse.ArgumentError: If there's an error in parsing command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Client for Movie Reservation System")
     parser.add_argument(
