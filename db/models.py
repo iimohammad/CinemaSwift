@@ -53,8 +53,10 @@ class user_model(person_model):
             email: str,
             birthday: datetime,
             phone: str,
+            subscription_type_id:int,
             password: str) -> None:
-        super().__init__(id, username, email, birthday, phone, password)
+        super().__init__(id, username, email, birthday,phone,password)
+        self.subscription_type_id = subscription_type_id
 
 
 class subscription_model:
@@ -69,7 +71,6 @@ class subscription_model:
         self.name = name
         self.descount_number = discount_number
         self.discount_value = discount_value
-        self.drink_number = drink_number
 
 
 class user_subscriptions_model:
@@ -159,11 +160,13 @@ class session_model:
             id: int,
             screen_id: int,
             start_time: datetime,
-            capacity: int) -> None:
+            capacity: int,
+            ticket_price:int) -> None:
         self.id = id
         self.screen_id = screen_id
         self.start_time = start_time
         self.capacity = capacity
+        self.ticket_price = ticket_price
 
 
 class seat_model:
@@ -171,19 +174,6 @@ class seat_model:
         self.id = id
         self.session_id = session_id
         self.status = status
-
-
-class free_drink_model:
-    def __init__(
-            self,
-            id: int,
-            user_id: str,
-            date: datetime,
-            number: int) -> None:
-        self.id = id
-        self.user_id = user_id
-        self.datetime = date
-        self.number = number
 
 
 class refun_droll_model:
