@@ -127,7 +127,7 @@ class Users(BaseForUsersAndAdmins):
     @staticmethod
     def log_in(user_name: str, password: str):
         query = f"""
-                    SELECT id,password FROM cinemaswift.users
+                    SELECT id,password FROM users
                     WHERE user_name = '{user_name}'
                 """
         r = Users.database_manager.execute_query_select(query)

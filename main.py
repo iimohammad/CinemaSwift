@@ -23,6 +23,7 @@ class ClientThread(threading.Thread):
         self.server = server
 
     def run(self):
+        
         data = self.client_socket.recv(1024).decode('utf-8')
         try:
             self.server.parse_data(data, self.client_socket)
@@ -55,6 +56,7 @@ class TCPServer:
             self.server_socket.close()
 
     def parse_data(self, received_data, client_socket):
+        # print(received_data)
         data_dict = json.loads(received_data)
 
         action = data_dict.get('action')
@@ -76,7 +78,7 @@ class TCPServer:
                 phone=phone,
                 password=password)
 
-            print(user)
+            # print(user)
             Users.AddUser(user=user)
 
             response = "Signup successful!"
@@ -84,22 +86,37 @@ class TCPServer:
         elif action == 'login':
             username = data_dict['username']
             password = data_dict['password']
-
+            # print(username,password)
+            # print( Users.log_in(username, password))
+            
             if Users.log_in(username, password):
-                print(f"User '{username}' logged in successfully!")
+                print(f"User '{username}'Login successful!")
                 with self.lock:
                     self.logged_in_users[client_socket] = username
 
                 response = "Login successful!"
+                while True:
+                    client_socket.sendall(response.encode('utf-8'))
+                    # Continuously receive and process data from the client
+                    received_data = client_socket.recv(1024).decode('utf-8')
+                    data_dict_command = json.loads(received_data)
+                    finalCommand = data_dict_command['action']
+                    if finalCommand in interation_commands.Interaction_Commands:
+                        response = interation_commands.Interaction_Commands[finalCommand]()
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."
+            print(self.logged_in_users)
 
         elif client_socket in self.logged_in_users:
-            if action in interation_commands.Interaction_Commands:
-                response = interation_commands.Interaction_Commands[action]()
-            else:
-                response = "Invalid action!"
+        # elif  action == 'change_username':
+            print("hi")
+            # print("hi")
+            # print (action)
+            # if action in interation_commands.Interaction_Commands:
+            #     response = interation_commands.Interaction_Commands[action]()
+            # else:
+            #     response = "Invalid action!"
 
         else:
             response = "Please log in first!"
