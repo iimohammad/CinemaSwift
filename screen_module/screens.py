@@ -82,9 +82,9 @@ class Session:
         if len(r)>0:
             raise personalized_exceptions.CreateSessionNotPossible()
         
-        query = f"""INSERT INTO `cinemaswift`.`sessions` (`screen_id`, `start_time`, `capacity`) 
+        query = f"""INSERT INTO `cinemaswift`.`sessions` (`screen_id`, `start_time`, `capacity` , `ticket_price`) 
                     VALUES 
-                    ('{session.screen_id}', '{timestamp_str}' , '{session.capacity}');"""
+                    ('{session.screen_id}', '{timestamp_str}' , '{session.capacity}' , '{session.ticket_price}');"""
         Session.database_manager.execute_query(query)
         query = f"""SELECT id FROM sessions WHERE start_time = '{timestamp_str}' AND screen_id = '{session.screen_id}'"""
         session_id = Session.database_manager.execute_query_select(query)

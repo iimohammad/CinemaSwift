@@ -81,8 +81,8 @@ class DatabaseManager:
         # Generate the CREATE TABLE query dynamically
         columns_str = ', '.join(
             [f"{name} {column_type}" for name, column_type in columns])
-        create_table_query = f"CREATE TABLE IF NOT EXISTS {
-            table_name} ({columns_str})"
+        create_table_query = f"""CREATE TABLE IF NOT EXISTS {
+            table_name} ({columns_str})"""
 
         try:
             cursor = self.connection.cursor(buffered=True)
@@ -95,8 +95,8 @@ class DatabaseManager:
 
     def insert_into_table(self, table_name, columns, values):
         # Generate the INSERT INTO query dynamically
-        insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({
-            ', '.join(['%s' for _ in values])}"
+        insert_query = f"""INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({
+            ', '.join(['%s' for _ in values])}"""
 
         try:
             cursor = self.connection.cursor(buffered=True)
