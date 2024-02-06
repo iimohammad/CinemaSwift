@@ -4,7 +4,7 @@ from db import models
 from db.database_manager import DatabaseManager
 from users import BaseForUsersAndAdmins
 import os
-import personalized_exceptions
+from users_module import personalized_exceptions
 
 
 class BankAccounts:
@@ -36,7 +36,7 @@ class BankAccounts:
     @staticmethod
     def add_bank_account(account: models.bank_account_model):
 
-        BaseForUsersAndAdmins.PasswordValidator(account.password)
+        BaseForUsersAndAdmins.password_validator(account.password)
         BankAccounts.cvv2_validator(account.cvv2)
         query = f"""SELECT count(id) FROM cinemaswift.bankaccounts
                 WHERE
