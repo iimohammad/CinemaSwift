@@ -1,7 +1,7 @@
 class ShortPasswordError(Exception):
     def __init__(self, password_length, minimum_length):
-        super().__init__(f"Password must be at least {
-            minimum_length} characters long, but got {password_length} characters.")
+        super().__init__(f"""Password must be at least {
+            minimum_length} characters long, but got {password_length} characters.""")
 
 
 class NoSpecialCharacterError(Exception):
@@ -16,8 +16,8 @@ class ComplexityError(Exception):
 
 class LongUserNmaeError(Exception):
     def __init__(self, user_name_length, maximum_length):
-        super().__init__(f"User name must be less or equal {
-            maximum_length} characters long, but got {user_name_length} characters.")
+        super().__init__(f"""User name must be less or equal {
+            maximum_length} characters long, but got {user_name_length} characters.""")
 
 
 class InvalidEmailError(Exception):
@@ -118,3 +118,12 @@ class SeatReserveError(Exception):
 class TicketNotFound(Exception):
     def __init__(self):
         super().__init__("The ticket with given id not found!")
+        
+class SubscriptionNotFount(Exception):
+    def __init__(self):
+        super().__init__("The subscription with given name not found!")
+        
+class WalletBalanceNotEnough(Exception):
+    def __init__(self):
+        super().__init__("The ticket price is more than your balance!")
+

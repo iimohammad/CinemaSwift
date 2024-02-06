@@ -1,14 +1,69 @@
-from re import Match
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 from db import models
 import re
 import uuid
-from users_module import personalized_exceptions
+import personalized_exceptions
 import bcrypt
 from users_module import queryset
 from datetime import datetime
-
-
-class UserInputValidator:
+class Subscriptions:
+    database_manager = DatabaseManager()
+    @staticmethod
+    def add_subscription(user_id:str,subscription_id:int):
+        query = f"""INSERT INTO `cinemaswift`.`userssubscriptions` (`user_id`, `subscription_id`, `start_date`) 
+                VALUES 
+                ('{user_id}', '{subscription_id}', '{datetime.now()}');"""
+        Subscriptions.database_manager.execute_query(query)
+        return True
+        
+    @staticmethod
+    def change_subscription(user_id:str,subscription_type_name:str)->bool:
+        query = f"""SELECT id FROM cinemaswift.subscriptions
+                WHERE name = '{subscription_type_name}';"""
+        r = Subscriptions.database_manager.execute_query_select(query)
+        if len(r)==0:
+            raise personalized_exceptions.SubscriptionNotFount()
+        
+        query = f"""UPDATE `cinemaswift`.`users` SET `subscription_type_id` = '{r[0][0]}' 
+                WHERE (`id` = '{user_id}');"""
+        Subscriptions.database_manager.execute_query(query)
+        return True
+    @staticmethod
+    def get_subscription_type_name(user_id:str)->str:
+        query = f"""SELECT name FROM subscriptions
+                where
+                id = (SELECT subscription_type_id FROM cinemaswift.users where id = '{user_id}');"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_subscription_discount_value(subscription_name:str):
+        query = f"""SELECT discount_value FROM cinemaswift.subscriptions
+                WHERE
+                name = '{subscription_name}';"""
+        
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_subscription_discount_number(subscription_name:str):
+        query = f"""SELECT discount_number FROM cinemaswift.subscriptions
+                WHERE
+                name = '{subscription_name}';"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_total_discounts_taken(user_id:str)->int:
+        query = f"""SELECT count(id) FROM cinemaswift.tickets
+                WHERE created_at >= 
+	                (select start_date FROM userssubscriptions WHERE user_id = '{user_id}');"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_subscription_start_date(user_id:str)->datetime:
+        query = f"""SELECT start_date FROM cinemaswift.userssubscriptions
+        WHERE user_id = '{user_id}';"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+        
+class BaseForUsersAndAdmins:
     """
     A class for validating user input data.
     This class provides static methods for validating various types of user input,
@@ -166,14 +221,16 @@ class Users(UserInputValidator):
                         'email': user.email,
                         'birthday': user.birthday,
                         'phone': user.phone,
-                        'password': Users.hash_password(
-                            user.password),
-                        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'last_login': None,
-                        'is_admin': 0
-                    }
+                        'password': Users._hashPassword(
+                            user.password)}
 
-                    queryset.add_user_query(user_data)
+                    insert_query = """
+                        INSERT INTO users
+                        (id, user_name, email, birthday, phone,  password)
+                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
+                    """
+                    Users.database_manager.execute_query(
+                        insert_query, user_data)
         return True
 
     @staticmethod
