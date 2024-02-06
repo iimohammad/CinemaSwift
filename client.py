@@ -4,7 +4,7 @@ import argparse
 import getpass
 from intractions import interation_commands
 from settings import local_settings
-
+from intractions import clear_screen
 
 class TCPClient:
     def __init__(
@@ -109,6 +109,7 @@ def main():
                 if command.lower() == 'logout':
                     break
                 elif command == "-show services":
+                    clear_screen.clear_screen_func()
                     show_services()
                 else:
                     command_to_send = {'action': command}

@@ -1,6 +1,8 @@
 from db import models
 from db.database_manager import DatabaseManager
-import personalized_exceptions
+from users_module import personalized_exceptions
+
+
 class Films:
     """
     A class representing operations related to films in the database.

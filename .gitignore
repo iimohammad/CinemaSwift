@@ -3,4 +3,10 @@ venv/
 virtualenv/
 .venv/
 env/
+<<<<<<< HEAD
 .idea/
+=======
+*.pyc
+.idea/
+
+>>>>>>> 2956c7ed8b055fc6e5bd4596fbe3966ef1a2d9bb

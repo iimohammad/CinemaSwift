@@ -6,7 +6,6 @@ from users_module.users import Users
 from db import models
 from intractions import clear_screen
 from intractions import interation_commands
-from datetime import datetime
 from settings import local_settings
 
 
@@ -62,14 +61,14 @@ class TCPServer:
             self.server_socket.close()
 
     def parse_data(self, received_data, client_socket):
-        # print(received_data)
+
+        global response
         data_dict = json.loads(received_data)
 
         action = data_dict.get('action')
         username = data_dict.get('username')
 
         if action == 'signup':
-            print("------------------")
             username = data_dict['username']
             password = data_dict['password']
             email = data_dict['email']
@@ -84,7 +83,6 @@ class TCPServer:
                 phone=phone,
                 password=password)
 
-            # print(user)
             Users.AddUser(user=user)
 
             response = "Signup successful!"
@@ -92,8 +90,6 @@ class TCPServer:
         elif action == 'login':
             username = data_dict['username']
             password = data_dict['password']
-            # print(username,password)
-            # print( Users.log_in(username, password))
 
             if Users.log_in(username, password):
                 print(f"User '{username}'Login successful!")
@@ -106,9 +102,9 @@ class TCPServer:
                     # Continuously receive and process data from the client
                     received_data = client_socket.recv(1024).decode('utf-8')
                     data_dict_command = json.loads(received_data)
-                    finalCommand = data_dict_command['action']
-                    if finalCommand in interation_commands.Interaction_Commands:
-                        response = interation_commands.Interaction_Commands[finalCommand](
+                    final_command = data_dict_command['action']
+                    if final_command in interation_commands.Interaction_Commands:
+                        response = interation_commands.Interaction_Commands[final_command](
                         )
             else:
                 print(f"Login failed for user '{username}'")
@@ -128,7 +124,6 @@ class TCPServer:
         else:
             response = "Please log in first!"
 
-        print(response)
         client_socket.sendall(response.encode('utf-8'))
 
 
