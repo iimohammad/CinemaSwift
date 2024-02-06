@@ -8,7 +8,9 @@ from datetime import datetime
 
 
 class BaseForUsersAndAdmins:
+    """
 
+    """
     database_manager = DatabaseManager()
 
     @staticmethod

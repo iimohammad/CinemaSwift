@@ -1,18 +1,19 @@
+import inspect
+from settings import local_settings
 import mysql.connector
 # from db import models
 import sys
 sys.path.append('../')
-from settings import local_settings
 
-import inspect
 
 class DatabaseManager:
     _instance = None
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
-    
+
     def __init__(self):
         self.host = local_settings.DATABASE['host']
         self.user = local_settings.DATABASE['user']
@@ -23,7 +24,7 @@ class DatabaseManager:
         self.dict = {
             'str': 'VARCHAR(255) NOT NULL',
             'int': 'Integer',
-            'datetime':'DATE'
+            'datetime': 'DATE'
         }
 
     def connect(self):
@@ -43,13 +44,11 @@ class DatabaseManager:
             self.connection.close()
             print("Connection closed.")
 
-
-
     def execute_query(self, query, params=None):
         try:
             self.connect()
-            
-            cursor = self.connection.cursor(buffered = True)
+
+            cursor = self.connection.cursor(buffered=True)
             cursor.execute(query, params)
             self.connection.commit()
             return cursor.lastrowid  # Return the last inserted ID
@@ -60,7 +59,6 @@ class DatabaseManager:
             cursor.close()
             self.disconnect()
 
-            
     def execute_query_select(self, query, params=None):
         try:
             self.connect()
@@ -78,13 +76,16 @@ class DatabaseManager:
         finally:
             cursor.close()
             self.disconnect()
+
     def create_table(self, table_name, columns):
         # Generate the CREATE TABLE query dynamically
-        columns_str = ', '.join([f"{name} {column_type}" for name, column_type in columns])
-        create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_str})"
+        columns_str = ', '.join(
+            [f"{name} {column_type}" for name, column_type in columns])
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {
+            table_name} ({columns_str})"
 
         try:
-            cursor = self.connection.cursor(buffered = True)
+            cursor = self.connection.cursor(buffered=True)
             cursor.execute(create_table_query)
             self.connection.commit()
             print(f"Table '{table_name}' created successfully!")
@@ -94,10 +95,11 @@ class DatabaseManager:
 
     def insert_into_table(self, table_name, columns, values):
         # Generate the INSERT INTO query dynamically
-        insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(['%s' for _ in values])}"
+        insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({
+            ', '.join(['%s' for _ in values])}"
 
         try:
-            cursor = self.connection.cursor(buffered = True)
+            cursor = self.connection.cursor(buffered=True)
             cursor.execute(insert_query, values)
             self.connection.commit()
             print(f"Data inserted into '{table_name}' successfully!")
@@ -110,7 +112,7 @@ class DatabaseManager:
         select_query = f"SELECT {column_name} FROM {table_name}"
 
         try:
-            cursor = self.connection.cursor(buffered = True)
+            cursor = self.connection.cursor(buffered=True)
             cursor.execute(select_query)
             rows = cursor.fetchall()
 
@@ -124,8 +126,14 @@ class DatabaseManager:
 
     def create_columns(self, model_name):
         init_signature = inspect.signature(model_name.__init__)
-        init_params = {param.name: param.annotation for param in init_signature.parameters.values() if param.name != 'self'}
-        model_columns = [(name, self.dict.get(param_type.__name__, 'VARCHAR(255)')) for name, param_type in init_params.items()]
+        init_params = {param.name: param.annotation for param in init_signature.parameters.values(
+        ) if param.name != 'self'}
+        model_columns = [
+            (name,
+             self.dict.get(
+                 param_type.__name__,
+                 'VARCHAR(255)')) for name,
+            param_type in init_params.items()]
         return model_columns
 
 # if __name__ == "__main__":
@@ -161,9 +169,8 @@ class DatabaseManager:
 #         '1990-01-01',
 #         '1234567890',
 #         'basic',
-#         'hashed_password'  
+#         'hashed_password'
 # )
 #     # Execute the query
 # db = DatabaseManager()
 # db.execute_query(insert_query, user_data)
-
