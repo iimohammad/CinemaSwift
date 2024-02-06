@@ -7,14 +7,31 @@ sys.path.append('../')
 
 
 class DatabaseManager:
+    """
+    A class for managing database connections and operations.
+
+    Attributes:
+        host (str): The host address of the database.
+        user (str): The username used to connect to the database.
+        password (str): The password used to connect to the database.
+        database (str): The name of the database.
+        connection: The connection object to the database.
+        dict (dict): A dictionary mapping Python data types to corresponding MySQL data types.
+    """
     _instance = None
 
     def __new__(cls):
+        """
+        Singleton implementation to ensure only one instance of DatabaseManager exists.
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self):
+        """
+        Initializes DatabaseManager with connection details and default column types.
+        """
         self.host = local_settings.DATABASE['host']
         self.user = local_settings.DATABASE['user']
         self.password = local_settings.DATABASE['password']
@@ -28,6 +45,9 @@ class DatabaseManager:
         }
 
     def connect(self):
+        """
+        Establishes a connection to the database.
+        """
         try:
             self.connection = mysql.connector.connect(
                 host=self.host,
@@ -40,11 +60,24 @@ class DatabaseManager:
             print(f"Error: {err}")
 
     def disconnect(self):
+        """
+        Closes the connection to the database.
+        """
         if self.connection:
             self.connection.close()
             print("Connection closed.")
 
     def execute_query(self, query, params=None):
+        """
+        Executes a SQL query that does not return results (e.g., INSERT, UPDATE, DELETE).
+
+        Args:
+            query (str): The SQL query to execute.
+            params (tuple, optional): Parameters to be substituted into the query.
+
+        Returns:
+            int or None: The last inserted ID if applicable, None otherwise.
+        """
         try:
             self.connect()
 
@@ -60,6 +93,16 @@ class DatabaseManager:
             self.disconnect()
 
     def execute_query_select(self, query, params=None):
+        """
+        Executes a SQL query that returns results (e.g., SELECT).
+
+        Args:
+            query (str): The SQL query to execute.
+            params (tuple, optional): Parameters to be substituted into the query.
+
+        Returns:
+            list or None: A list of tuples representing the query results, or None if an error occurs.
+        """
         try:
             self.connect()
 
@@ -78,7 +121,13 @@ class DatabaseManager:
             self.disconnect()
 
     def create_table(self, table_name, columns):
-        # Generate the CREATE TABLE query dynamically
+        """
+        Creates a new table in the database.
+
+        Args:
+            table_name (str): The name of the table to create.
+            columns (list): A list of tuples representing column names and data types.
+        """
         columns_str = ', '.join(
             [f"{name} {column_type}" for name, column_type in columns])
         create_table_query = f"CREATE TABLE IF NOT EXISTS {
@@ -94,7 +143,14 @@ class DatabaseManager:
             print("Error while creating table:", error)
 
     def insert_into_table(self, table_name, columns, values):
-        # Generate the INSERT INTO query dynamically
+        """
+        Inserts data into an existing table.
+
+        Args:
+            table_name (str): The name of the table to insert data into.
+            columns (list): A list of column names.
+            values (list): A list of values to be inserted into the table.
+        """
         insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({
             ', '.join(['%s' for _ in values])}"
 
@@ -108,7 +164,13 @@ class DatabaseManager:
             print("Error while inserting data:", error)
 
     def select_column_from_table(self, table_name, column_name):
-        # Generate the SELECT query dynamically
+        """
+        Selects a specific column from a table and prints its values.
+
+        Args:
+            table_name (str): The name of the table to select from.
+            column_name (str): The name of the column to select.
+        """
         select_query = f"SELECT {column_name} FROM {table_name}"
 
         try:
@@ -125,6 +187,15 @@ class DatabaseManager:
             print("Error while selecting data:", error)
 
     def create_columns(self, model_name):
+        """
+        Generates column definitions based on the attributes of a model class.
+
+        Args:
+            model_name (class): The model class to extract attributes from.
+
+        Returns:
+            list: A list of tuples representing column names and data types.
+        """
         init_signature = inspect.signature(model_name.__init__)
         init_params = {param.name: param.annotation for param in init_signature.parameters.values(
         ) if param.name != 'self'}
