@@ -1,12 +1,12 @@
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
 from re import Match
-=======
+=========
 import sys
 import os
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
->>>>>>> main
+>>>>>>>>> Temporary merge branch 2
 from db import models
 import re
 import uuid
@@ -73,7 +73,7 @@ class Subscriptions:
         return Subscriptions.database_manager.execute_query_select(query)[0][0]
         
 class BaseForUsersAndAdmins:
->>>>>>> main
+>>>>>>>>> Temporary merge branch 2
     """
     A class for validating user input data.
     This class provides static methods for validating various types of user input,
@@ -247,9 +247,8 @@ class Users(UserInputValidator):
 
                     insert_query = """
                         INSERT INTO users
-                        (id, user_name, email, birthday, phone, subscription_type_id, password)
-                        VALUES 
-                        (%(id)s, %(user_name)s, %(email)s, %(birthday)s ,%(phone)s,%(subscription_type_id)s, %(password)s)
+                        (id, user_name, email, birthday, phone,  password)
+                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
                     """
                     Users.database_manager.execute_query(
                         insert_query, user_data)
@@ -347,7 +346,7 @@ class Users(UserInputValidator):
         this method use for set the time that user or admin was created the accounts
         """
         queryset.set_created_at(user_id=user_id)
-=======
+=========
     def AddAdmin(user: models.admin_model):
         if Admins._UserNameValidator(user.username):
             if Admins._emailValidatorAdmin(user.email):
@@ -425,4 +424,4 @@ class Users(UserInputValidator):
 # print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_subscription_discount_number(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_total_discounts_taken('d027e603-d459-4cf4-b533-c1c79f93fd52'))
->>>>>>> main
+>>>>>>>>> Temporary merge branch 2
