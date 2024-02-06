@@ -8,6 +8,7 @@ import personalized_exceptions
 import transaction
 
 
+
 class BankAccounts:
 
     log_file = 'transaction.log'
@@ -37,7 +38,7 @@ class BankAccounts:
     @staticmethod
     def add_bank_account(account: models.bank_account_model):
 
-        BaseForUsersAndAdmins.PasswordValidator(account.password)
+        BaseForUsersAndAdmins.password_validator(account.password)
         BankAccounts.cvv2_validator(account.cvv2)
         query = f"""SELECT count(id) FROM cinemaswift.bankaccounts
                 WHERE

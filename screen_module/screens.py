@@ -1,7 +1,7 @@
 from db import models
 from db.database_manager import DatabaseManager
 from enum import Enum
-import personalized_exceptions
+from users_module import personalized_exceptions
 from datetime import datetime
 class SeatType(Enum):
     FREE = "FREE"
