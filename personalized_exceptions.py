@@ -83,3 +83,12 @@ class BankAccountNotFound(Exception):
 class InvalidAccountSecurityInformation(Exception):
     def __init__(self):
         super().__init__("The account security information is incorrect!")
+        
+
+class SeatReserveError(Exception):
+    def __init__(self):
+        super().__init__("The selected seat cannot be reserved!")
+        
+class TicketNotFound(Exception):
+    def __init__(self):
+        super().__init__("The ticket with given id not found!")
