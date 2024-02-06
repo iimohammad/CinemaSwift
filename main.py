@@ -11,21 +11,46 @@ from settings import local_settings
 
 
 class UserDatabase:
+    """
+    A simple in-memory user database for storing user credentials.
+    """
     users = {}
 
     @classmethod
     def check_credentials(cls, username, password):
+        """
+        Check if the given username and password match stored credentials.
+
+        Args:
+            username (str): The username to check.
+            password (str): The password to check.
+
+        Returns:
+            bool: True if the username and password match stored credentials, False otherwise.
+        """
         return cls.users.get(username) == password
 
 
 class ClientThread(threading.Thread):
+    """
+    Thread class to handle client connections on the server side.
+    """
     def __init__(self, client_socket, server):
+        """
+        Initialize the ClientThread.
+
+        Args:
+            client_socket (socket.socket): The socket object representing the client connection.
+            server (TCPServer): The TCPServer object to which this thread belongs.
+        """
         super(ClientThread, self).__init__()
         self.client_socket = client_socket
         self.server = server
 
     def run(self):
-
+        """
+        Run method for the thread. Handles receiving data from the client and processing it.
+        """
         data = self.client_socket.recv(1024).decode('utf-8')
         try:
             self.server.parse_data(data, self.client_socket)
@@ -36,6 +61,9 @@ class ClientThread(threading.Thread):
 
 
 class TCPServer:
+    """
+    TCP server class for handling client connections and requests.
+    """
     def __init__(
             self,
             host=local_settings.Network['host'],
@@ -47,8 +75,17 @@ class TCPServer:
         self.server_socket.listen()
         self.logged_in_users = {}
         self.lock = threading.Lock()
+    """
+        Initialize the TCPServer.
 
+        Args:
+            host (str): The host address to bind the server socket to.
+            port (int): The port number to bind the server socket to.
+        """
     def run_server(self):
+        """
+        Start the TCP server and listen for incoming connections.
+        """
         print(f"Server listening on {self.host}:{self.port}")
         try:
             while True:
@@ -62,6 +99,13 @@ class TCPServer:
             self.server_socket.close()
 
     def parse_data(self, received_data, client_socket):
+        """
+        Parse and process the received data from a client.
+
+        Args:
+            received_data (str): The data received from the client.
+            client_socket (socket.socket): The socket object representing the client connection.
+        """
         # print(received_data)
         data_dict = json.loads(received_data)
 
