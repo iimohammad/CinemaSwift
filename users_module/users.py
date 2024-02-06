@@ -1,12 +1,68 @@
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 from db import models
 from db.database_manager import DatabaseManager
 import re
 import uuid
-from users_module import personalized_exceptions
+import personalized_exceptions
 import bcrypt
 from datetime import datetime
-
-
+class Subscriptions:
+    database_manager = DatabaseManager()
+    @staticmethod
+    def add_subscription(user_id:str,subscription_id:int):
+        query = f"""INSERT INTO `cinemaswift`.`userssubscriptions` (`user_id`, `subscription_id`, `start_date`) 
+                VALUES 
+                ('{user_id}', '{subscription_id}', '{datetime.now()}');"""
+        Subscriptions.database_manager.execute_query(query)
+        return True
+        
+    @staticmethod
+    def change_subscription(user_id:str,subscription_type_name:str)->bool:
+        query = f"""SELECT id FROM cinemaswift.subscriptions
+                WHERE name = '{subscription_type_name}';"""
+        r = Subscriptions.database_manager.execute_query_select(query)
+        if len(r)==0:
+            raise personalized_exceptions.SubscriptionNotFount()
+        
+        query = f"""UPDATE `cinemaswift`.`users` SET `subscription_type_id` = '{r[0][0]}' 
+                WHERE (`id` = '{user_id}');"""
+        Subscriptions.database_manager.execute_query(query)
+        return True
+    @staticmethod
+    def get_subscription_type_name(user_id:str)->str:
+        query = f"""SELECT name FROM subscriptions
+                where
+                id = (SELECT subscription_type_id FROM cinemaswift.users where id = '{user_id}');"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_subscription_discount_value(subscription_name:str):
+        query = f"""SELECT discount_value FROM cinemaswift.subscriptions
+                WHERE
+                name = '{subscription_name}';"""
+        
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_subscription_discount_number(subscription_name:str):
+        query = f"""SELECT discount_number FROM cinemaswift.subscriptions
+                WHERE
+                name = '{subscription_name}';"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_total_discounts_taken(user_id:str)->int:
+        query = f"""SELECT count(id) FROM cinemaswift.tickets
+                WHERE created_at >= 
+	                (select start_date FROM userssubscriptions WHERE user_id = '{user_id}');"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+    @staticmethod
+    def get_subscription_start_date(user_id:str)->datetime:
+        query = f"""SELECT start_date FROM cinemaswift.userssubscriptions
+        WHERE user_id = '{user_id}';"""
+        return Subscriptions.database_manager.execute_query_select(query)[0][0]
+        
 class BaseForUsersAndAdmins:
     """
 
@@ -86,16 +142,19 @@ class Users(BaseForUsersAndAdmins):
                         'email': user.email,
                         'birthday': user.birthday,
                         'phone': user.phone,
+                        'subscription_type_id' : user.subscription_type_id,
                         'password': Users._hashPassword(
                             user.password)}
 
                     insert_query = """
                         INSERT INTO users
-                        (id, user_name, email, birthday, phone,  password)
-                        VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
+                        (id, user_name, email, birthday, phone, subscription_type_id, password)
+                        VALUES 
+                        (%(id)s, %(user_name)s, %(email)s, %(birthday)s ,%(phone)s,%(subscription_type_id)s, %(password)s)
                     """
                     Users.database_manager.execute_query(
                         insert_query, user_data)
+                    Subscriptions.add_subscription(user_id,3)
         return True
 
     @staticmethod
@@ -230,3 +289,8 @@ class Admins(BaseForUsersAndAdmins):
             Admins._update_last_login(user_id)
             return user_id
         return False
+
+# Users.AddUser(models.user_model(-1,'Masih32101','masih@abcd1.com','2000-01-01',None,3,'M@@@sih123'))
+# print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
+# print(Subscriptions.get_subscription_discount_number(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
+# print(Subscriptions.get_total_discounts_taken('d027e603-d459-4cf4-b533-c1c79f93fd52'))
