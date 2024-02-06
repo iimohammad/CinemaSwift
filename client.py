@@ -85,17 +85,17 @@ def main():
 
         response = client.send_dict_to_server(data_dict=data_to_send)
 
-        if response == "Login successful!":
+        if response.decode('utf-8') == "Login successful!":
             while args.action == 'login':
-                command = input("Enter a command or if you want to see all of our services enter -show services ")
+                command = input("Enter a command or if you want to see all of our services enter -show services:\n ")
                 if command.lower() == 'logout':
                     break
                 elif command == "-show services":
                     show_services()
                 else:
-                    data_to_send = {'command': command}
-                    login_response = client.send_dict_to_server(data_dict=data_to_send)
-                    print(login_response)
+                    command_to_send = {'action': command }                                   
+                    login_response = client.send_dict_to_server(data_dict=command_to_send)
+                    print(login_response.decode('utf-8'))
 
         elif response == "Incorrect Password":
             print("You Enter wrong Password ")

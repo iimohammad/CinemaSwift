@@ -1,7 +1,7 @@
 class Interaction_Command:
     @classmethod
     def change_username_func(cls):
-        print("hi")
+        return "hi"
 
     @classmethod
     def change_password_func(cls):
