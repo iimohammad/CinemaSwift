@@ -1,5 +1,4 @@
 import database_manager
-import models
 
 db = database_manager.DatabaseManager()
 

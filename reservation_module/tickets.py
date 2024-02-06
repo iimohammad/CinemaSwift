@@ -1,6 +1,6 @@
 from screen_module import screens
 from db.database_manager import DatabaseManager
-import personalized_exceptions
+from users_module import personalized_exceptions
 from datetime import datetime
 class Ticket:
     database_manager = DatabaseManager()

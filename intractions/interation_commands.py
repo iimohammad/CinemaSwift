@@ -1,4 +1,9 @@
-class Interaction_Command:
+from users_module import users
+
+
+
+
+class InteractionCommand:
     @classmethod
     def change_username_func(cls):
         return "hi"
@@ -129,7 +134,7 @@ class Interaction_Command:
 
 
 # Create an instance of Interaction_Command
-interaction_instance = Interaction_Command()
+interaction_instance = InteractionCommand()
 
 Interaction_Commands = {
     'change_username': interaction_instance.change_username_func,
