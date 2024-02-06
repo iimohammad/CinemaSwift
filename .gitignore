@@ -3,4 +3,4 @@ venv/
 virtualenv/
 .venv/
 env/
-__pycache__/
+*.pyc
