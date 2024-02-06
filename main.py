@@ -9,12 +9,14 @@ from intractions import interation_commands
 from datetime import datetime
 from settings import local_settings
 
+
 class UserDatabase:
     users = {}
 
     @classmethod
     def check_credentials(cls, username, password):
         return cls.users.get(username) == password
+
 
 class ClientThread(threading.Thread):
     def __init__(self, client_socket, server):
@@ -23,7 +25,7 @@ class ClientThread(threading.Thread):
         self.server = server
 
     def run(self):
-        
+
         data = self.client_socket.recv(1024).decode('utf-8')
         try:
             self.server.parse_data(data, self.client_socket)
@@ -32,8 +34,12 @@ class ClientThread(threading.Thread):
         finally:
             self.client_socket.close()
 
+
 class TCPServer:
-    def __init__(self, host=local_settings.Network['host'], port=local_settings.Network['port']):
+    def __init__(
+            self,
+            host=local_settings.Network['host'],
+            port=local_settings.Network['port']):
         self.host = host
         self.port = int(port)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -88,7 +94,7 @@ class TCPServer:
             password = data_dict['password']
             # print(username,password)
             # print( Users.log_in(username, password))
-            
+
             if Users.log_in(username, password):
                 print(f"User '{username}'Login successful!")
                 with self.lock:
@@ -102,14 +108,15 @@ class TCPServer:
                     data_dict_command = json.loads(received_data)
                     finalCommand = data_dict_command['action']
                     if finalCommand in interation_commands.Interaction_Commands:
-                        response = interation_commands.Interaction_Commands[finalCommand]()
+                        response = interation_commands.Interaction_Commands[finalCommand](
+                        )
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."
             print(self.logged_in_users)
 
         elif client_socket in self.logged_in_users:
-        # elif  action == 'change_username':
+            # elif  action == 'change_username':
             print("hi")
             # print("hi")
             # print (action)
@@ -124,9 +131,13 @@ class TCPServer:
         print(response)
         client_socket.sendall(response.encode('utf-8'))
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run TCP Server")
-    parser.add_argument('--runserver', action='store_true', help='Run the TCP server')
+    parser.add_argument(
+        '--runserver',
+        action='store_true',
+        help='Run the TCP server')
 
     args = parser.parse_args()
 

@@ -6,6 +6,6 @@ DATABASE = {
     'port': '3306',
 }
 Network = {
-    'host' : '127.0.0.1',
+    'host': '127.0.0.1',
     'port': 8080
 }

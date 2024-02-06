@@ -127,6 +127,7 @@ class Interaction_Command:
     def auto_reservation_func(cls):
         pass
 
+
 # Create an instance of Interaction_Command
 interaction_instance = Interaction_Command()
 
@@ -162,7 +163,6 @@ Interaction_Commands = {
     'reply_comment': interaction_instance.reply_comment_func,
     'send_Message_employee': interaction_instance.send_Message_employee,
     'send_message_to_support': interaction_instance.send_message_to_support_func,
-    'auto_reservation': interaction_instance.auto_reservation_func
-}
+    'auto_reservation': interaction_instance.auto_reservation_func}
 
 # Interaction_Commands['change_username']()
