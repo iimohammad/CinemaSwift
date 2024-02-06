@@ -84,3 +84,49 @@ def set_user_as_admin(user_id) -> None:
             UPDATE users SET is_admin = 1
             WHERE id = {user_id}
             """
+
+
+def add_subscription_query(user_id, subscription_id) -> None:
+    query = f"""INSERT INTO `cinemaswift`.`userssubscriptions` (`user_id`, `subscription_id`, `start_date`) 
+                    VALUES 
+                    ('{user_id}', '{subscription_id}', '{datetime.now()}');"""
+    database_manager.execute_query(query)
+
+
+def change_subscription_query(user_id: str, subscription_type_name: str):
+    query = f"""SELECT id FROM subscriptions
+                    WHERE name = '{subscription_type_name}';"""
+    r = database_manager.execute_query_select(query)
+    if len(r) == 0:
+        raise personalized_exceptions.SubscriptionNotFount()
+
+    query = f"""UPDATE `users` SET `subscription_type_id` = '{r[0][0]}' 
+                    WHERE (`id` = '{user_id}');"""
+    database_manager.execute_query(query)
+
+
+def get_subscription_type_name_query(user_id: str):
+    query = f"""SELECT name FROM subscriptions
+                    where
+                    id = (SELECT subscription_type_id FROM cinemaswift.users where id = '{user_id}');"""
+    return database_manager.execute_query_select(query)[0][0]
+
+
+def get_subscription_discount_number_query(subscription_name: str):
+    query = f"""SELECT discount_number FROM cinemaswift.subscriptions
+                    WHERE
+                    name = '{subscription_name}'"""
+    return database_manager.execute_query_select(query)[0][0]
+
+
+def get_total_discounts_taken_query(user_id: str):
+    query = f"""SELECT count(id) FROM cinemaswift.tickets
+                WHERE created_at >= 
+    	        (select start_date FROM userssubscriptions WHERE user_id = '{user_id}')"""
+    return database_manager.execute_query_select(query)[0][0]
+
+
+def get_subscription_start_date_query(user_id: str):
+    query = f"""SELECT start_date FROM cinemaswift.userssubscriptions
+            WHERE user_id = '{user_id}';"""
+    return database_manager.execute_query_select(query)[0][0]
