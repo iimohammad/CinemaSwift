@@ -5,6 +5,7 @@ from db.database_manager import DatabaseManager
 from users import BaseForUsersAndAdmins
 import os
 import personalized_exceptions
+import transaction
 
 
 class BankAccounts:
@@ -29,8 +30,8 @@ class BankAccounts:
         with open(BankAccounts.log_file, 'a') as f:
             f.write(
                 txt +
-                f" _ at {
-                    datetime.now().strftime('%Y-%m-%d %H:%M:%S')}" +
+                f""" _ at {
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S')}""" +
                 os.linesep)
 
     @staticmethod
@@ -147,10 +148,10 @@ class BankAccounts:
         BankAccounts.database_manager.execute_query(query)
 
         BankAccounts.add_log(
-            f"harvest _ {
+            f""""harvest _ {
                 user_id=} _ {
                 account_name=} _ {
-                amount=}")
+                amount=}""")
 
         return True
 
@@ -163,11 +164,16 @@ class BankAccounts:
             user_id_destination: str,
             account_name_destination: str,
             amount: int):
+        try:
+            BankAccounts.harvest_from_bank_account(
+                user_id_origin, cvv, password, amount, account_name_origin)
 
-        BankAccounts.harvest_from_bank_account(
-            user_id_origin, cvv, password, amount, account_name_origin)
+            BankAccounts.deposit_to_bank_account(
+                user_id_destination, account_name_destination, amount)
+                
+            transaction.commit()
 
-        BankAccounts.deposit_to_bank_account(
-            user_id_destination, account_name_destination, amount)
-
+        except Exception as e:
+            transaction.abort()
+            return False
         return True
