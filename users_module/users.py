@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 from db import models
 import re
 import uuid
-from users_module import personalized_exceptions
+import personalized_exceptions
 import bcrypt
 from users_module import queryset
 from datetime import datetime
@@ -209,7 +209,7 @@ class Users(UserInputValidator):
                         'password': Users.hash_password(user.password),
                         'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'last_login': None,
-                        'is_admin': user.is_admin
+                        'is_admin': 0
                     }
 
                     queryset.add_user_query(user_data)
@@ -305,6 +305,13 @@ class Users(UserInputValidator):
         this method use for set the time that user or admin was created the accounts
         """
         queryset.set_created_at(user_id=user_id)
+        
+    @staticmethod
+    def get_user_birthday(user_id:str)->datetime:
+        """
+        this method use for get user birthday
+        """
+        return queryset.set_created_at(user_id=user_id)
 
 # Users.AddUser(models.user_model(-1,'Masih32101','masih@abcd1.com','2000-01-01',None,3,'M@@@sih123'))
 # print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))

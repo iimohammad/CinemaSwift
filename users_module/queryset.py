@@ -8,8 +8,8 @@ database_manager = DatabaseManager()
 def add_user_query(user_data: object) -> None:
     insert_query = """
                     INSERT INTO users
-                    (id, user_name, email, birthday, phone,subscription_type_id  ,password,is_admin)
-                    VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s,%(is_admin)s)
+                    (id, user_name, email, birthday, phone,  password)
+                    VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
                     """
     database_manager.execute_query(insert_query, user_data)
 
@@ -61,13 +61,12 @@ def update_last_login_query(user_id):
     query = f"""UPDATE users SET last_login = '{
     datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"""
     database_manager.execute_query(query)
-
-
-def set_created_at(user_id) -> None:
-    query = f"""UPDATE users SET created_at = '{
-    datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"""
-    database_manager.execute_query(query)
-
+    
+def get_user_birthday_query(user_id) -> datetime:
+    query = f"""SELECT birthday FROM cinemaswift.users
+            where id = '{user_id}';"""
+    r = database_manager.execute_query(query)
+    return r[0][0]
 
 def login_query(user_name):
     query = f"""
