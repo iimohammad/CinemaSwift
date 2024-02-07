@@ -11,4 +11,4 @@ env/
 *.pyc
 
 # Local settings file in the settings folder
-settings/local_settings.py
+settings/local_settings_sample.py
