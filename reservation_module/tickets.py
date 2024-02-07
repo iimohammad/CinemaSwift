@@ -2,12 +2,12 @@ from screen_module import screens
 from users_module import personalized_exceptions
 from datetime import datetime, timedelta
 from payment_module.wallet import Wallets
-from users_module.users import Subscriptions
+from users_module.users import Subscriptions,Users
 from db.models import SubscriptopnType
 import queryset
 
-
 class Ticket:
+
     @staticmethod
     def buy_ticket(user_id: str, seat_id: int) -> bool:
         """
@@ -28,7 +28,7 @@ class Ticket:
         4. Inserts the ticket information into the database and updates the seat status to 'RESERVED'.
         5. If the user has a Golden subscription for more than 30 days, changes it to Bronze.
         6. If the user has a Silver subscription and reached the discount limit, changes it to Bronze.
-
+        7. If it is the user's birthday, the user will receive a 50% discount.
     """
         r = queryset.select_seat_query(seat_id)
 
@@ -46,10 +46,16 @@ class Ticket:
 
             if converted_datetime - datetime.now() > timedelta(days=30):
                 Subscriptions.change_subscription(user_id, SubscriptopnType.Bronze.value)
+                
 
         subscription_discount_value = Subscriptions.get_subscription_discount_value(subscript)
 
-        if subscript != SubscriptopnType.Bronze.value:
+        user_birthday = Users.get_user_birthday(user_id)
+        now = datetime.now().date()
+        if user_birthday.day == now.day and user_birthday.month == now.month:
+            price = round(price * (50 / 100), 1)
+        
+        elif subscript != SubscriptopnType.Bronze.value:
             price = round(price * (subscription_discount_value / 100), 1)
 
         if price > wallet_balance:
@@ -100,9 +106,17 @@ class Ticket:
         if len(r) == 0:
             raise personalized_exceptions.TicketNotFound()
 
+        remain_time = Ticket.remaine_time_session(ticket_id)
+        
+        if remain_time < 1:
+            raise personalized_exceptions.CancleTicketNotPossible()
+        
         seat_id = r[0][0]
         user_id = r[0][1]
         price = r[0][2]
+
+        if remain_time<61:
+            price = round(price * (18 / 100), 1)
 
         queryset.delete_reserve_ticket(ticket_id)
 
