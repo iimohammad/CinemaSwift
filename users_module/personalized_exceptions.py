@@ -126,4 +126,8 @@ class SubscriptionNotFount(Exception):
 class WalletBalanceNotEnough(Exception):
     def __init__(self):
         super().__init__("The ticket price is more than your balance!")
+        
+class CancleTicketNotPossible(Exception):
+    def __init__(self):
+        super().__init__("The ticket can not be cancle because film session started!")
 
