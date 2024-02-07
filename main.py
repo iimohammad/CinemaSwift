@@ -10,6 +10,7 @@ from settings import local_settings
 from db import initialize_all_module
 from intractions import server_commands
 
+
 def configDB():
     initialize_all_module.run()
 

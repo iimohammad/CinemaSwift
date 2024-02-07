@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 from db import models
 import re
 import uuid
-import personalized_exceptions
+from users_module import personalized_exceptions
 import bcrypt
 from users_module import queryset
 from datetime import datetime
@@ -305,9 +305,9 @@ class Users(UserInputValidator):
         this method use for set the time that user or admin was created the accounts
         """
         queryset.set_created_at(user_id=user_id)
-        
+
     @staticmethod
-    def get_user_birthday(user_id:str)->datetime:
+    def get_user_birthday(user_id: str) -> datetime:
         """
         this method use for get user birthday
         """
