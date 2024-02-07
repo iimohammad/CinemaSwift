@@ -9,3 +9,5 @@ Network = {
     'host': '127.0.0.1',
     'port': 8080
 }
+
+log_file = 'transaction.log'

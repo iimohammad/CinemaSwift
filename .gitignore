@@ -3,10 +3,12 @@ venv/
 virtualenv/
 .venv/
 env/
-<<<<<<< HEAD
-.idea/
-=======
-*.pyc
+
+# IDE-specific files
 .idea/
 
->>>>>>> 2956c7ed8b055fc6e5bd4596fbe3966ef1a2d9bb
+# Compiled Python files
+*.pyc
+
+# Local settings file in the settings folder
+settings/local_settings.py

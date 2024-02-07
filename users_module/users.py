@@ -186,13 +186,10 @@ class Users(UserInputValidator):
     def AddUser(user: models.user_model):
         """
                 Adds a new user to the system.
-
                 Args:
                     user (models.user_model): An instance of the User model containing user information.
-
                 Returns:
                     bool: True if the user is successfully added.
-
                 Raises:
                     personalized_exceptions.InvalidUsernameError: If the username is invalid or already taken.
                     personalized_exceptions.InvalidEmailError: If the email address is invalid or already exists.
@@ -209,8 +206,7 @@ class Users(UserInputValidator):
                         'birthday': user.birthday,
                         'phone': user.phone,
                         'subscription_type_id': user.subscription_type_id,
-                        'password': Users.hash_password(
-                            user.password),
+                        'password': Users.hash_password(user.password),
                         'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'last_login': None,
                         'is_admin': 0

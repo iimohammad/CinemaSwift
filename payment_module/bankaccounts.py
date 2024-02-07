@@ -2,17 +2,17 @@ import bcrypt
 from datetime import datetime
 from db import models
 from db.database_manager import DatabaseManager
-from users import BaseForUsersAndAdmins
+from users_module.users import UserInputValidator
 import os
-import personalized_exceptions
+from users_module import personalized_exceptions
 import transaction
-
+from settings import local_settings
+import queryset
 
 
 class BankAccounts:
-
-    log_file = 'transaction.log'
-    database_manager = DatabaseManager()
+    def __int__(self):
+        self.log_file = local_settings.log_file
 
     @staticmethod
     def _hashPassword(password: str):
@@ -23,27 +23,22 @@ class BankAccounts:
         if len(str(cvv)) > 4 or len(str(cvv)) < 3:
             raise personalized_exceptions.InvalidCvv2()
 
-    @staticmethod
-    def add_log(txt: str):
-        if not os.path.exists(BankAccounts.log_file):
-            with open(BankAccounts.log_file, 'w') as f:
+    def add_log(self, txt: str):
+        if not os.path.exists(self.log_file):
+            with open(self.log_file, 'w') as f:
                 pass
-        with open(BankAccounts.log_file, 'a') as f:
+        with open(self.log_file, 'a') as f:
             f.write(
                 txt +
                 f""" _ at {
-                    datetime.now().strftime('%Y-%m-%d %H:%M:%S')}""" +
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S')}""" +
                 os.linesep)
 
     @staticmethod
     def add_bank_account(account: models.bank_account_model):
-
-        BaseForUsersAndAdmins.password_validator(account.password)
+        UserInputValidator.password_validator(account.password)
         BankAccounts.cvv2_validator(account.cvv2)
-        query = f"""SELECT count(id) FROM cinemaswift.bankaccounts
-                WHERE
-                user_id = '{account.user_id}' AND name = '{account.name}'; """
-        r = BankAccounts.database_manager.execute_query_select(query)
+        r = queryset.check_bank_account_query(account_userid=account.user_id, account_name=account.name)
         if r[0][0] != 0:
             raise personalized_exceptions.InvalidNameForBankAccount()
         data = {
@@ -53,10 +48,7 @@ class BankAccounts:
             'cvv2': account.cvv2,
             'password': BankAccounts._hashPassword(account.password),
         }
-        query = """INSERT INTO `cinemaswift`.`bankaccounts` (`user_id`, `name`, `balance`, `cvv2`, `password`)
-                VALUES
-                (%(user_id)s, %(name)s, %(balance)s, %(cvv2)s, %(password)s);"""
-        BankAccounts.database_manager.execute_query(query, data)
+        queryset.add_bank_account_query(data)
 
         BankAccounts.add_log(
             f"Bank account created _ {
@@ -67,10 +59,7 @@ class BankAccounts:
 
     @staticmethod
     def get_bank_accounts(user_id: str):
-        query = f"""SELECT name FROM cinemaswift.bankaccounts
-                WHERE
-                user_id = '{user_id}';"""
-        r = BankAccounts.database_manager.execute_query_select(query)
+        r = queryset.get_bank_accounts_query(user_id=user_id)
         return r
 
     @staticmethod
@@ -79,11 +68,8 @@ class BankAccounts:
             account_name: str,
             cvv: int,
             password_account: str):
-        query = f"""SELECT cvv2,password,name,balance FROM cinemaswift.bankaccounts
-                WHERE user_id = '{user_id}' AND name = '{account_name}';"""
 
-        r = BankAccounts.database_manager.execute_query_select(query)
-
+        r = queryset.get_bank_accounts_balance_query(user_id, account_name)
         if len(r) == 0:
             raise personalized_exceptions.BankAccountNotFound()
 
@@ -99,17 +85,13 @@ class BankAccounts:
             user_id: str,
             account_name: str,
             amount: int) -> bool:
-        query = f"""SELECT id,balance FROM cinemaswift.bankaccounts
-                WHERE
-                user_id = '{user_id}' AND name = '{account_name}';"""
-        r = BankAccounts.database_manager.execute_query_select(query)
+
+        r = queryset.deposit_to_bank_account_query(user_id, account_name)
         if len(r) == 0:
             raise personalized_exceptions.BankAccountNotFound()
-        id = r[0][0]
+        id_bank = r[0][0]
         balance = r[0][1]
-        query = f"""UPDATE `cinemaswift`.`bankaccounts` SET `balance` = '{
-            balance + amount}' WHERE (`id` = '{id}');"""
-        BankAccounts.database_manager.execute_query(query)
+        queryset.update_balance_query(id_bank, balance, amount)
 
         BankAccounts.add_log(
             f"Deposit _ {
@@ -127,9 +109,8 @@ class BankAccounts:
             amount: float,
             account_name: str) -> bool:
 
-        query = f"""SELECT * FROM cinemaswift.bankaccounts
-                WHERE user_id = '{user_id}' AND name = '{account_name}';"""
-        r = BankAccounts.database_manager.execute_query_select(query)
+        r = queryset.harvest_from_account(account_name, user_id)
+
         if len(r) == 0:
             raise personalized_exceptions.BankAccountNotFound()
 
@@ -142,11 +123,7 @@ class BankAccounts:
         if account.balance < amount:
             raise personalized_exceptions.NotEnoughBalance()
 
-        query = f"""UPDATE `cinemaswift`.`bankaccounts` SET `balance` = '{
-            account.balance - amount}'
-                WHERE
-                (`id` = '{account.id}');"""
-        BankAccounts.database_manager.execute_query(query)
+        queryset.update_new_balance_query(account.id, account.balance, amount)
 
         BankAccounts.add_log(
             f""""harvest _ {
@@ -171,7 +148,7 @@ class BankAccounts:
 
             BankAccounts.deposit_to_bank_account(
                 user_id_destination, account_name_destination, amount)
-                
+
             transaction.commit()
 
         except Exception as e:

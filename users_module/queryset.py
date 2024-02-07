@@ -11,8 +11,7 @@ def add_user_query(user_data: object) -> None:
                     (id, user_name, email, birthday, phone,  password)
                     VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
                     """
-    database_manager.execute_query(
-        insert_query, user_data)
+    database_manager.execute_query(insert_query, user_data)
 
 
 def username_exits_check(username):
