@@ -15,10 +15,6 @@ def configDB():
     initialize_all_module.run()
 
 
-def help_print():
-    print("Welcome to server user manual:\n first of all you have to config database")
-
-
 class UserDatabase:
     users = {}
 
@@ -163,6 +159,11 @@ if __name__ == "__main__":
         help='Add an admin'
     )
 
+    parser.add_argument(
+        '--change-to-admin',
+        action='store_true',
+        help='Add an admin'
+    )
     args = parser.parse_args()
 
     clear_screen.clear_screen_func()
@@ -182,4 +183,10 @@ if __name__ == "__main__":
 
     if args.show_user_manual:
         clear_screen.clear_screen_func()
-        help_print()
+        server_commands.help_print()
+
+    if args.change_to_admin:
+        clear_screen.clear_screen_func()
+        username = input("Enter the username you want to change to admin:")
+        server_commands.change_user_to_admin(username)
+

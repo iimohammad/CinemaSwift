@@ -300,20 +300,21 @@ class Users(UserInputValidator):
         queryset.set_user_as_admin(user_id=user_id)
 
     @staticmethod
-    def set_created_at(user_id):
+    def set_admin_by_username(username):
         """
-        this method use for set the time that user or admin was created the accounts
-        """
-        queryset.set_created_at(user_id=user_id)
+                Checks if a user is an admin.
 
-    @staticmethod
-    def get_user_birthday(user_id: str) -> datetime:
-        """
-        this method use for get user birthday
-        """
-        return queryset.set_created_at(user_id=user_id)
+                Args:
+                    username: The ID of the user.
 
-# Users.AddUser(models.user_model(-1,'Masih32101','masih@abcd1.com','2000-01-01',None,3,'M@@@sih123'))
+                Returns:
+                    None
+        """
+        queryset.set_user_as_admin_by_username(username=username)
+
+
+
+# Users.AddUser(models.user_model(-1,'Masih321011','masih@abcd11.com','2000-01-01',None,3,'M@@@sih123',0))
 # print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_subscription_discount_number(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_total_discounts_taken('d027e603-d459-4cf4-b533-c1c79f93fd52'))
