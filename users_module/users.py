@@ -313,7 +313,7 @@ class Users(UserInputValidator):
         """
         return queryset.set_created_at(user_id=user_id)
 
-# Users.AddUser(models.user_model(-1,'Masih32101','masih@abcd1.com','2000-01-01',None,3,'M@@@sih123'))
+# Users.AddUser(models.user_model(-1,'Masih321011','masih@abcd11.com','2000-01-01',None,3,'M@@@sih123',0))
 # print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_subscription_discount_number(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_total_discounts_taken('d027e603-d459-4cf4-b533-c1c79f93fd52'))
