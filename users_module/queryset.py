@@ -8,7 +8,7 @@ database_manager = DatabaseManager()
 def add_user_query(user_data: object) -> None:
     insert_query = """
                     INSERT INTO users
-                    (id, user_name, email, birthday, phone,  password)
+                    (id, user_name, email, birthday, phone,  password,is_admin)
                     VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
                     """
     database_manager.execute_query(insert_query, user_data)
