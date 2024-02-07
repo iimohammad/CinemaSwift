@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 from db import models
 import re
 import uuid
-import personalized_exceptions
+from users_module import personalized_exceptions
 import bcrypt
 from users_module import queryset
 from datetime import datetime
@@ -209,7 +209,7 @@ class Users(UserInputValidator):
                         'password': Users.hash_password(user.password),
                         'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'last_login': None,
-                        'is_admin': 0
+                        'is_admin': user.is_admin
                     }
 
                     queryset.add_user_query(user_data)

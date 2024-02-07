@@ -1,7 +1,7 @@
 DATABASE = {
     'host': 'localhost',
-    'user': '',
-    'password': '',
+    'user': 'question6Quera',
+    'password': 'Mail1375#',
     'name': 'database',
     'port': '3306',
 }

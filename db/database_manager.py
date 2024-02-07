@@ -1,9 +1,9 @@
 import inspect
-from settings import local_settings
 import mysql.connector
 # from db import models
 import sys
 sys.path.append('../')
+from settings import local_settings
 
 
 class DatabaseManager:

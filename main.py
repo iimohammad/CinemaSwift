@@ -7,6 +7,15 @@ from db import models
 from intractions import clear_screen
 from intractions import interation_commands
 from settings import local_settings
+from db import initialize_all_module
+from intractions import server_commands
+
+def configDB():
+    initialize_all_module.run()
+
+
+def help_print():
+    print("Welcome to server user manual:\n first of all you have to config database")
 
 
 class UserDatabase:
@@ -81,7 +90,9 @@ class TCPServer:
                 email=email,
                 birthday=birthday,
                 phone=phone,
-                password=password)
+                subscription_type_id=1,
+                password=password,
+                is_admin=0)
 
             Users.AddUser(user=user)
 
@@ -134,10 +145,40 @@ if __name__ == "__main__":
         action='store_true',
         help='Run the TCP server')
 
+    parser.add_argument(
+        '--addAdmin',
+        action='store_true',
+        help='Add an admin'
+    )
+    parser.add_argument(
+        '--configDB',
+        action='store_true',
+        help='Add an admin'
+    )
+
+    parser.add_argument(
+        '--show-user-manual',
+        action='store_true',
+        help='Add an admin'
+    )
+
     args = parser.parse_args()
 
     clear_screen.clear_screen_func()
 
     if args.runserver:
+        clear_screen.clear_screen_func()
         server = TCPServer()
         server.run_server()
+
+    if args.addAdmin:
+        clear_screen.clear_screen_func()
+        server_commands.signup_admin()
+
+    if args.configDB:
+        clear_screen.clear_screen_func()
+        configDB()
+
+    if args.show_user_manual:
+        clear_screen.clear_screen_func()
+        help_print()

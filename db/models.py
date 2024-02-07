@@ -1,5 +1,7 @@
 import datetime
 from enum import Enum
+
+
 # database
 
 
@@ -53,9 +55,11 @@ class user_model(person_model):
             email: str,
             birthday: datetime,
             phone: str,
-            subscription_type_id:int,
-            password: str) -> None:
-        super().__init__(id, username, email, birthday,phone,password)
+            subscription_type_id: int,
+            password: str,
+            is_admin: int) -> None:
+        super().__init__(id, username, email, birthday, phone, password)
+        self.is_admin = is_admin
         self.subscription_type_id = subscription_type_id
 
 
@@ -161,7 +165,7 @@ class session_model:
             screen_id: int,
             start_time: datetime,
             capacity: int,
-            ticket_price:int) -> None:
+            ticket_price: int) -> None:
         self.id = id
         self.screen_id = screen_id
         self.start_time = start_time
