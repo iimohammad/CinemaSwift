@@ -104,24 +104,25 @@ class TCPServer:
                 with self.lock:
                     self.logged_in_users[client_socket] = username
 
+                if Users.is_admin(username):
+                    response = "Admin Login successful"
                 response = "Login successful!"
+
                 while True:
                     client_socket.sendall(response.encode('utf-8'))
                     # Continuously receive and process data from the client
                     received_data = client_socket.recv(1024).decode('utf-8')
                     data_dict_command = json.loads(received_data)
-                    print(data_dict_command)
                     final_command = data_dict_command['action']
-                    new_username = data_dict_command['username']
-                    print(new_username)
-                    if Users.is_admin(username):
-                        print("enter in loop")
-                        print(final_command)
-                        if final_command in interation_commands.common_interactions_commands:
-                            print("find")
-                            response = interation_commands.common_interactions_commands[final_command](username,new_username)
-                            # client_socket.sendall(response.encode('utf-8'))
 
+                    if Users.is_admin(username):
+                        if final_command in interation_commands.interactions_commands:
+                            print("find")
+                            response = interation_commands.interactions_commands[final_command](
+                                username, data_dict_command)
+                            # client_socket.sendall(response.encode('utf-8'))
+                    else:
+                        pass
                     #     # else:
                     #         print(username,new_username)
                     #         response = interation_commands.common_interactions_commands[final_command](username,new_username)
@@ -205,4 +206,3 @@ if __name__ == "__main__":
         clear_screen.clear_screen_func()
         username = input("Enter the username you want to change to admin:")
         server_commands.change_user_to_admin(username)
-
