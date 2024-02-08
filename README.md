@@ -1,7 +1,18 @@
  <H1>CinemaSwift</H1> 
 
-<h3>Introuction</h3>
+## Introuction
 <p>This project manages online cinema reservations, incorporating several noteworthy features such as the ability to rate films and make reservations. Users can score their favorite movies and easily book seats for upcoming screenings, enhancing the overall cinema-going experience.</p>
+
+## Features
+-  Add / Update / Delete Movies
+
+-  Add / Update / Delete cinema
+
+-  Add / Update / Delete Showtimes
+
+-  Add / Update / Delete users
+
+
 
 ## Installation Guid 
 
@@ -21,7 +32,7 @@ py -m venv venv
 ```
 <p>3- Active the virtual environment by this command:</p>
 
-- For Windows :
+- For windows :
 ```bash
 \venv\Scripts\activate
 ```
@@ -87,3 +98,4 @@ Overall, the project showcases effective backend development practices, encapsul
 ### Conclusion
 
 <p>This readme file is primarily intended for project setup and usage. It does not include detailed explanations of individual files. For specific file functionalities, refer to the relevant sections in this readme.</p>
+
