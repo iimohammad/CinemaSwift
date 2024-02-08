@@ -73,9 +73,9 @@ class TCPServer:
 
         action = data_dict.get('action')
         username = data_dict.get('username')
-
+        response = "Invalid action!"
         if action == 'signup':
-            username = data_dict['username']
+            # usernamea = data_dict['username']
             password = data_dict['password']
             email = data_dict['email']
             phone = data_dict['phone']
@@ -110,17 +110,26 @@ class TCPServer:
                     # Continuously receive and process data from the client
                     received_data = client_socket.recv(1024).decode('utf-8')
                     data_dict_command = json.loads(received_data)
+                    print(data_dict_command)
                     final_command = data_dict_command['action']
+                    new_username = data_dict_command['username']
+                    print(new_username)
                     if Users.is_admin(username):
-                        if final_command in interation_commands.admin_interaction_commands:
-                            response = interation_commands.admin_interaction_commands[final_command](username)
-                        else:
-                            response = interation_commands.common_interactions_commands[final_command](username)
-                    else:
-                        if final_command in interation_commands.user_interactions_commands:
-                            response = interation_commands.user_interactions_commands[final_command](username)
-                        else:
-                            response = interation_commands.common_interactions_commands[final_command](username)
+                        print("enter in loop")
+                        print(final_command)
+                        if final_command in interation_commands.common_interactions_commands:
+                            print("find")
+                            response = interation_commands.common_interactions_commands[final_command](username,new_username)
+                            # client_socket.sendall(response.encode('utf-8'))
+
+                    #     # else:
+                    #         print(username,new_username)
+                    #         response = interation_commands.common_interactions_commands[final_command](username,new_username)
+                    # else:
+                    #     if final_command in interation_commands.user_interactions_commands:
+                    #         response = interation_commands.user_interactions_commands[final_command](username)
+                    #     else:
+                    #         response = interation_commands.common_interactions_commands[final_command](username)
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."

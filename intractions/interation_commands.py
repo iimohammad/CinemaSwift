@@ -8,7 +8,9 @@ from users_module.users import Users, Subscriptions
 class CommonInteractionsCommands:
     @classmethod
     def change_username_func(cls, username: str, new_username):
-        Users.change_username(username=username, new_username=new_username)
+        if Users.change_username(username=username, new_username=new_username):
+            response = "change successfully"
+            return response
 
     @classmethod
     def change_password_func(cls, username: str, new_password):

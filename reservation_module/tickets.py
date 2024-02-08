@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from payment_module.wallet import Wallets
 from users_module.users import Subscriptions, Users
 from db.models import SubscriptopnType
-import queryset
+from reservation_module import queryset
 
 
 class Ticket:

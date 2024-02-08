@@ -7,7 +7,7 @@ import os
 from users_module import personalized_exceptions
 import transaction
 from settings import local_settings
-import queryset
+from payment_module import queryset
 
 
 class BankAccounts:

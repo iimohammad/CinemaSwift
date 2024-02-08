@@ -49,6 +49,7 @@ def show_services():
 
 
 def main():
+    global send_data
     parser = argparse.ArgumentParser(
         description="Client for Movie Reservation System")
     parser.add_argument(
@@ -108,11 +109,15 @@ def main():
                     "Enter a command or if you want to see all of our services enter -show services:\n ")
                 if command.lower() == 'logout':
                     break
-                elif command == "-show services":
-                    clear_screen.clear_screen_func()
-                    show_services()
                 else:
-                    command_to_send = {'action': command}
+                    if command == "change_username":
+                        send_data = input("Enter new username please:")
+
+                    if command == "change_password":
+                        send_data = getpass.getpass("Enter new password:")
+
+                    command_to_send = {'action': command,
+                                       'username': send_data}
                     login_response = client.send_dict_to_server(
                         data_dict=command_to_send)
                     print(login_response.decode('utf-8'))

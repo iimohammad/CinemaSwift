@@ -1,7 +1,7 @@
 from db import models
 from db.database_manager import DatabaseManager
 from users_module import personalized_exceptions
-import queryset
+from payment_module import queryset
 
 
 class Wallets:
