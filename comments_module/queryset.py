@@ -16,6 +16,11 @@ def get_film_query(film_id):
     r = database_manager.execute_query_select(query)
     return r
 
+def get_films_list_query():
+    query = "SELECT id,name,age_rating,duration,point FROM films;"
+    r = database_manager.execute_query_select(query)
+    return r
+
 
 def remove_film_screen_query(film_id: int):
     query = f"""SELECT id FROM screens WHERE id = '{film_id}';"""

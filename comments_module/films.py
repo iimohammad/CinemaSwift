@@ -36,6 +36,14 @@ class Films:
         if len(r) == 0:
             raise personalized_exceptions.FilmNotFount()
         return models.film_model(r[0][0], r[0][1], r[0][2], r[0][3], r[0][4], )
+    
+    @staticmethod
+    def get_films_list()->list:
+        films = []
+        r = queryset.get_films_list_query()
+        for i in r:
+            films.append(models.film_model(i[0][0], i[0][1], i[0][2], i[0][3], i[0][4], ))
+        return films
 
     @staticmethod
     def remove_film(film_id: int) -> bool:
