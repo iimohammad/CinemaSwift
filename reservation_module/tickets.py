@@ -2,9 +2,10 @@ from screen_module import screens
 from users_module import personalized_exceptions
 from datetime import datetime, timedelta
 from payment_module.wallet import Wallets
-from users_module.users import Subscriptions,Users
+from users_module.users import Subscriptions, Users
 from db.models import SubscriptopnType
 import queryset
+
 
 class Ticket:
 
@@ -46,7 +47,6 @@ class Ticket:
 
             if converted_datetime - datetime.now() > timedelta(days=30):
                 Subscriptions.change_subscription(user_id, SubscriptopnType.Bronze.value)
-                
 
         subscription_discount_value = Subscriptions.get_subscription_discount_value(subscript)
 
@@ -54,13 +54,13 @@ class Ticket:
         now = datetime.now().date()
         if user_birthday.day == now.day and user_birthday.month == now.month:
             price = round(price * (50 / 100), 1)
-        
+
         elif subscript != SubscriptopnType.Bronze.value:
             price = round(price * (subscription_discount_value / 100), 1)
 
         if price > wallet_balance:
             raise personalized_exceptions.WalletBalanceNotEnough()
-        queryset.add_buy_ticket_query(user_id,seat_id,price)
+        queryset.add_buy_ticket_query(user_id, seat_id, price)
 
         screens.Seats.update_seat(seat_id, screens.SeatType.RESERVED)
 
@@ -107,15 +107,15 @@ class Ticket:
             raise personalized_exceptions.TicketNotFound()
 
         remain_time = Ticket.remaine_time_session(ticket_id)
-        
+
         if remain_time < 1:
             raise personalized_exceptions.CancleTicketNotPossible()
-        
+
         seat_id = r[0][0]
         user_id = r[0][1]
         price = r[0][2]
 
-        if remain_time<61:
+        if remain_time < 61:
             price = round(price * (18 / 100), 1)
 
         queryset.delete_reserve_ticket(ticket_id)
@@ -123,3 +123,10 @@ class Ticket:
         screens.Seats.update_seat(seat_id, screens.SeatType.FREE)
         Wallets.deposit_to_wallet(user_id, price)
         return r[0][1]
+
+    @classmethod
+    def show_all_buy_tickets(cls, username):
+        # from users table you have to find user_id and from tickets table you have to seat_id and by this find
+        # session_id and show details
+        pass
+

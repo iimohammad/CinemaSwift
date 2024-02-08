@@ -53,6 +53,14 @@ class Wallets:
         wallet = Wallets.get_wallet(user_id)
         return wallet.balance
 
+    @staticmethod
+    def get_balance_by_username(username):
+        pass
+
+    @staticmethod
+    def re_charge_wallet(user_id, bank_name, amount):
+        pass
+
 # Users.AddUser(models.user_model(-1,'Masih1','masih@123.com','1990-10-10',None,'M@@@sih1',models.SubscriptopnType.Bronze.value))
 # Wallets.create_wallet('dff5dd6b-ccfb-4123-85f3-ef39a5827e71')
 # Wallets.get_wallet('dff5dd6b-ccfb-4123-85f3-ef39a5827e71')

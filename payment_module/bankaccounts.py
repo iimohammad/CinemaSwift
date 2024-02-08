@@ -155,3 +155,15 @@ class BankAccounts:
             transaction.abort()
             return False
         return True
+
+    @staticmethod
+    def remove_bank_account(name):
+        pass
+
+    @staticmethod
+    def show_all_accounts_by_username(username):
+        pass
+
+
+
+

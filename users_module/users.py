@@ -49,6 +49,10 @@ class Subscriptions:
         result = queryset.get_subscription_start_date_query(user_id=user_id)
         return result
 
+    @staticmethod
+    def buy_subscription(user_id, subs_type):
+        #buy desire subs and decrease from wallet, if wallet does not have enough balace wants to charge it
+        pass
 
 class UserInputValidator:
     """
@@ -312,7 +316,38 @@ class Users(UserInputValidator):
         """
         queryset.set_user_as_admin_by_username(username=username)
 
+    @classmethod
+    def get_user_birthday(cls, user_id):
+        pass
 
+    @staticmethod
+    def is_admin(username):
+        result = queryset.is_admin_check_query(username)
+        return result
+
+    @staticmethod
+    def change_username(username, new_username):
+        pass
+
+    @staticmethod
+    def change_password(username, password):
+        pass
+
+    @staticmethod
+    def change_email(username, email):
+        pass
+
+    @staticmethod
+    def change_phone_number(username, phone):
+        pass
+
+    @staticmethod
+    def show_profile(username):
+        pass
+
+    @staticmethod
+    def remove_account(user_id):
+        pass
 
 # Users.AddUser(models.user_model(-1,'Masih321011','masih@abcd11.com','2000-01-01',None,3,'M@@@sih123',0))
 # print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
