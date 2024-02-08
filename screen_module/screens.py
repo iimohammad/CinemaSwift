@@ -40,13 +40,11 @@ class Screens:
 
     @staticmethod
     def get_screens_list():
-        r = queryset.get_screen_list_query()
-        return r
-
+        return  queryset.get_screen_list_query()
+    
     @staticmethod
     def get_screens_list_for_a_film(film_id: int):
-        r = queryset.get_screens_list_for_a_film_query(film_id)
-        return r
+        return queryset.get_screens_list_for_a_film_query(film_id)
 
 
 class Session:
@@ -95,6 +93,20 @@ class Session:
         return True
 
     @staticmethod
+    def get_available_sessions(screen_id: int):
+        sessions = []
+        r = queryset.find_remain_session(screen_id)
+        for i in r:
+            session_id = i[0]
+            start_time = i[1]
+            if start_time < datetime.now():
+                continue
+            if Seats.get_number_of_free_seats(session_id) == 0:
+                continue
+            sessions.append([session_id,start_time])
+        return sessions
+    
+    @staticmethod
     def get_number_of_remain_sessions(screen_id: int):
         r = queryset.find_remain_session(screen_id)
         counted = 0
@@ -125,8 +137,10 @@ class Seats:
 
     @staticmethod
     def get_seats_of_a_session(session_id: int):
+        seats= []
         r = queryset.get_seats_of_a_session_query(session_id)
-
+        for i in r:
+            seats.append([i[0],i[1]])
         return r
 
     @staticmethod

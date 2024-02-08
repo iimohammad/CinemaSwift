@@ -45,3 +45,12 @@ def add_buy_ticket_query(user_id, seat_id, price):
                     VALUES 
                     ('{user_id}', '{seat_id}', '{price}');"""
     database_manager.execute_query(query)
+    
+def show_all_tickets_by_user_query(user_id):
+    query = f"""select films.name , sessions.start_time , seats.number from tickets
+                join seats on tickets.seat_id = seats.id
+                join sessions on seats.session_id = sessions.id
+                join screens on screens.id = sessions.screen_id
+                join films on screens.film_id = films.id
+                where tickets.user_id = '{user_id}';"""
+    return database_manager.execute_query_select(query)

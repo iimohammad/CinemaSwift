@@ -24,8 +24,24 @@ def username_exits_check(username):
     r = database_manager.execute_query_select(query)
     return r
 
+def change_username_query(user_id:str,user_name:str)->None:
+    query = f"""
+                UPDATE `cinemaswift`.`users` 
+                SET `user_name` = '{user_name}' 
+                WHERE (`id` = '{user_id}');
+                """
+    database_manager.execute_query_select(query)
 
-def email_exist_check(email):
+def change_password_query(user_id: str, password: str) -> None:
+    query = """
+        UPDATE users
+        SET password = %(password)s
+        WHERE id = %(user_id)s;
+    """
+    data = {'password': password, 'user_id': user_id}
+    database_manager.execute_query_select(query, data)
+
+def email_exist_check_query(email):
     query = f"""
                 SELECT email
                 FROM users
@@ -135,12 +151,27 @@ def get_subscription_start_date_query(user_id: str):
     return database_manager.execute_query_select(query)[0][0]
 
 
-def is_admin_check_query(username):
+def is_admin_check_query(user_id):
     query = f"""
         SELECT is_admin FROM users
-        WHERE user_name = '{username}';
+        WHERE id = '{user_id}';
         """
     if query == 1:
         return True
-    else:
-        return False
+    return False
+
+def show_profile_query(user_id:str)->dict:
+    query = f"""
+        SELECT users.user_name,users.email,users.birthday,users.phone,subscriptions.name,users.created_at FROM cinemaswift.users
+        join subscriptions on subscriptions.id = users.subscription_type_id
+        where users.id = '{user_id}';
+        """
+    r = database_manager.execute_query_select(query)
+    return {
+            'user_name':r[0][0],
+            'email':r[0][1],
+            'birthday':r[0][2],
+            'phone':r[0][3],
+            'subscription_type':r[0][4],
+            'created_at':r[0][5],
+        }
