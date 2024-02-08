@@ -39,7 +39,7 @@ def get_screen_list_query():
     query = """SELECT cinemaswift.films.name , cinemaswift.screens.number_of_sans FROM cinemaswift.screens
                     join films
                     on  films.id = screens.film_id;"""
-    r = database_manager.execute_query_select(query)
+    return database_manager.execute_query_select(query)
 
 
 def get_screens_list_for_a_film_query(film_id):
@@ -47,7 +47,7 @@ def get_screens_list_for_a_film_query(film_id):
                     join films
                     on  films.id = screens.film_id
                     WHERE cinemaswift.screens.film_id = '{film_id}';"""
-    r = database_manager.execute_query_select(query)
+    return database_manager.execute_query_select(query)
 
 
 def number_sans_query(screen_id):
@@ -73,13 +73,14 @@ def insert_session_query(screen_id, timestamp_str, capacity, ticket_price):
 
 def find_by_time_and_screen_id_query(timestamp_str, screen_id):
     query = f"""SELECT id FROM sessions WHERE start_time = '{timestamp_str}' AND screen_id = '{session.screen_id}'"""
-    session_id = database_manager.execute_query_select(query)
+    return database_manager.execute_query_select(query)
+    
 
 
 def find_total_seats_query(session_id):
     query = f"""SELECT capacity FROM sessions
                     WHERE id = '{session_id}' ;"""
-    total_seats = database_manager.execute_query_select(query)[0][0]
+    return database_manager.execute_query_select(query)[0][0]
 
 
 def delete_session_query(session_id):
@@ -88,10 +89,10 @@ def delete_session_query(session_id):
 
 
 def find_remain_session(screen_id):
-    query = f"""SELECT * FROM cinemaswift.sessions
+    query = f"""SELECT id,start_time FROM cinemaswift.sessions
                     WHERE
                     screen_id = '{screen_id}';"""
-    r = database_manager.execute_query_select(query)
+    return database_manager.execute_query_select(query)
 
 
 def create_seat_query(session_id, status, number):
@@ -109,7 +110,7 @@ def update_seat_query(seat_id, status):
 
 
 def get_seats_of_a_session_query(session_id):
-    query = f"""SELECT * FROM cinemaswift.seats WHERE session_id = '{session_id}';"""
+    query = f"""SELECT number , status FROM cinemaswift.seats WHERE session_id = '{session_id}';"""
     r = database_manager.execute_query_select(query)
     return r
 
