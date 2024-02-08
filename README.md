@@ -69,3 +69,21 @@ python main.py
 ```
 
 <p>Follow the on-screen instructions to navigate through the application, perform actions, and experience the functionalities offered by CinemaManagement.</p>
+
+### Report
+
+<p>The CinemaSwift project successfully implements an online cinema reservation system with user authentication, film rating, and reservation functionalities. The MVC architecture ensures a well-organized and modular codebase, promoting code reusability and maintainability. The project's main execution module, users module, and client interaction module work in harmony to provide users with a smooth and efficient experience.
+
+The installation guide facilitates the setup process, ensuring that users can quickly deploy the system on their local machines. By following the outlined steps, users can create a virtual environment, install necessary dependencies, and start exploring the functionalities of CinemaSwift.
+
+Overall, the project showcases effective backend development practices, encapsulating database management, user models, and client interactions in a cohesive structure. The modular design allows for easy extension and modification, making it an excellent foundation for future enhancements and feature additions.</p>
+
+### Project Link
+
+<a href='https://github.com/iimohammad/CinemaSwift'>Visit my github  project!</a>
+
+<p>Note: The specific details of individual files are omitted as per your request. The emphasis is on providing guidance for setting up and running the project along with a general overview of its features.</p>
+
+### Conclusion
+
+<p>This readme file is primarily intended for project setup and usage. It does not include detailed explanations of individual files. For specific file functionalities, refer to the relevant sections in this readme.</p>
