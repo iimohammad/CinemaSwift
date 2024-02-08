@@ -15,10 +15,6 @@ def configDB():
     initialize_all_module.run()
 
 
-def help_print():
-    print("Welcome to server user manual:\n first of all you have to config database")
-
-
 class UserDatabase:
     users = {}
 
@@ -77,9 +73,9 @@ class TCPServer:
 
         action = data_dict.get('action')
         username = data_dict.get('username')
-
+        response = "Invalid action!"
         if action == 'signup':
-            username = data_dict['username']
+            # usernamea = data_dict['username']
             password = data_dict['password']
             email = data_dict['email']
             phone = data_dict['phone']
@@ -108,16 +104,33 @@ class TCPServer:
                 with self.lock:
                     self.logged_in_users[client_socket] = username
 
+                if Users.is_admin(username):
+                    response = "Admin Login successful"
                 response = "Login successful!"
+
                 while True:
                     client_socket.sendall(response.encode('utf-8'))
                     # Continuously receive and process data from the client
                     received_data = client_socket.recv(1024).decode('utf-8')
                     data_dict_command = json.loads(received_data)
                     final_command = data_dict_command['action']
-                    if final_command in interation_commands.Interaction_Commands:
-                        response = interation_commands.Interaction_Commands[final_command](
-                        )
+
+                    if Users.is_admin(username):
+                        if final_command in interation_commands.interactions_commands:
+                            print("find")
+                            response = interation_commands.interactions_commands[final_command](
+                                username, data_dict_command)
+                            # client_socket.sendall(response.encode('utf-8'))
+                    else:
+                        pass
+                    #     # else:
+                    #         print(username,new_username)
+                    #         response = interation_commands.common_interactions_commands[final_command](username,new_username)
+                    # else:
+                    #     if final_command in interation_commands.user_interactions_commands:
+                    #         response = interation_commands.user_interactions_commands[final_command](username)
+                    #     else:
+                    #         response = interation_commands.common_interactions_commands[final_command](username)
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."
@@ -163,6 +176,11 @@ if __name__ == "__main__":
         help='Add an admin'
     )
 
+    parser.add_argument(
+        '--change-to-admin',
+        action='store_true',
+        help='Add an admin'
+    )
     args = parser.parse_args()
 
     clear_screen.clear_screen_func()
@@ -182,4 +200,9 @@ if __name__ == "__main__":
 
     if args.show_user_manual:
         clear_screen.clear_screen_func()
-        help_print()
+        server_commands.help_print()
+
+    if args.change_to_admin:
+        clear_screen.clear_screen_func()
+        username = input("Enter the username you want to change to admin:")
+        server_commands.change_user_to_admin(username)

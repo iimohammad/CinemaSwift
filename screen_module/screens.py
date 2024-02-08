@@ -3,7 +3,7 @@ from db.database_manager import DatabaseManager
 from enum import Enum
 from users_module import personalized_exceptions
 from datetime import datetime
-import queryset
+from screen_module import queryset
 
 
 class SeatType(Enum):

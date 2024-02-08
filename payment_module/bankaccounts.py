@@ -7,7 +7,7 @@ import os
 from users_module import personalized_exceptions
 import transaction
 from settings import local_settings
-import queryset
+from payment_module import queryset
 
 
 class BankAccounts:
@@ -155,3 +155,15 @@ class BankAccounts:
             transaction.abort()
             return False
         return True
+
+    @staticmethod
+    def remove_bank_account(name):
+        pass
+
+    @staticmethod
+    def show_all_accounts_by_username(username):
+        pass
+
+
+
+

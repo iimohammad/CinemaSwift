@@ -8,8 +8,8 @@ database_manager = DatabaseManager()
 def add_user_query(user_data: object) -> None:
     insert_query = """
                     INSERT INTO users
-                    (id, user_name, email, birthday, phone,  password)
-                    VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s, %(password)s)
+                    (id, user_name, email, birthday, phone , subscription_type_id,  password , is_admin)
+                    VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s)
                     """
     database_manager.execute_query(insert_query, user_data)
 
@@ -18,10 +18,6 @@ def username_exits_check(username):
     query = f"""
                 SELECT user_name
                 FROM users
-                WHERE user_name = '{username}'
-                UNION
-                SELECT "user_name"
-                FROM admins
                 WHERE user_name = '{username}';
                 """
 
@@ -61,12 +57,14 @@ def update_last_login_query(user_id):
     query = f"""UPDATE users SET last_login = '{
     datetime.now().strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = '{user_id}'"""
     database_manager.execute_query(query)
-    
+
+
 def get_user_birthday_query(user_id) -> datetime:
     query = f"""SELECT birthday FROM cinemaswift.users
             where id = '{user_id}';"""
     r = database_manager.execute_query(query)
     return r[0][0]
+
 
 def login_query(user_name):
     query = f"""
@@ -84,8 +82,15 @@ def set_user_as_admin(user_id) -> None:
             """
 
 
+def set_user_as_admin_by_username(username) -> None:
+    query = f"""
+            UPDATE users SET is_admin = 1
+            WHERE id = {username}
+            """
+
+
 def add_subscription_query(user_id, subscription_id) -> None:
-    query = f"""INSERT INTO `cinemaswift`.`userssubscriptions` (`user_id`, `subscription_id`, `start_date`) 
+    query = f"""INSERT INTO `userssubscriptions` (`user_id`, `subscription_id`, `start_date`) 
                     VALUES 
                     ('{user_id}', '{subscription_id}', '{datetime.now()}');"""
     database_manager.execute_query(query)
@@ -111,20 +116,31 @@ def get_subscription_type_name_query(user_id: str):
 
 
 def get_subscription_discount_number_query(subscription_name: str):
-    query = f"""SELECT discount_number FROM cinemaswift.subscriptions
+    query = f"""SELECT discount_number FROM subscriptions
                     WHERE
                     name = '{subscription_name}'"""
     return database_manager.execute_query_select(query)[0][0]
 
 
 def get_total_discounts_taken_query(user_id: str):
-    query = f"""SELECT count(id) FROM cinemaswift.tickets
+    query = f"""SELECT count(id) FROM tickets
                 WHERE created_at >= 
     	        (select start_date FROM userssubscriptions WHERE user_id = '{user_id}')"""
     return database_manager.execute_query_select(query)[0][0]
 
 
 def get_subscription_start_date_query(user_id: str):
-    query = f"""SELECT start_date FROM cinemaswift.userssubscriptions
+    query = f"""SELECT start_date FROM userssubscriptions
             WHERE user_id = '{user_id}';"""
     return database_manager.execute_query_select(query)[0][0]
+
+
+def is_admin_check_query(username):
+    query = f"""
+        SELECT is_admin FROM users
+        WHERE user_name = '{username}';
+        """
+    if query == 1:
+        return True
+    else:
+        return False
