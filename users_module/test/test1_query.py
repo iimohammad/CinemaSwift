@@ -7,6 +7,10 @@ database_manager = DatabaseManager()
 
 def add_user_query():
     user_data = {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 18c638b111ad9266464b17a7f2857389f268a811
         "id": input(""),
         "user_name":input(""),
         "email": input(""),
@@ -14,6 +18,18 @@ def add_user_query():
         "phone": input(""),
         "subscription_type_id": input(""),
         "password": input(""),
+<<<<<<< HEAD
+=======
+        "id": input(" "),
+        "user_name":input(" "),
+        "email": input(" "),
+        "birthday":input(" "),
+        "phone": input(" "),
+        "subscription_type_id": input(" "),
+        "password": input(" "),
+>>>>>>> 1b92e2f0fcbd71a4b9e8c586b775e674f5c0498c
+=======
+>>>>>>> 18c638b111ad9266464b17a7f2857389f268a811
     }
 
     print("Testing add_user_query:")

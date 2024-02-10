@@ -5,7 +5,11 @@ from users_module import personalized_exceptions
 
 
 # Test add_film
+<<<<<<< Updated upstream
 new_film = models.film_model(name="  Test Film  ", age_rating="PG", duration=120)
+=======
+new_film = models.film_model(name="Test Film", age_rating="PG", duration=120)
+>>>>>>> Stashed changes
 Films.add_film(new_film)
 print("Film added successfully.")
 
