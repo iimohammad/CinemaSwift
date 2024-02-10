@@ -5,7 +5,7 @@ from  users_module import Subscriptions , UserInputValidator,Users
 
 class Subscriptions(unittest.TestCase):
     def add_subscription(self):
-        user_id = input("")
+        user_id = input(" ")
         subscription_id = 1
         result = Subscriptions.add_subscription(user_id, subscription_id)
         self.assertTrue(result)
