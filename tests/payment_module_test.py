@@ -10,16 +10,16 @@ class TestBankAccounts(unittest.TestCase):
     def setUpClass(cls):
         #comming soon
         pass
-
+    #comlete
     def test_hashPassword(self):
         password = "12345jlk"
         hashed_password = bankaccounts._hashPassword(password)
         self.assertTrue(hashed_password) 
-
+    #comlete
     def test_cvv2_validator_valid(self):
         cvv = 123
         self.assertIsNone(bankaccounts.cvv2_validator(cvv))  
-
+    #comlete
     def test_cvv2_validator_invalid(self):
         cvv = 12345
         with self.assertRaises(personalized_exceptions.InvalidCvv2):
@@ -28,7 +28,7 @@ class TestBankAccounts(unittest.TestCase):
     def test_add_log(self):
         log_text = "Test log entry"
         bankaccounts.add_log(log_text)
-        with open(self.log_file, 'a') as f:
+        with open(bankaccounts.log_file, 'a') as f:
             f.write(
                 log_text +
                 f""" _ at {
