@@ -34,7 +34,6 @@ class TestBankAccounts(unittest.TestCase):
                 f""" _ at {
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')}""" +
                 os.linesep)
-            log_text = "Test log entry"
         with open(bankaccounts.log_file, 'r') as f:
             lines = f.readlines()
             self.assertTrue(any(log_text in line for line in lines))  
