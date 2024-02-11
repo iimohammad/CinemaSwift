@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch,
+from unittest.mock import patch,MagicMock
 from queryset import *
 
 
@@ -72,4 +72,44 @@ def add_subscription_query (self, MockDatabaseManager):
 print("adding subscription query is  seccesfully")
 
 ##########queryset.py (commend)
+
+# add_film_query
+user_data = {'film_name', 'film_age_rating','film_duration' }
+add_film_query(user_data)
+database_manager_instance.execute_query.assert_called_once_with
+(""" INSERT INTO users(id, user_name, email, birthday, phone , subscription_type_id,  password , is_admin)VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s) """,user_data)
+print("Film added successfully!")
+
+#test_get_films_list_query
+mock_database_manager = MagicMock()
+queryset.database_manager = mock_database_manager
+result = queryset.get_films_list_query()
+print(result)
+
+# remove_film_screen_query 
+mock_database_manager = MagicMock()
+queryset.database_manager = mock_database_manager
+result = queryset.remove_film_screen_query()
+print(result)
+
+# calculate_point_query
+calculate = {'film_id':film_id , 'id' : film_id ,}
+calculate_point_query(calculate)
+database_manager_instance.execute_query.assert_called_once_with
+(""" INSERT INTO users(id, user_name, email, birthday, phone , subscription_type_id,  password , is_admin)VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s) """,calculate)
+print("calculate calculate points of movie")
+
+# add_comment_query
+add_comment = {'comment_film_id' , 'comment_user_id' , 'comment_text' , 'comment_parent_comments_id' }
+add_comment_query(add_comment)
+database_manager_instance.execute_query.assert_called_once_with
+(""" INSERT INTO users(id, user_name, email, birthday, phone , subscription_type_id,  password , is_admin)VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s) """,add_comment)
+print("comment add seccesfully")
+
+# remove comment
+remove_comment = {'comment_id' }
+remove_comment_query(remove_comment)
+database_manager_instance.execute_query.assert_called_once_with
+(""" INSERT INTO users(id, user_name, email, birthday, phone , subscription_type_id,  password , is_admin)VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s) """,remove_comment)
+print("comment remove seccesfully")
 
