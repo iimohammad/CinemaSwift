@@ -99,6 +99,7 @@ database_manager_instance.execute_query.assert_called_once_with
 (""" INSERT INTO users(id, user_name, email, birthday, phone , subscription_type_id,  password , is_admin)VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s) """,calculate)
 print("calculate calculate points of movie")
 
+
 # add_comment_query
 add_comment = {'comment_film_id' , 'comment_user_id' , 'comment_text' , 'comment_parent_comments_id' }
 add_comment_query(add_comment)
