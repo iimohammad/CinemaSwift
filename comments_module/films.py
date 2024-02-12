@@ -1,6 +1,6 @@
 from db import models
 from db.database_manager import DatabaseManager
-from users_module import personalized_exceptions
+from users_module import personalized_exceptions , users
 import queryset
 
 
@@ -35,14 +35,14 @@ class Films:
         r = queryset.get_film_query(film_id=film_id)
         if len(r) == 0:
             raise personalized_exceptions.FilmNotFount()
-        return models.film_model(r[0][0], r[0][1], r[0][2], r[0][3], r[0][4], )
+        return models.film_model(r[0][0], r[0][1], r[0][2], r[0][3], r[0][4],r[0][5])
     
     @staticmethod
     def get_films_list()->list:
         films = []
         r = queryset.get_films_list_query()
         for i in r:
-            films.append(models.film_model(i[0][0], i[0][1], i[0][2], i[0][3], i[0][4], ))
+            films.append(models.film_model(i[0][0], i[0][1], i[0][2], i[0][3], i[0][4], i[0][5]))
         return films
 
     @staticmethod
@@ -105,11 +105,17 @@ class FilmsPoints:
         Returns:
             bool: True if the point is added successfully, False otherwise.
         """
+        type = users.Subscriptions.get_subscription_type_name(user_id)
+        coefficient = 1
+        if (type == 'Golden'):
+            coefficient = 3
+        elif (type == 'Silver'):
+            coefficient = 2
         r = queryset.select_point_query(user_id=user_id, film_id=film_id)
         if len(r) > 0:
-            queryset.update_point_film(user_id=user_id, film_id=film_id, point=point)
+            queryset.update_point_film(user_id=user_id, film_id=film_id, point=point,coefficient=coefficient)
         else:
-            queryset.insert_films_point(film_id=film_id, user_id=user_id, point=point)
+            queryset.insert_films_point(film_id=film_id, user_id=user_id, point=point,coefficient=coefficient)
         Films.calculate_point(film_id)
         return True
 

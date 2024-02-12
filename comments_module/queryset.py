@@ -5,9 +5,9 @@ database_manager = DatabaseManager()
 
 
 def add_film_query(film_name, film_age_rating, film_duration):
-    query = f"""INSERT INTO `films` (`name`, `age_rating`, `duration`, `point`) 
+    query = f"""INSERT INTO `films` (`name`, `age_rating`, `duration`, `point`,`weighted_point`) 
                     VALUES 
-                    ('{film_name}', '{film_age_rating}', '{film_duration}', '0');"""
+                    ('{film_name}', '{film_age_rating}', '{film_duration}', '0','0');"""
     database_manager.execute_query(query)
 
 
@@ -34,11 +34,28 @@ def remove_film_films_query(film_id: int):
 
 
 def calculate_point_query(film_id: int) -> None:
-    query = f"""UPDATE films set point = (select avg(point) as av from filmspoints  
-                    where film_id='{film_id}') 
-                    where id = '{film_id}'"""
+    query = f"""SELECT point,coefficient FROM cinemaswift.filmspoints
+                where film_id='{film_id}';"""
+    r = database_manager.execute_query_select(query)
+    number = len(r)
+    sum_points = 0
+    sum_coefficient = 0.0
+    weighted_point = 0.0
+    for i in r:
+        sum_points +=i[0]
+        sum_coefficient +=i[1]
+        weighted_point += i[0]*i[1]
+    if sum_coefficient != 0:
+        weighted_point /= sum_coefficient
+    if number != 0:
+        sum_points /=number
+    weighted_point = round(weighted_point , 1)
+    sum_points = round(sum_points , 1)
+    query = f"""UPDATE `cinemaswift`.`films` SET 
+            `point` = '{sum_points}' , `weighted_point` = '{weighted_point}'
+            where id='{film_id}';"""
     database_manager.execute_query(query)
-
+    
 
 def update_film_query(film_name, film_id, film_age_rating, film_duration):
     query = f"""UPDATE films set 
@@ -48,22 +65,22 @@ def update_film_query(film_name, film_id, film_age_rating, film_duration):
 
 
 def select_point_query(user_id: str, film_id: int):
-    query = f"SELECT point FROM filmspoints WHERE client_id='{user_id}' AND film_id='{film_id}'"
+    query = f"SELECT point FROM filmspoints WHERE user_id='{user_id}' AND film_id='{film_id}'"
     r = database_manager.execute_query_select(query)
     return r
 
 
-def update_point_film(user_id, film_id, point):
-    query = f"""UPDATE `filmspoints` SET `point` = '{point}' 
+def update_point_film(user_id, film_id, point,coefficient):
+    query = f"""UPDATE `filmspoints` SET `point` = '{point}' AND `coefficient` = ''{coefficient}
                         WHERE 
                         (`film_id` = '{film_id}') and (`user_id` = '{user_id}');"""
     database_manager.execute_query(query)
 
 
-def insert_films_point(film_id, user_id, point):
-    query = f"""INSERT INTO filmspoints (`{film_id}`, `{user_id}`, `{point}`)
+def insert_films_point(film_id, user_id, point,coefficient):
+    query = f"""INSERT INTO filmspoints (`film_id`, `user_id`, `point`,`coefficient`)
                     VALUES
-                    ('{film_id}', '{user_id}', '{point}');"""
+                    ('{film_id}', '{user_id}', '{point}','{coefficient}');"""
     database_manager.execute_query(query)
 
 
