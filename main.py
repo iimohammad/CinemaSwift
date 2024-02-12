@@ -51,6 +51,7 @@ class TCPServer:
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         self.logged_in_users = {}
+        self.logged_in_admins = {}
         self.lock = threading.Lock()
 
     def run_server(self):
@@ -103,12 +104,16 @@ class TCPServer:
                 print(f"User '{username}'Login successful!")
                 with self.lock:
                     self.logged_in_users[client_socket] = username
+                    if Users.is_admin(username):
+                        self.logged_in_admins[client_socket] = username
 
                 if Users.is_admin(username):
                     response = "Admin Login successful"
                 response = "Login successful!"
 
                 while True:
+                    if response['action'] == 'chat':
+                        response['admin_id'].sendall(response.encode('utf-8'))
                     client_socket.sendall(response.encode('utf-8'))
                     # Continuously receive and process data from the client
                     received_data = client_socket.recv(1024).decode('utf-8')
@@ -116,7 +121,11 @@ class TCPServer:
                     final_command = data_dict_command['action']
 
                     if Users.is_admin(username):
-                        if final_command in interation_commands.interactions_commands:
+                        if final_command == 'chat':
+                            print('chat')
+                            response = interation_commands.interactions_commands[final_command](
+                                self.logged_in_admins, client_socket, data_dict_command)
+                        elif final_command in interation_commands.interactions_commands:
                             print("find")
                             response = interation_commands.interactions_commands[final_command](
                                 username, data_dict_command)

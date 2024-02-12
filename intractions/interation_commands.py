@@ -245,6 +245,31 @@ class InteractionsCommands:
             Films.remove_film(film_id)
         except Exception as e:
             return e
+    
+    @classmethod
+    def chat_func(cls, logged_in_admins, client_socket, data_dict_command):
+        logged_in_admins.pop(client_socket)
+
+        if data_dict_command['status'] == "Send online admins' list":
+            return logged_in_admins
+        elif data_dict_command['status'] == "Admin chosen":
+            data_to_send = {'action': 'chat',
+                            'status': "Chat request",
+                            'admin_id': client_socket,
+                            'message': "Pending request"}
+            return data_to_send
+        elif data_dict_command['status'] == "Chat acceptance":
+            data_to_send = {'action': 'chat',
+                            'status': "Chatting",
+                            'admin_id': data_dict_command['admin_id'],
+                            'message': data_dict_command['message']}
+            return data_to_send
+        elif data_dict_command['status'] == "Chatting":
+            data_to_send = {'action': 'chat',
+                            'status': "Chatting",
+                            'admin_id': data_dict_command['admin_id'],
+                            'message': data_dict_command['message']}
+            return data_to_send
 
 
 # Create instances of Interaction_Commands classes
@@ -287,6 +312,7 @@ interactions_commands = {
     'reply_comment': interactions_commands_instance.reply_comment_func,
     'send_message_to_support': interactions_commands_instance.send_message_to_support_func,
     'auto_reservation': interactions_commands_instance.auto_reservation_func,
+    'chat': interactions_commands_instance.chat_func,
 }
 
 # user_interactions_commands_instance.
