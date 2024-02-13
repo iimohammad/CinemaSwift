@@ -104,7 +104,7 @@ db: The module related to the connection with the database.
 
 intractions: The module contains various commands and interactions with the server.
 
-settings: Holds local settings,such as network configurations.
+settings: Holds local settings, such as network configurations.
 
 ## Project Details 
 <p>In this project, the backend development follows the MVC (Model-View-Controller) architecture, where the backend is separated into different parts. Each of these parts will be explained in detail here to provide a comprehensive understanding of the project's structural design and organization.</P>
