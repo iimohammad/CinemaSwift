@@ -16,6 +16,12 @@ def get_films_list_query():
     r = database_manager.execute_query_select(query)
     return r
 
+
+def get_filmid_by_name_query(filmname):
+    query = f"""SELECT id from films WHERE name = '{filmname}';"""
+    r = database_manager.execute_query_select(query)
+    return r
+
 def get_films_list_query():
     query = "SELECT id,name,age_rating,duration,point,weighted_point FROM films;"
     r = database_manager.execute_query_select(query)

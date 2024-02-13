@@ -1,6 +1,5 @@
 from db.database_manager import DatabaseManager
 
-
 database_manager = DatabaseManager()
 
 
@@ -45,9 +44,10 @@ def add_buy_ticket_query(user_id, seat_id, price):
                     VALUES 
                     ('{user_id}', '{seat_id}', '{price}');"""
     database_manager.execute_query(query)
-    
+
+
 def show_all_tickets_by_user_query(user_id):
-    query = f"""select films.name , sessions.start_time , seats.number from tickets
+    query = f"""select tickets.id , films.name , sessions.start_time , seats.number from tickets
                 join seats on tickets.seat_id = seats.id
                 join sessions on seats.session_id = sessions.id
                 join screens on screens.id = sessions.screen_id

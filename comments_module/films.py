@@ -50,6 +50,13 @@ class Films:
         return films
 
     @staticmethod
+    def get_filmid_by_name(film_name: str):
+        r = queryset.get_filmid_by_name_query(film_name)
+        if len(r) == 0:
+            return None
+        return r[0][0]
+
+    @staticmethod
     def remove_film(film_id: int) -> bool:
         """
         Removes a film from the database.

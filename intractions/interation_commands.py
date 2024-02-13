@@ -127,7 +127,7 @@ class InteractionsCommands:
             weighted_point = item.weighted_point
             response_item = f"film name :{name} - age rating : {age_rating} - duration :{duration} - point:{point} -weighted_point: {weighted_point}"
             response += (response_item + "\n")
-        print(response)
+        # print(response)
         return response
 
     @classmethod
@@ -140,17 +140,38 @@ class InteractionsCommands:
 
     @classmethod
     def show_screens_func(cls, user_id, data_dict_command):
-        return Screens.get_screens_list()
+        response = ""
+        for item in Screens.get_screens_list():
+            screen_id = item[0]
+            film_name = item[1]
+            number_of_sans = item[2]
+            response += f"screen_id = {screen_id} - film_name = {film_name} -number_of_sans= {number_of_sans} \n"
+        return response
 
     @classmethod
     def show_sessions_available_func(cls, data_dict_command):
         screen_id = data_dict_command['screen_id']
-        return Session.get_available_sessions(screen_id=screen_id)
+        result = Session.get_available_sessions(screen_id=screen_id)
+        response = ""
+        for item in result:
+            session_id = item[0]
+            start_time = item[1]
+            response += f"session_id = {session_id} - start_time = {start_time}"
+
+        return response
 
     @classmethod
     def show_seats_func(cls, data_dict_command):
         session_id = data_dict_command['session_id']
-        return Seats.get_seats_of_a_session(session_id=session_id)
+        result = Seats.get_seats_of_a_session(session_id=session_id)
+        response = ""
+        for item in result:
+            seat_id = item[0]
+            seat_number = item[1]
+            status = item[2]
+            response += f"seat_id = {seat_id} - seat_number = {seat_number} - status = {status}"
+
+        return response
 
     @classmethod
     def cancel_reservation_func(cls, data_dict_command):
@@ -162,6 +183,7 @@ class InteractionsCommands:
 
     @classmethod
     def show_all_tickets_of_user(cls, user_id, data_dict_command):
+
         return Ticket.show_all_tickets_by_user(user_id=user_id)
 
     @classmethod
@@ -201,7 +223,7 @@ class InteractionsCommands:
         responselist = list()
         for i in interactions_commands:
             responselist.append(i)
-        print(responselist)
+        # print(responselist)
         response = ""
         if Users.is_admin(user_id=user_id):
             for i in responselist:
@@ -209,13 +231,15 @@ class InteractionsCommands:
         else:
             for i in range(min(22, len(responselist))):
                 response += (responselist[i] + "\n")
+        print(response)
         return response
 
     @classmethod
     def add_screens_func(cls, user_id, data_dict_command):
-        film_id = data_dict_command['film_id']
+        film_name = data_dict_command['film_name']
         number_of_screens = data_dict_command['number_of_screens']
         try:
+            film_id = Films.get_filmid_by_name(film_name)
             Screens.create_screen(models.screen_model(-1, film_id, number_of_screens))
             return True
         except Exception as e:
@@ -284,7 +308,7 @@ interactions_commands = {
     'add_session': interactions_commands_instance.add_session,
     'add_film': interactions_commands_instance.add_film,
     'remove_film': interactions_commands_instance.remove_film,
-    'add_screens': interactions_commands_instance.add_screens_func,
+    'add_screens': interactions_commands_instance.add_screens_func
 }
 
 # user_interactions_commands_instance.

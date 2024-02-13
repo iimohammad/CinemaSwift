@@ -107,6 +107,7 @@ class TCPServer:
                 with self.lock:
                     self.logged_in_users[client_socket] = username
 
+                print(Users.is_admin(user_id))
                 if Users.is_admin(user_id):
                     response = "Admin Login successful"
                 else:
@@ -136,7 +137,7 @@ class TCPServer:
                             if final_command in interation_commands.interactions_commands:
                                 print("find")
                                 response = interation_commands.interactions_commands[final_command](
-                                    username, data_dict_command)
+                                    user_id, data_dict_command)
 
                         except:
                             response = "Not find this Command"

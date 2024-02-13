@@ -36,7 +36,7 @@ def update_screen_query(film_id, number_of_screens, screen_id):
 
 
 def get_screen_list_query():
-    query = """SELECT cinemaswift.films.name , cinemaswift.screens.number_of_sans FROM cinemaswift.screens
+    query = """SELECT screens.id,cinemaswift.films.name , cinemaswift.screens.number_of_sans FROM cinemaswift.screens
                     join films
                     on  films.id = screens.film_id;"""
     return database_manager.execute_query_select(query)
@@ -110,7 +110,7 @@ def update_seat_query(seat_id, status):
 
 
 def get_seats_of_a_session_query(session_id):
-    query = f"""SELECT number , status FROM cinemaswift.seats WHERE session_id = '{session_id}';"""
+    query = f"""SELECT id,number , status FROM cinemaswift.seats WHERE session_id = '{session_id}';"""
     r = database_manager.execute_query_select(query)
     return r
 
