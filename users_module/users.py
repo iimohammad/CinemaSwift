@@ -290,10 +290,8 @@ class Users(UserInputValidator):
     def set_admin(user_id):
         """
                 Checks if a user is an admin.
-
                 Args:
                     user_id: The ID of the user.
-
                 Returns:
                     None
         """

@@ -98,8 +98,8 @@ class TCPServer:
         elif action == 'login':
             username = data_dict['username']
             password = data_dict['password']
-
-            if Users.log_in(username, password):
+            user_id = Users.log_in(username, password)
+            if user_id:
                 print(f"User '{username}'Login successful!")
                 with self.lock:
                     self.logged_in_users[client_socket] = username
@@ -116,35 +116,30 @@ class TCPServer:
                     final_command = data_dict_command['action']
 
                     if Users.is_admin(username):
-                        if final_command in interation_commands.interactions_commands:
-                            print("find")
-                            response = interation_commands.interactions_commands[final_command](
-                                username, data_dict_command)
-                            # client_socket.sendall(response.encode('utf-8'))
+                        try:
+                            # This part use for admin users
+                            if final_command in interation_commands.interactions_commands:
+                                print("find")
+                                response = interation_commands.interactions_commands[final_command](
+                                    username, data_dict_command)
+                                # client_socket.sendall(response.encode('utf-8'))
+                        except:
+                            response = "Not find this Command"
                     else:
-                        pass
-                    #     # else:
-                    #         print(username,new_username)
-                    #         response = interation_commands.common_interactions_commands[final_command](username,new_username)
-                    # else:
-                    #     if final_command in interation_commands.user_interactions_commands:
-                    #         response = interation_commands.user_interactions_commands[final_command](username)
-                    #     else:
-                    #         response = interation_commands.common_interactions_commands[final_command](username)
+                        # This part is use for normal users
+                        try:
+                            if final_command in interation_commands.interactions_commands:
+                                print("find")
+                                response = interation_commands.interactions_commands[final_command](
+                                    username, data_dict_command)
+
+                        except:
+                            response = "Not find this Command"
+
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."
             print(self.logged_in_users)
-
-        elif client_socket in self.logged_in_users:
-            # elif  action == 'change_username':
-            print("hi")
-            # print("hi")
-            # print (action)
-            # if action in interation_commands.Interaction_Commands:
-            #     response = interation_commands.Interaction_Commands[action]()
-            # else:
-            #     response = "Invalid action!"
 
         else:
             response = "Please log in first!"
