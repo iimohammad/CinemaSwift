@@ -37,14 +37,25 @@ pip install CinemaSwift
 
 ```bash
 git clone https://github.com/CinemaSwift.git
-
 ```
-<p>2- Create a virtual environment py this command in terminal: </p>
+
+<p> 3- To run the project, execute the following command:</p>
 
 ```bash
-py -m venv venv
+python main.py
 ```
-<p>3- Active the virtual environment by this command:</p>
+
+<p>4- To start the TCP server, use the following command:: </p>
+
+```bash
+python main.py --runserver
+```
+<p>5- To configure the database, execute the following command: </p>
+
+```bash
+python main.py --configDB
+```
+<p>6- Active the virtual environment by this command:</p>
 
 - For windows :
 ```bash
@@ -57,18 +68,43 @@ py -m venv venv
 source venv/bin\activate
 ```
 
-<p>4- now use this command to install all of the requirements:</p>
+<p>7-This command adds an admin user to the system:</p>
+
+- For windows :
+```bash
+python main.py --show-user-manual
+```
+
+<p>8- Displays the user manual with available commands and usage.:</p>
+
+- For windows :
+```bash
+python main.py --show-user-manual
+
+```
+<p>9- Prompts for a username and changes the specified user to an admin.:</p>
+
+- For windows :
+```bash
+python main.py --change-to-admin
+```
+<p>10- now use this command to install all of the requirements:</p>
 
 ```bash
 pip install -r requirements.txt
 ```
 
-<p> 5- To run the project, execute the following command:</p>
+## File Structure
 
-```bash
-python main.py
-```
+main.py: The main file that contains the TCP server and various commands.
 
+users_module : User management module.
+
+db: The module related to the connection with the database.
+
+intractions: The module contains various commands and interactions with the server.
+
+settings: Holds local settings, such as network configurations.
 
 ## Project Details 
 <p>In this project, the backend development follows the MVC (Model-View-Controller) architecture, where the backend is separated into different parts. Each of these parts will be explained in detail here to provide a comprehensive understanding of the project's structural design and organization.</P>
