@@ -56,7 +56,7 @@ class TCPClient:
 
 
 def show_services():
-    for key, value in interation_commands.Interaction_Commands.items():
+    for key, value in interation_commands.interactions_commands.items():
         print(key)
 
 
@@ -167,7 +167,93 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "add_screens" and local_client_settings.get_is_admin():
+                    if command == "add_screens":
+                        if local_client_settings.get_is_admin():
+                            pass
+                        else:
+                            print("Access denied")
+                    if command == "add_seats":
+                        if local_client_settings.get_is_admin():
+                            pass
+                        else:
+                            print("Access denied")
+
+                    if command == "add_film":
+                        if local_client_settings.get_is_admin():
+                            pass
+                        else:
+                            print("Access denied")
+
+                    if command == "add_session":
+                        if local_client_settings.get_is_admin():
+                            pass
+                        else:
+                            print("Access denied")
+
+                    if command == "send_message_employee":
+                        if local_client_settings.get_is_admin():
+                            pass
+                        else:
+                            print("Access denied")
+
+                    if command == "send_comment":
+                        pass
+
+                    if command == "reply_comment":
+                        pass
+
+                    if command == "show_comments_film":
+                        pass
+
+                    if command == "show_films_scores":
+                        pass
+
+                    if command == "send_score_film":
+                        pass
+
+                    if command == "show_watched_films":
+                        pass
+
+                    if command == "cancel_reservation":
+                        pass
+
+                    if command == "choose_seat":
+                        pass
+
+                    if command == "show_seats":
+                        pass
+
+                    if command == "choose_screen":
+                        pass
+
+                    if command == "show_screens":
+                        pass
+
+                    if command == "choose_film":
+                        pass
+
+                    if command == "show_films":
+                        pass
+
+                    if command == "add_bank_account":
+                        pass
+
+                    if command == "buy_subscription":
+                        pass
+
+                    if command == "re_charge":
+                        pass
+
+                    if command == "show_subscription_detail":
+                        pass
+
+                    if command == "show_reservation":
+                        pass
+
+                    if command == "show_bank_accounts":
+                        pass
+
+                    if command == "show_balance":
                         pass
 
         elif response == "Incorrect Password":

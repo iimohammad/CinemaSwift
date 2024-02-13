@@ -35,27 +35,29 @@ class InteractionsCommands:
             return response
 
     @classmethod
-    def show_profile_func(cls, username,data_dict_command):
+    def show_profile_func(cls, username, data_dict_command):
         Users.show_profile(username=username)
 
     @classmethod
-    def remove_bank_account_func(cls, username,data_dict_command):
+    def remove_bank_account_func(cls, username, data_dict_command):
+        pass
         # BankAccounts.remove_bank_account(name)
 
     @classmethod
-    def show_balance_func(cls, username,data_dict_command):
+    def show_balance_func(cls, username, data_dict_command):
         Wallets.get_balance_by_username(username)
 
     @classmethod
-    def show_bank_accounts_func(cls, username,data_dict_command):
+    def show_bank_accounts_func(cls, username, data_dict_command):
         BankAccounts.show_all_accounts_by_username(username=username)
 
     @classmethod
-    def show_reservation_func(cls, username,data_dict_command):
+    def show_reservation_func(cls, username, data_dict_command):
         Ticket.show_all_buy_tickets(username=username)
 
     @classmethod
-    def show_subscription_detail_func(cls, username,data_dict_command):
+    def show_subscription_detail_func(cls, username, data_dict_command):
+        pass
         # type_subs = Subscriptions.get_subscription_type_name(user_id)
         # if type_subs == 3:
         #     print("options of this Golden subscription is:")
@@ -65,107 +67,109 @@ class InteractionsCommands:
         #     print("options of this Bronze subscription is:")
 
     @classmethod
-    def remove_account_func(cls, username,data_dict_command):
+    def remove_account_func(cls, username, data_dict_command):
+        pass
         # Users.remove_account(user_id)
 
     @classmethod
-    def add_bank_Account_func(cls, username,data_dict_command):
+    def add_bank_Account_func(cls, username, data_dict_command):
+        cvv2 = data_dict_command['cvv2']
+        name = data_dict_command['name']
+
         # BankAccounts.add_bank_account(account)
 
     @classmethod
-    def re_charge_func(cls, username,data_dict_command):
+    def re_charge_func(cls, username, data_dict_command):
+        pass
         # Wallets.re_charge_wallet(user_id, bank_name, amount)
 
     @classmethod
-    def buy_subscription_func(cls, username,data_dict_command):
+    def buy_subscription_func(cls, username, data_dict_command):
+        pass
         # Subscriptions.buy_subscription(user_id, subs_type)
 
     @classmethod
-    def add_bank_account_func(cls, username,data_dict_command):
+    def add_bank_account_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def show_films_func(cls,username,data_dict_command):
+    def show_films_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def choose_film(cls,username,data_dict_command):
+    def choose_film(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def show_screens_func(cls,username,data_dict_command):
+    def show_screens_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def choose_screen_func(cls,username,data_dict_command):
+    def choose_screen_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def show_seats_func(cls,username,data_dict_command):
+    def show_seats_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def choose_seat_func(cls,username,data_dict_command):
+    def choose_seat_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def cancel_reservation_func(cls,username,data_dict_command):
+    def cancel_reservation_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def show_watched_films_func(cls,username,data_dict_command):
+    def show_watched_films_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def send_score_film_func(cls,username,data_dict_command):
+    def send_score_film_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def show_films_scores(cls,username,data_dict_command):
+    def show_films_scores(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def show_comments_film_func(cls,username,data_dict_command):
+    def show_comments_film_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def send_comment(cls,username,data_dict_command):
+    def send_comment(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def reply_comment_func(cls,username,data_dict_command):
+    def reply_comment_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def send_message_to_support_func(cls,username,data_dict_command):
+    def send_message_to_support_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def auto_reservation_func(cls,username,data_dict_command):
+    def auto_reservation_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def add_screens_func(cls,username,data_dict_command):
+    def add_screens_func(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def send_message_employee(cls,username,data_dict_command):
+    def send_message_employee(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def add_session(cls,username,data_dict_command):
+    def add_session(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def add_film(cls,username,data_dict_command):
+    def add_film(cls, username, data_dict_command):
         pass
 
     @classmethod
-    def add_seats(cls,username,data_dict_command):
-        pass
-
-    @classmethod
-    def remove_film(cls,username,data_dict_command):
+    def add_seats(cls, username, data_dict_command):
         pass
 
 
@@ -183,8 +187,6 @@ interactions_commands = {
     'add_session': interactions_commands_instance.add_session,
     'add_film': interactions_commands_instance.add_film,
     'add_seats': interactions_commands_instance.add_seats,
-    'remove_film': interactions_commands_instance.remove_film,
-    'remove_bank_account': interactions_commands_instance.remove_bank_account_func,
     'show_balance': interactions_commands_instance.show_balance_func,
     'show_bank_accounts': interactions_commands_instance.show_bank_accounts_func,
     'show_reservation': interactions_commands_instance.show_reservation_func,
