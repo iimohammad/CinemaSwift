@@ -51,9 +51,9 @@ class BankAccounts:
         queryset.add_bank_account_query(data)
 
         BankAccounts.add_log(
-            f"Bank account created _ {
+            f"""Bank account created _ {
                 account.user_id=} _ {
-                account.name=}")
+                account.name=}""")
 
         return True
 
@@ -94,10 +94,10 @@ class BankAccounts:
         queryset.update_balance_query(id_bank, balance, amount)
 
         BankAccounts.add_log(
-            f"Deposit _ {
+            f"""Deposit _ {
                 user_id=} _ {
                 account_name=} _ {
-                amount=}")
+                amount=}""")
 
         return True
 
@@ -158,10 +158,6 @@ class BankAccounts:
 
     @staticmethod
     def remove_bank_account(name):
-        pass
-
-    @staticmethod
-    def show_all_accounts_by_username(username):
         pass
 
 

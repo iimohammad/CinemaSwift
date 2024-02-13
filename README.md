@@ -1,19 +1,44 @@
+![](https://img.shields.io/badge/Programming_Language-Python-blue.svg)
+[![Supported Versions](https://img.shields.io/pypi/pyversions/requests.svg)](https://pypi.org/project/requests)
+[![PyPI](https://img.shields.io/pypi/v/py-mdb.svg)](https://pypi.org/project/py-mdb/)
+[![License](https://img.shields.io/pypi/l/py-mdb.svg)](https://github.com/zembrodt/pymdb/blob/master/LICENSE)
+[![mysql_licesnce](https://img.shields.io/pypi/l/py-mdb.svg)](https://github.com/zembrodt/pymdb/blob/master/LICENSE)
+
+ 
  <H1>CinemaSwift</H1> 
 
-<h3>Introuction</h3>
+## Introuction
 <p>This project manages online cinema reservations, incorporating several noteworthy features such as the ability to rate films and make reservations. Users can score their favorite movies and easily book seats for upcoming screenings, enhancing the overall cinema-going experience.</p>
+
+## Features
+-  Add / Update / Delete Movies
+
+-  Add / Update / Delete cinema
+
+-  Add / Update / Delete Showtimes
+
+-  Add / Update / Delete users
+
+
 
 ## Installation Guid 
 
 <p>Follow these steps to set up the project:</p>
 
-<h4>1- Clone the repository to your local machine:<h4>
+<h4>1- From PyPI using pip:<h4>
 
 ```bash
-git clone https://github.com/your-username/CinemaManagement.git
-
+pip install CinemaSwift
 ```
 
+<h3>Development version from GitHub:</h3>
+
+<h4>2- Clone the repository to your local machine:<h4>
+
+```bash
+git clone https://github.com/CinemaSwift.git
+
+```
 <p>2- Create a virtual environment py this command in terminal: </p>
 
 ```bash
@@ -21,7 +46,7 @@ py -m venv venv
 ```
 <p>3- Active the virtual environment by this command:</p>
 
-- For Windows :
+- For windows :
 ```bash
 \venv\Scripts\activate
 ```
@@ -37,6 +62,13 @@ source venv/bin\activate
 ```bash
 pip install -r requirements.txt
 ```
+
+<p> 5- To run the project, execute the following command:</p>
+
+```bash
+python main.py
+```
+
 
 ## Project Details 
 <p>In this project, the backend development follows the MVC (Model-View-Controller) architecture, where the backend is separated into different parts. Each of these parts will be explained in detail here to provide a comprehensive understanding of the project's structural design and organization.</P>
@@ -62,10 +94,33 @@ pip install -r requirements.txt
 
 ### Usage
 
-<p>To run the project, execute the following command:</p>
-
 ```bash
-python main.py
+BUFFOR_SIZE_DATA = 65507 - UDP max packet size to avoid this use TCP instead of UDP
 ```
 
-<p>Follow the on-screen instructions to navigate through the application, perform actions, and experience the functionalities offered by CinemaManagement.</p>
+```bash
+host_ip_adress = '' - localhost by default(127.0.0.1)
+```
+
+```bash
+host_port = 1024 - free PORT
+```
+
+### Report
+
+<p>The CinemaSwift project successfully implements an online cinema reservation system with user authentication, film rating, and reservation functionalities. The MVC architecture ensures a well-organized and modular codebase, promoting code reusability and maintainability. The project's main execution module, users module, and client interaction module work in harmony to provide users with a smooth and efficient experience.
+
+The installation guide facilitates the setup process, ensuring that users can quickly deploy the system on their local machines. By following the outlined steps, users can create a virtual environment, install necessary dependencies, and start exploring the functionalities of CinemaSwift.
+
+Overall, the project showcases effective backend development practices, encapsulating database management, user models, and client interactions in a cohesive structure. The modular design allows for easy extension and modification, making it an excellent foundation for future enhancements and feature additions.</p>
+
+### Project Link
+
+<a href='https://github.com/iimohammad/CinemaSwift'>Visit my github  project!</a>
+
+<p>Note: The specific details of individual files are omitted as per your request. The emphasis is on providing guidance for setting up and running the project along with a general overview of its features.</p>
+
+### Conclusion
+
+<p>This readme file is primarily intended for project setup and usage. It does not include detailed explanations of individual files. For specific file functionalities, refer to the relevant sections in this readme.</p>
+

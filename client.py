@@ -61,7 +61,7 @@ def show_services():
 
 
 def main():
-    global send_data
+    global send_data, comment, parent_id
     parser = argparse.ArgumentParser(
         description="Client for Movie Reservation System")
     parser.add_argument(
@@ -144,7 +144,7 @@ def main():
                         print(login_response.decode('utf-8'))
 
                     if command == "change_email":
-                        send_data = getpass.getpass("Enter new email:")
+                        send_data = input("Enter new email:")
 
                         command_to_send = {'action': command,
                                            'email': send_data}
@@ -153,7 +153,7 @@ def main():
                         print(login_response.decode('utf-8'))
 
                     if command == "change_phoneNumber":
-                        send_data = getpass.getpass("Enter new phone Number:")
+                        send_data = input("Enter new phone Number:")
 
                         command_to_send = {'action': command,
                                            'phoneNumber': send_data}
@@ -172,6 +172,7 @@ def main():
                             pass
                         else:
                             print("Access denied")
+
                     if command == "add_seats":
                         if local_client_settings.get_is_admin():
                             pass
@@ -197,64 +198,130 @@ def main():
                             print("Access denied")
 
                     if command == "send_comment":
-                        pass
+                        film_name = input("Enter the name of film")
+                        new_or_reply = input("Enter you want to reply or new comment: 1: for new, 2 for reply")
+                        if int(new_or_reply) == 1:
+                            comment = input("Type your comment:")
+                            parent_id = -1
 
-                    if command == "reply_comment":
-                        pass
+                        elif int(new_or_reply) == 2:
+                            parent_id = int(input("Enter the number of which comment you want to reply:"))
+                            comment = input("Type your comment:")
+                        else:
+                            print("wrong choose")
+
+                        command_to_send = {'action': command,
+                                           'text': comment,
+                                           'film_name': film_name,
+                                           'parent_comments_id': parent_id
+                                           }
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_comments_film":
-                        pass
+                        send_data = input("Enter film_id")
+                        command_to_send = {'action': command,
+                                           'film_id': send_data}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_films_scores":
-                        pass
+                        send_data = input("Enter film_id")
+                        command_to_send = {'action': command,
+                                           'film_id': send_data}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "send_score_film":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_watched_films":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
-                    if command == "cancel_reservation":
-                        pass
-
-                    if command == "choose_seat":
-                        pass
+                if command == "cancel_reservation":
+                    send_data = input("Enter ticket_id")
+                    command_to_send = {'action': command,
+                                       'ticket_id': send_data}
+                    login_response = client.send_dict_to_server(
+                        data_dict=command_to_send)
+                    print(login_response.decode('utf-8'))
 
                     if command == "show_seats":
-                        pass
-
-                    if command == "choose_screen":
-                        pass
+                        send_data = input("Enter session_id")
+                        command_to_send = {'action': command,
+                                           'session_id': send_data}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_screens":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "choose_film":
-                        pass
+                        send_data = input("Enter film_id")
+                        command_to_send = {'action': command,
+                                           'film_id': send_data}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_films":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "add_bank_account":
-                        pass
-
-                    if command == "buy_subscription":
-                        pass
+                        bank_account_name = input("Enter bank Account name")
+                        cvv2 = input("Enter the CVV2")
+                        password = getpass.getpass("Enter the password")
+                        command_to_send = {'action': command,
+                                           'name': bank_account_name,
+                                           'cvv': cvv2,
+                                           'password': password
+                                           }
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "re_charge":
-                        pass
-
-                    if command == "show_subscription_detail":
-                        pass
+                        amount = int(input("How much do you want to charge"))
+                        command_to_send = {'action': command,
+                                           'amount': amount
+                                           }
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_reservation":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_bank_accounts":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
                     if command == "show_balance":
-                        pass
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
         elif response == "Incorrect Password":
             print("You Enter wrong Password ")

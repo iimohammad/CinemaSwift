@@ -64,6 +64,7 @@ def run():
         age_rating INT NOT NULL,
         duration INT NOT NULL,
         point DECIMAL(3,1) NOT NULL,
+        weighted_point DECIMAL(3,1) NOT NULL,
         PRIMARY KEY (id)
     );
     """
@@ -89,7 +90,8 @@ def run():
     CREATE TABLE IF NOT EXISTS filmspoints (
       film_id INT NOT NULL,
       user_id VARCHAR(255) NOT NULL,
-      point INT NOT NULL,
+      point INT,
+      coefficient INT,
       PRIMARY KEY (film_id, user_id),
       FOREIGN KEY (film_id) REFERENCES films (id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE

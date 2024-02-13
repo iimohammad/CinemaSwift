@@ -63,7 +63,28 @@ class UserInputValidator:
     Attributes:
         None
     """
+    @staticmethod
+    def _emailValidatorUser(email: str):
+        """
+                Validates an email address for a user.
 
+                Args:
+                    email (str): The email address to be validated.
+
+                Returns:
+                    bool: True if the email address is valid.
+
+                Raises:
+                    personalized_exceptions.InvalidEmailError: If the email address is invalid or already exists.
+        """
+        pattern: str = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        match: Match[str] | None = re.match(pattern, email)
+        if not match:
+            raise personalized_exceptions.InvalidEmailError()
+        r = queryset.email_exist_check_query(email)
+        if len(r) > 0:
+            raise personalized_exceptions.InvalidEmailError()
+        return True
     @staticmethod
     def hash_password(password: str) -> object:
         """
@@ -164,29 +185,6 @@ class Users(UserInputValidator):
     """
 
     @staticmethod
-    def _emailValidatorUser(email: str):
-        """
-                Validates an email address for a user.
-
-                Args:
-                    email (str): The email address to be validated.
-
-                Returns:
-                    bool: True if the email address is valid.
-
-                Raises:
-                    personalized_exceptions.InvalidEmailError: If the email address is invalid or already exists.
-        """
-        pattern: str = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        match: Match[str] | None = re.match(pattern, email)
-        if not match:
-            raise personalized_exceptions.InvalidEmailError()
-        r = queryset.email_exist_check(email)
-        if len(r) > 0:
-            raise personalized_exceptions.InvalidEmailError()
-        return True
-
-    @staticmethod
     def AddUser(user: models.user_model):
         """
                 Adds a new user to the system.
@@ -199,29 +197,28 @@ class Users(UserInputValidator):
                     personalized_exceptions.InvalidEmailError: If the email address is invalid or already exists.
                     personalized_exceptions.InvalidPhoneError: If the phone number is invalid.
         """
-        if Users.username_validator(user.username):
-            if Users._emailValidatorUser(user.email):
-                if user.phone is None or Users.phone_validator(user.phone):
-                    user_id = str(uuid.uuid4())
-                    user_data = {
-                        'id': user_id,
-                        'user_name': user.username,
-                        'email': user.email,
-                        'birthday': user.birthday,
-                        'phone': user.phone,
-                        'subscription_type_id': user.subscription_type_id,
-                        'password': Users.hash_password(user.password),
-                        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'last_login': None,
-                        'is_admin': 0
-                    }
+        Users.username_validator(user.username)
+        Users._emailValidatorUser(user.email)
+        if user.phone is None or Users.phone_validator(user.phone):
+            user_id = str(uuid.uuid4())
+            user_data = {
+                'id': user_id,
+                'user_name': user.username,
+                'email': user.email,
+                'birthday': user.birthday,
+                'phone': user.phone,
+                'subscription_type_id': user.subscription_type_id,
+                'password': Users.hash_password(user.password),
+                'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'last_login': None,
+                'is_admin': 0
+                }
 
-                    queryset.add_user_query(user_data)
-
+            queryset.add_user_query(user_data)
         return True
 
     @staticmethod
-    def update_user_email(user_id: str, email: str):
+    def change_user_email(user_id: str, email: str)->bool:
         """
                 Updates the email address of a user.
 
@@ -235,12 +232,11 @@ class Users(UserInputValidator):
                 Raises:
                     personalized_exceptions.InvalidEmailError: If the email address is invalid.
         """
-        if not Users._emailValidatorUser(email):
-            raise personalized_exceptions.InvalidEmailError()
+        Users._emailValidatorUser(email)
         queryset.update_user_email_query(user_id, email)
-
+        return True
     @staticmethod
-    def update_user_phone(user_id: str, phone: str):
+    def change_user_phone(user_id: str, phone: str)->bool:
         """
                 Updates the phone number of a user.
 
@@ -254,10 +250,10 @@ class Users(UserInputValidator):
                 Raises:
                     personalized_exceptions.InvalidPhoneError: If the phone number is invalid.
         """
-        if not Users.phone_validator(phone):
-            raise personalized_exceptions.InvalidPhoneError()
+        Users.phone_validator(phone)
         queryset.update_user_phone_query(user_id, phone)
-
+        return True
+    
     @staticmethod
     def _update_last_login(user_id: str):
         """
@@ -314,35 +310,28 @@ class Users(UserInputValidator):
         """
         queryset.set_user_as_admin_by_username(username=username)
 
-    @classmethod
-    def get_user_birthday(cls, user_id):
-        pass
+    @staticmethod
+    def get_user_birthday(user_id):
+        return queryset.get_user_birthday_query(user_id)
 
     @staticmethod
-    def is_admin(username):
-        # result = queryset.is_admin_check_query(username)
-        # return result
+    def is_admin(user_id:str):
+        return  queryset.is_admin_check_query(user_id)
+
+    @staticmethod
+    def change_username(user_id:str, new_username:str)->bool:
+        Users.username_validator(new_username)
+        queryset.change_username_query(user_id,new_username)
         return True
 
     @staticmethod
-    def change_username(username, new_username):
+    def change_password(user_id:str, password:str)->bool:
+        Users.password_validator(password)
+        queryset.change_password_query(user_id , Users.hash_password(password))
         return True
-
     @staticmethod
-    def change_password(username, password):
-        pass
-
-    @staticmethod
-    def change_email(username, email):
-        pass
-
-    @staticmethod
-    def change_phone_number(username, phone):
-        pass
-
-    @staticmethod
-    def show_profile(username):
-        pass
+    def show_profile(user_id:str)->dict:
+        return queryset.show_profile_query(user_id)
 
     @staticmethod
     def remove_account(user_id):
