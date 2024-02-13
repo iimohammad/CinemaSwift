@@ -45,13 +45,13 @@ class TCPServer:
             self,
             host=local_settings.Network['host'],
             port=local_settings.Network['port']):
-        self.host = host
-        self.port = int(port)
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind((self.host, self.port))
-        self.server_socket.listen()
-        self.logged_in_users = {}
-        self.lock = threading.Lock()
+            self.host = host
+            self.port = int(port)
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.bind((self.host, self.port))
+            self.server_socket.listen()
+            self.logged_in_users = {}
+            self.lock = threading.Lock()
 
     def run_server(self):
         print(f"Server listening on {self.host}:{self.port}")
@@ -109,7 +109,8 @@ class TCPServer:
 
                 if Users.is_admin(user_id):
                     response = "Admin Login successful"
-                response = "Login successful!"
+                else:
+                    response = "Login successful!"
 
                 while True:
                     client_socket.sendall(response.encode('utf-8'))
@@ -121,6 +122,7 @@ class TCPServer:
                     if Users.is_admin(user_id):
                         try:
                             # This part use for admin users
+                            print("------------")
                             if final_command in interation_commands.interactions_commands:
                                 print("find")
                                 response = interation_commands.interactions_commands[final_command](

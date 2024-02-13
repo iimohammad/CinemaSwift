@@ -189,7 +189,17 @@ def main():
 
                     if command == "add_film":
                         if local_client_settings.get_is_admin():
-                            pass
+                            film_name = input("Enter film name:")
+                            age_rating = int(input("Enter age rating:"))
+                            duration = int(input("Enter duration:"))
+                            command_to_send = {'action': command,
+                                               'name': film_name,
+                                               'age_rating': age_rating,
+                                               'duration': duration
+                                               }
+                            login_response = client.send_dict_to_server(
+                                data_dict=command_to_send)
+                            print(login_response.decode('utf-8'))
                         else:
                             print("Access denied")
 

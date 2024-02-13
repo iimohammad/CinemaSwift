@@ -11,13 +11,13 @@ def add_film_query(film_name, film_age_rating, film_duration):
     database_manager.execute_query(query)
 
 
-def get_film_query(film_id):
-    query = f"SELECT id,name,age_rating,duration,point FROM films WHERE id = '{film_id}'"
+def get_films_list_query():
+    query = "SELECT id,name,age_rating,duration,point,weighted_point FROM films;"
     r = database_manager.execute_query_select(query)
     return r
 
 def get_films_list_query():
-    query = "SELECT id,name,age_rating,duration,point FROM films;"
+    query = "SELECT id,name,age_rating,duration,point,weighted_point FROM films;"
     r = database_manager.execute_query_select(query)
     return r
 

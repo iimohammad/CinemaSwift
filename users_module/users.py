@@ -73,7 +73,7 @@ class UserInputValidator:
                     personalized_exceptions.InvalidEmailError: If the email address is invalid or already exists.
         """
         pattern: str = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        match: Match[str] | None = re.match(pattern, email)
+        match: re.Match[str] | None = re.match(pattern, email)
         if not match:
             raise personalized_exceptions.InvalidEmailError()
         r = queryset.email_exist_check_query(email)

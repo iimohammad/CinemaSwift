@@ -1,6 +1,6 @@
 from db import models
 from db.database_manager import DatabaseManager
-from users_module import personalized_exceptions , users
+from users_module import personalized_exceptions, users
 from comments_module import queryset
 
 
@@ -35,14 +35,18 @@ class Films:
         r = queryset.get_film_query(film_id=film_id)
         if len(r) == 0:
             raise personalized_exceptions.FilmNotFount()
-        return models.film_model(r[0][0], r[0][1], r[0][2], r[0][3], r[0][4],r[0][5])
-    
+        return models.film_model(r[0][0], r[0][1], r[0][2], r[0][3], r[0][4], r[0][5])
+
     @staticmethod
-    def get_films_list()->list:
+    def get_films_list() -> list:
         films = []
         r = queryset.get_films_list_query()
+        # print(r)
         for i in r:
-            films.append(models.film_model(i[0][0], i[0][1], i[0][2], i[0][3], i[0][4], i[0][5]))
+            film = models.film_model(i[0], i[1], i[2], i[3], i[4], i[5])
+            # print(film)
+            films.append(film)
+
         return films
 
     @staticmethod
@@ -113,9 +117,9 @@ class FilmsPoints:
             coefficient = 2
         r = queryset.select_point_query(user_id=user_id, film_id=film_id)
         if len(r) > 0:
-            queryset.update_point_film(user_id=user_id, film_id=film_id, point=point,coefficient=coefficient)
+            queryset.update_point_film(user_id=user_id, film_id=film_id, point=point, coefficient=coefficient)
         else:
-            queryset.insert_films_point(film_id=film_id, user_id=user_id, point=point,coefficient=coefficient)
+            queryset.insert_films_point(film_id=film_id, user_id=user_id, point=point, coefficient=coefficient)
         Films.calculate_point(film_id)
         return True
 
@@ -172,7 +176,8 @@ class Comments:
         Returns:
             bool: True if the comment information is updated successfully, False otherwise.
         """
-        queryset.update_comment_query(comment.film_id,comment.user_id,comment.text,comment.parent_comments_id,comment.id)
+        queryset.update_comment_query(comment.film_id, comment.user_id, comment.text, comment.parent_comments_id,
+                                      comment.id)
         return True
 
     @staticmethod

@@ -116,7 +116,19 @@ class InteractionsCommands:
 
     @classmethod
     def show_films_func(cls, user_id, data_dict_command):
-        return Films.get_films_list()
+
+        response = ""
+        films_list = Films.get_films_list()
+        for item in films_list:
+            name = item.name
+            age_rating = item.age_rating
+            duration = item.duration
+            point = item.point
+            weighted_point = item.weighted_point
+            response_item = f"film name :{name} - age rating : {age_rating} - duration :{duration} - point:{point} -weighted_point: {weighted_point}"
+            response += (response_item + "\n")
+        print(response)
+        return response
 
     @classmethod
     def choose_film(cls, user_id, data_dict_command):
@@ -278,3 +290,4 @@ interactions_commands = {
 # user_interactions_commands_instance.
 # admin_interaction_commands_instance.show_admin_services()
 # common_interactions_commands_instance.change_password_func("mohammad")
+# interactions_commands_instance.show_films_func()
