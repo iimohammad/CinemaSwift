@@ -1,9 +1,3 @@
-from re import Match
-import sys
-import os
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
 from db import models
 import re
 import uuid
@@ -11,6 +5,7 @@ from users_module import personalized_exceptions
 import bcrypt
 from users_module import queryset
 from datetime import datetime
+from payment_module.wallet import Wallets
 
 
 class Subscriptions:
@@ -183,7 +178,9 @@ class Users(UserInputValidator):
         Attributes:
             None
     """
-
+    @staticmethod
+    def get_user_id_by_username(username:str):
+        return queryset.get_user_id_by_username_query(username)
     @staticmethod
     def AddUser(user: models.user_model):
         """
@@ -215,6 +212,7 @@ class Users(UserInputValidator):
                 }
 
             queryset.add_user_query(user_data)
+            Wallets.create_wallet(user_id)
         return True
 
     @staticmethod
