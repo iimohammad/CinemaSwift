@@ -39,8 +39,7 @@ class TCPClient:
 
             response = self.client_socket.recv(1024)
             print(
-                f"Received response from the server: {
-                response.decode('utf-8')}")
+                f"Received response from the server: {response.decode('utf-8')}")
             return response
         except ConnectionAbortedError:
             print("Connection to the server was unexpectedly closed.")
