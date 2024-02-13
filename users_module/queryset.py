@@ -24,13 +24,15 @@ def username_exits_check(username):
     r = database_manager.execute_query_select(query)
     return r
 
-def change_username_query(user_id:str,user_name:str)->None:
+
+def change_username_query(user_id: str, user_name: str) -> None:
     query = f"""
                 UPDATE `cinemaswift`.`users` 
                 SET `user_name` = '{user_name}' 
                 WHERE (`id` = '{user_id}');
                 """
     database_manager.execute_query_select(query)
+
 
 def change_password_query(user_id: str, password: str) -> None:
     query = """
@@ -40,6 +42,7 @@ def change_password_query(user_id: str, password: str) -> None:
     """
     data = {'password': password, 'user_id': user_id}
     database_manager.execute_query_select(query, data)
+
 
 def email_exist_check_query(email):
     query = f"""
@@ -156,11 +159,14 @@ def is_admin_check_query(user_id):
         SELECT is_admin FROM users
         WHERE id = '{user_id}';
         """
-    if query == 1:
+    r = database_manager.execute_query_select(query)
+    if r[0][0] == 1:
+
         return True
     return False
 
-def show_profile_query(user_id:str)->dict:
+
+def show_profile_query(user_id: str) -> dict:
     query = f"""
         SELECT users.user_name,users.email,users.birthday,users.phone,subscriptions.name,users.created_at FROM cinemaswift.users
         join subscriptions on subscriptions.id = users.subscription_type_id
@@ -168,10 +174,10 @@ def show_profile_query(user_id:str)->dict:
         """
     r = database_manager.execute_query_select(query)
     return {
-            'user_name':r[0][0],
-            'email':r[0][1],
-            'birthday':r[0][2],
-            'phone':r[0][3],
-            'subscription_type':r[0][4],
-            'created_at':r[0][5],
-        }
+        'user_name': r[0][0],
+        'email': r[0][1],
+        'birthday': r[0][2],
+        'phone': r[0][3],
+        'subscription_type': r[0][4],
+        'created_at': r[0][5],
+    }

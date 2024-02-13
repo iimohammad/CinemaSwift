@@ -1,7 +1,7 @@
 from db import models
 from db.database_manager import DatabaseManager
 from users_module import personalized_exceptions , users
-import queryset
+from comments_module import queryset
 
 
 class Films:

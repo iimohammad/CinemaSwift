@@ -97,6 +97,8 @@ def main():
                 'phone': phone,
                 'birthday': birthday
             }
+            # response = client.send_dict_to_server(data_dict=data_to_send)
+            # print(response)
 
         elif args.action == 'login':
             if not args.username:
@@ -122,10 +124,16 @@ def main():
         if response.decode('utf-8') == "Login successful!" or response.decode('utf-8') == "Admin Login successful":
             while args.action == 'login':
                 command = input(
-                    "Enter a command or if you want to see all of our services enter -show services:\n ")
+                    "Enter a command or if you want to see all of our services enter show_services:\n ")
                 if command.lower() == 'logout':
                     break
                 else:
+                    if command == "show_services":
+                        command_to_send = {'action': command}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
+
                     if command == "change_username":
                         send_data = input("Enter new username please:")
                         command_to_send = {'action': command,

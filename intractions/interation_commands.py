@@ -185,6 +185,21 @@ class InteractionsCommands:
         pass
 
     @classmethod
+    def show_services(cls, user_id, data_dict_command):
+        responselist = list()
+        for i in interactions_commands:
+            responselist.append(i)
+        print(responselist)
+        response = ""
+        if Users.is_admin(user_id=user_id):
+            for i in responselist:
+                response += (i + "\n")
+        else:
+            for i in range(min(22, len(responselist))):
+                response += (responselist[i] + "\n")
+        return response
+
+    @classmethod
     def add_screens_func(cls, user_id, data_dict_command):
         film_id = data_dict_command['film_id']
         number_of_screens = data_dict_command['number_of_screens']
@@ -235,11 +250,6 @@ interactions_commands = {
     'change_email': interactions_commands_instance.change_email_func,
     'change_phoneNumber': interactions_commands_instance.change_phoneNumber,
     'show_profile': interactions_commands_instance.show_profile_func,
-    'add_screens': interactions_commands_instance.add_screens_func,
-    'send_message_employee': interactions_commands_instance.send_message_employee,
-    'add_session': interactions_commands_instance.add_session,
-    'add_film': interactions_commands_instance.add_film,
-    'remove_film': interactions_commands_instance.remove_film,
     'show_balance': interactions_commands_instance.show_wallet_balance_func,
     'show_bank_accounts': interactions_commands_instance.show_bank_accounts_func,
     'show_reservation': interactions_commands_instance.show_reservation_func,
@@ -257,6 +267,12 @@ interactions_commands = {
     'show_comments_film': interactions_commands_instance.show_comments_film_func,
     'send_comment': interactions_commands_instance.send_comment,
     'send_message_to_support': interactions_commands_instance.send_message_to_support_func,
+    'show_services': interactions_commands_instance.show_services,
+    'send_message_employee': interactions_commands_instance.send_message_employee,
+    'add_session': interactions_commands_instance.add_session,
+    'add_film': interactions_commands_instance.add_film,
+    'remove_film': interactions_commands_instance.remove_film,
+    'add_screens': interactions_commands_instance.add_screens_func,
 }
 
 # user_interactions_commands_instance.
