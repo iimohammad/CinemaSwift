@@ -95,12 +95,14 @@ class film_model:
             name: str,
             age_rating: int,
             duration: int,
-            point: int) -> None:
+            point: float,
+            weighted_point:float) -> None:
         self.id = id
         self.name = name
         self.age_rating = age_rating
         self.duration = duration
         self.point = point
+        self.weighted_point = weighted_point
 
 
 class comment_model:

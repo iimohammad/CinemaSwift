@@ -235,7 +235,7 @@ class InteractionsCommands:
         name = data_dict_command['name']
         age_rating = data_dict_command['age_rating']
         duration = data_dict_command['duration']
-        Films.add_film(models.film_model(-1,name,age_rating,duration,0))
+        Films.add_film(models.film_model(-1,name,age_rating,duration,0,0))
         return True
 
     @classmethod
