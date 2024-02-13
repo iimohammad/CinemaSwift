@@ -12,7 +12,11 @@ def add_user_query(user_data: object) -> None:
                     VALUES (%(id)s, %(user_name)s, %(email)s, %(birthday)s, %(phone)s,%(subscription_type_id)s, %(password)s , %(is_admin)s)
                     """
     database_manager.execute_query(insert_query, user_data)
-
+def get_user_id_by_username_query(username:str):
+    query = f"""SELECT id from users 
+            WHERE username = '{username}';""" 
+    r = database_manager.execute_query_select(query)
+    return r[0][0]
 
 def username_exits_check(username):
     query = f"""
