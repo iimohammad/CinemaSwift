@@ -45,13 +45,13 @@ class TCPServer:
             self,
             host=local_settings.Network['host'],
             port=local_settings.Network['port']):
-        self.host = host
-        self.port = int(port)
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind((self.host, self.port))
-        self.server_socket.listen()
-        self.logged_in_users = {}
-        self.lock = threading.Lock()
+            self.host = host
+            self.port = int(port)
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.bind((self.host, self.port))
+            self.server_socket.listen()
+            self.logged_in_users = {}
+            self.lock = threading.Lock()
 
     def run_server(self):
         print(f"Server listening on {self.host}:{self.port}")

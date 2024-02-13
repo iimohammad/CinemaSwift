@@ -73,8 +73,8 @@ def select_wallet_query(user_id):
 
 
 def add_wallet_query(user_id):
-    query = f"INSERT INTO wallets  (user_id, balance) VALUES ('{
-    user_id}', 0);"
+    query = f"""INSERT INTO wallets  (user_id, balance) VALUES ('{
+    user_id}', 0);"""
     database_manager.execute_query(query)
 
 
