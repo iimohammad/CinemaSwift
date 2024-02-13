@@ -109,7 +109,8 @@ class TCPServer:
 
                 if Users.is_admin(user_id):
                     response = "Admin Login successful"
-                response = "Login successful!"
+                else:
+                    response = "Login successful!"
 
                 while True:
                     client_socket.sendall(response.encode('utf-8'))
@@ -121,6 +122,7 @@ class TCPServer:
                     if Users.is_admin(user_id):
                         try:
                             # This part use for admin users
+                            print("------------")
                             if final_command in interation_commands.interactions_commands:
                                 print("find")
                                 response = interation_commands.interactions_commands[final_command](
