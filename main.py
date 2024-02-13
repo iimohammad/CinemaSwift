@@ -91,9 +91,12 @@ class TCPServer:
                 password=password,
                 is_admin=0)
 
-            Users.AddUser(user=user)
-
-            response = "Signup successful!"
+            try:
+                Users.AddUser(user=user)
+                response = "Signup successful!"
+            except Exception as e:
+                print(response)
+                # response=response.encode('utf-8')
 
         elif action == 'login':
             username = data_dict['username']
@@ -104,7 +107,7 @@ class TCPServer:
                 with self.lock:
                     self.logged_in_users[client_socket] = username
 
-                if Users.is_admin(username):
+                if Users.is_admin(user_id):
                     response = "Admin Login successful"
                 response = "Login successful!"
 
@@ -115,13 +118,13 @@ class TCPServer:
                     data_dict_command = json.loads(received_data)
                     final_command = data_dict_command['action']
 
-                    if Users.is_admin(username):
+                    if Users.is_admin(user_id):
                         try:
                             # This part use for admin users
                             if final_command in interation_commands.interactions_commands:
                                 print("find")
                                 response = interation_commands.interactions_commands[final_command](
-                                    username, data_dict_command)
+                                    user_id, data_dict_command)
                                 # client_socket.sendall(response.encode('utf-8'))
                         except:
                             response = "Not find this Command"
