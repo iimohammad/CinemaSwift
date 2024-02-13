@@ -129,7 +129,7 @@ def main():
                     break
                 else:
                     if command == "show_services":
-                        command_to_send = {'action': command}
+                        command_to_send = {'action': command, }
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
@@ -177,13 +177,15 @@ def main():
 
                     if command == "add_screens":
                         if local_client_settings.get_is_admin():
-                            pass
-                        else:
-                            print("Access denied")
-
-                    if command == "add_seats":
-                        if local_client_settings.get_is_admin():
-                            pass
+                            film_name = input("Enter film name:")
+                            number_of_screens = int(input("Enter number_of_screens:"))
+                            command_to_send = {'action': command,
+                                               'film_name': film_name,
+                                               'number_of_screens': number_of_screens
+                                               }
+                            login_response = client.send_dict_to_server(
+                                data_dict=command_to_send)
+                            print(login_response.decode('utf-8'))
                         else:
                             print("Access denied")
 

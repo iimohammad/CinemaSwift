@@ -131,12 +131,13 @@ class Ticket:
         for i in r:
             tickets.append([i[0],i[1],i[2]])
         return tickets
+
     @classmethod
-    def show_all_past_tickets_by_user(cls, user_id:str):
+    def show_all_past_tickets_by_user(cls, user_id: str):
         tickets = []
         r = queryset.show_all_tickets_by_user_query(user_id=user_id)
         for i in r:
             start_time = i[1]
-            if start_time<datetime.now():
-                tickets.append([i[0],i[1],i[2]])
+            if start_time < datetime.now():
+                tickets.append([i[0], i[1], i[2], i[4]])
         return tickets

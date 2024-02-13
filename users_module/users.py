@@ -314,7 +314,7 @@ class Users(UserInputValidator):
 
     @staticmethod
     def is_admin(user_id:str):
-        return  queryset.is_admin_check_query(user_id)
+        return queryset.is_admin_check_query(user_id)
 
     @staticmethod
     def change_username(user_id:str, new_username:str)->bool:
