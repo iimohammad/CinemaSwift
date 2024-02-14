@@ -2,7 +2,7 @@ DATABASE = {
     'host': 'localhost',
     'user': 'root',
     'password': 'Amir@54321!@hos8318FAR',
-    'name': 'database',
+    'name': 'amirhsfar',
     'port': '3306',
 }
 Network = {
