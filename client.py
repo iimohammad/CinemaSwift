@@ -5,7 +5,7 @@ import getpass
 from intractions import interation_commands
 from settings import local_settings
 from intractions import clear_screen
-
+from datetime import datetime
 
 class clientSettings:
     def __init__(self):
@@ -38,9 +38,9 @@ class TCPClient:
             print(f"Sent dictionary to the server:\n{data_dict}")
 
             response = self.client_socket.recv(1024)
-            print(
-                f"Received response from the server: {
-                response.decode('utf-8')}")
+            # print(
+            #     f"""Received response from the server: {
+            #     response.decode('utf-8')}""")
             return response
         except ConnectionAbortedError:
             print("Connection to the server was unexpectedly closed.")
@@ -134,7 +134,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "change_username":
+                    elif command == "change_username":
                         send_data = input("Enter new username please:")
                         command_to_send = {'action': command,
                                            'username': send_data}
@@ -142,7 +142,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "change_password":
+                    elif command == "change_password":
                         send_data = getpass.getpass("Enter new password:")
 
                         command_to_send = {'action': command,
@@ -151,7 +151,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "change_email":
+                    elif command == "change_email":
                         send_data = input("Enter new email:")
 
                         command_to_send = {'action': command,
@@ -160,7 +160,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "change_phoneNumber":
+                    elif command == "change_phoneNumber":
                         send_data = input("Enter new phone Number:")
 
                         command_to_send = {'action': command,
@@ -169,18 +169,18 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_profile":
+                    elif command == "show_profile":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "add_screens":
+                    elif command == "add_screens":
                         if local_client_settings.get_is_admin():
-                            film_name = input("Enter film name:")
+                            film_id = input("Enter film id:")
                             number_of_screens = int(input("Enter number_of_screens:"))
                             command_to_send = {'action': command,
-                                               'film_name': film_name,
+                                               'film_id': film_id,
                                                'number_of_screens': number_of_screens
                                                }
                             login_response = client.send_dict_to_server(
@@ -188,8 +188,14 @@ def main():
                             print(login_response.decode('utf-8'))
                         else:
                             print("Access denied")
-
-                    if command == "add_film":
+                    elif command == "show_sessions":
+                        screen_id = int(input("Enter screen_id : "))
+                        command_to_send = {'action': command,
+                                           'screen_id' : screen_id}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
+                    elif command == "add_film":
                         if local_client_settings.get_is_admin():
                             film_name = input("Enter film name:")
                             age_rating = int(input("Enter age rating:"))
@@ -205,19 +211,37 @@ def main():
                         else:
                             print("Access denied")
 
-                    if command == "add_session":
+                    elif command == "add_session":
+                        if local_client_settings.get_is_admin():
+                            screen_id = input("Enter screen id:")
+                            start_time = input("Enter start time(datetime-'%Y-%m-%d %H:%M'):")
+                            capacity = int(input("Enter capacity:"))
+                            ticket_price = int(input("Enter ticket price for this session:"))
+                            command_to_send = {'action': command,
+                                                'screen_id': screen_id,
+                                               'start_time': start_time,
+                                               'capacity': capacity,
+                                               'ticket_price': ticket_price
+                                               }
+                            datetime_format = "%Y-%m-%d %H:%M"
+                            try:
+                                datetime.strptime(start_time, datetime_format)
+                            except:
+                                print("wrong datetime format")
+                                continue
+                            login_response = client.send_dict_to_server(
+                                data_dict=command_to_send)
+                            print(login_response.decode('utf-8'))
+                        else:
+                            print("Access denied")
+
+                    elif command == "send_message_employee":
                         if local_client_settings.get_is_admin():
                             pass
                         else:
                             print("Access denied")
 
-                    if command == "send_message_employee":
-                        if local_client_settings.get_is_admin():
-                            pass
-                        else:
-                            print("Access denied")
-
-                    if command == "send_comment":
+                    elif command == "send_comment":
                         film_name = input("Enter the name of film")
                         new_or_reply = input("Enter you want to reply or new comment: 1: for new, 2 for reply")
                         if int(new_or_reply) == 1:
@@ -239,7 +263,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_comments_film":
+                    elif command == "show_comments_film":
                         send_data = input("Enter film_id")
                         command_to_send = {'action': command,
                                            'film_id': send_data}
@@ -247,7 +271,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_films_scores":
+                    elif command == "show_films_scores":
                         send_data = input("Enter film_id")
                         command_to_send = {'action': command,
                                            'film_id': send_data}
@@ -255,27 +279,27 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "send_score_film":
+                    elif command == "send_score_film":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_watched_films":
+                    elif command == "show_watched_films":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                if command == "cancel_reservation":
-                    send_data = input("Enter ticket_id")
-                    command_to_send = {'action': command,
-                                       'ticket_id': send_data}
-                    login_response = client.send_dict_to_server(
-                        data_dict=command_to_send)
-                    print(login_response.decode('utf-8'))
+                    elif command == "cancel_reservation":
+                        send_data = input("Enter ticket_id")
+                        command_to_send = {'action': command,
+                                        'ticket_id': send_data}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
 
-                    if command == "show_seats":
+                    elif command == "show_seats":
                         send_data = input("Enter session_id")
                         command_to_send = {'action': command,
                                            'session_id': send_data}
@@ -283,13 +307,13 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_screens":
+                    elif command == "show_screens":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "choose_film":
+                    elif command == "choose_film":
                         send_data = input("Enter film_id")
                         command_to_send = {'action': command,
                                            'film_id': send_data}
@@ -297,13 +321,13 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_films":
+                    elif command == "show_films":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "add_bank_account":
+                    elif command == "add_bank_account":
                         bank_account_name = input("Enter bank Account name")
                         cvv2 = input("Enter the CVV2")
                         password = getpass.getpass("Enter the password")
@@ -316,7 +340,7 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "re_charge":
+                    elif command == "re_charge":
                         amount = int(input("How much do you want to charge"))
                         command_to_send = {'action': command,
                                            'amount': amount
@@ -325,19 +349,19 @@ def main():
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_reservation":
+                    elif command == "show_reservation":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_bank_accounts":
+                    elif command == "show_bank_accounts":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
 
-                    if command == "show_balance":
+                    elif command == "show_balance":
                         command_to_send = {'action': command}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)

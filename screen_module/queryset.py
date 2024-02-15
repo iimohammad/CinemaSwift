@@ -72,7 +72,7 @@ def insert_session_query(screen_id, timestamp_str, capacity, ticket_price):
 
 
 def find_by_time_and_screen_id_query(timestamp_str, screen_id):
-    query = f"""SELECT id FROM sessions WHERE start_time = '{timestamp_str}' AND screen_id = '{session.screen_id}'"""
+    query = f"""SELECT id FROM sessions WHERE start_time = '{timestamp_str}' AND screen_id = '{screen_id}'"""
     return database_manager.execute_query_select(query)
     
 
@@ -89,9 +89,12 @@ def delete_session_query(session_id):
 
 
 def find_remain_session(screen_id):
-    query = f"""SELECT id,start_time FROM cinemaswift.sessions
+    query = f"""
+                SELECT sessions.id , films.name , sessions.start_time , sessions.ticket_price FROM cinemaswift.sessions
+                join screens on sessions.screen_id = screens.id
+                join films on screens.film_id = films.id
                     WHERE
-                    screen_id = '{screen_id}';"""
+                    sessions.screen_id = '{screen_id}';"""
     return database_manager.execute_query_select(query)
 
 
