@@ -120,14 +120,15 @@ class InteractionsCommands:
         response = ""
         films_list = Films.get_films_list()
         for item in films_list:
+            id = item.id
             name = item.name
             age_rating = item.age_rating
             duration = item.duration
             point = item.point
             weighted_point = item.weighted_point
-            response_item = f"film name :{name} - age rating : {age_rating} - duration :{duration} - point:{point} -weighted_point: {weighted_point}"
+            response_item = f"id : {id} _ film name :{name} - age rating : {age_rating} - duration :{duration} - point:{point} -weighted_point: {weighted_point}"
             response += (response_item + "\n")
-        # print(response)
+        print(response)
         return response
 
     @classmethod
@@ -146,18 +147,21 @@ class InteractionsCommands:
             film_name = item[1]
             number_of_sans = item[2]
             response += f"screen_id = {screen_id} - film_name = {film_name} -number_of_sans= {number_of_sans} \n"
+        print(response)
         return response
 
     @classmethod
-    def show_sessions_available_func(cls, data_dict_command):
+    def show_sessions_available_func(cls,user_id, data_dict_command):
         screen_id = data_dict_command['screen_id']
         result = Session.get_available_sessions(screen_id=screen_id)
         response = ""
         for item in result:
             session_id = item[0]
-            start_time = item[1]
-            response += f"session_id = {session_id} - start_time = {start_time}"
-
+            film_name = item[1]
+            start_time = item[2]
+            ticket_price = item[3]
+            response += f"session_id : {session_id} _ film_name : {film_name} - start_time : {start_time} - ticket_price : {ticket_price}\n"
+        print(response)
         return response
 
     @classmethod
@@ -229,17 +233,17 @@ class InteractionsCommands:
             for i in responselist:
                 response += (i + "\n")
         else:
-            for i in range(min(22, len(responselist))):
+            for i in range(min(23, len(responselist))):
                 response += (responselist[i] + "\n")
         print(response)
         return response
 
     @classmethod
     def add_screens_func(cls, user_id, data_dict_command):
-        film_name = data_dict_command['film_name']
+        film_id = data_dict_command['film_id']
         number_of_screens = data_dict_command['number_of_screens']
         try:
-            film_id = Films.get_filmid_by_name(film_name)
+            # film_id = Films.get_filmid_by_name(film_name)
             Screens.create_screen(models.screen_model(-1, film_id, number_of_screens))
             return True
         except Exception as e:
@@ -256,7 +260,8 @@ class InteractionsCommands:
         capacity = data_dict_command['capacity']
         ticket_price = data_dict_command['ticket_price']
         try:
-            Session.create_session(models.session_model(-1, screen_id, start_time, capacity, ticket_price))
+            return Session.create_session(models.session_model(-1, screen_id, start_time, capacity, ticket_price))
+             
         except Exception as e:
             return e
 
@@ -304,6 +309,7 @@ interactions_commands = {
     'send_comment': interactions_commands_instance.send_comment,
     'send_message_to_support': interactions_commands_instance.send_message_to_support_func,
     'show_services': interactions_commands_instance.show_services,
+    'show_sessions':interactions_commands_instance.show_sessions_available_func,
     'send_message_employee': interactions_commands_instance.send_message_employee,
     'add_session': interactions_commands_instance.add_session,
     'add_film': interactions_commands_instance.add_film,

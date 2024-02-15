@@ -79,6 +79,6 @@ def add_wallet_query(user_id):
 
 
 def update_wallet(balance, wallet_id):
-    query = f"UPDATE `wallets` SET `balance` = '{
-    balance}' WHERE (`id` = '{wallet_id}');"
+    query = f"""UPDATE `wallets` SET `balance` = '{
+    balance}' WHERE (`id` = '{wallet_id}');"""
     database_manager.execute_query(query)
