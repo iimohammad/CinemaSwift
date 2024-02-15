@@ -64,8 +64,8 @@ class Session:
 
         if defined_session == total_allowed_sessions:
             raise personalized_exceptions.CreateSessionNotPossibleMaxNumber()
-
-        time = session.start_time
+        datetime_format = "%Y-%m-%d %H:%M"
+        time = datetime.strptime(str(session.start_time), datetime_format)
         timestamp_str = f"{time.year}-{time.month:02d}-{time.day:02d} {time.hour:02d}:{time.minute:02d}"
 
         r = queryset.find_by_start_time_query(timestamp_str)
@@ -98,26 +98,32 @@ class Session:
         r = queryset.find_remain_session(screen_id)
         for i in r:
             session_id = i[0]
-            start_time = i[1]
+            film_name = i[1]
+            start_time = i[2]
+            ticket_price = i[3]
             if start_time < datetime.now():
                 continue
             if Seats.get_number_of_free_seats(session_id) == 0:
                 continue
-            sessions.append([session_id,start_time])
+            sessions.append([session_id,film_name,start_time,ticket_price])
         return sessions
     
     @staticmethod
     def get_number_of_remain_sessions(screen_id: int):
-        r = queryset.find_remain_session(screen_id)
         counted = 0
+        r = queryset.find_remain_session(screen_id)
         for i in r:
             session_id = i[0]
+            film_name = i[1]
             start_time = i[2]
+            ticket_price = [3]
             if start_time < datetime.now():
                 continue
             if Seats.get_number_of_free_seats(session_id) == 0:
                 continue
-            counted += 1
+            if Seats.get_number_of_free_seats(session_id) == 0:
+                continue
+            counted +=1
         return counted
 
 
@@ -154,5 +160,6 @@ class Seats:
 # Seats.update_seat(1,SeatType.RESERVED)
 # print(Seats.get_number_of_free_seats(19))
 # Session.remove_session(21)
-# Session.create_session(models.session_model(-1,2,datetime.now(),30))
+# Session.create_session(models.session_model(-1,2,"2025-10-10 10:10",30,50))
 # print(Session.get_number_of_remain_sessions(2))
+print(Session.get_available_sessions(1))
