@@ -1,3 +1,8 @@
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 from screen_module import screens
 from users_module import personalized_exceptions
 from datetime import datetime, timedelta
@@ -42,22 +47,20 @@ class Ticket:
 
         if subscript == SubscriptopnType.Golden.value:
             start_date = Subscriptions.get_subscription_start_date(user_id)
-            date_format = '%Y-%m-%d %H:%M:%S'
-            converted_datetime = datetime.strptime(start_date, date_format)
+            # date_format = '%Y-%m-%d %H:%M:%S'
+            # converted_datetime = datetime.strptime(start_date, date_format)
 
-            if converted_datetime - datetime.now() > timedelta(days=30):
+            if start_date - datetime.now() > timedelta(days=30):
                 Subscriptions.change_subscription(user_id, SubscriptopnType.Bronze.value)
 
-        subscription_discount_value = Subscriptions.get_subscription_discount_value(subscript)
-
+        subscription_discount_value = Subscriptions.get_subscription_discount_value(user_id)
         user_birthday = Users.get_user_birthday(user_id)
         now = datetime.now().date()
         if user_birthday.day == now.day and user_birthday.month == now.month:
             price = round(price * (50 / 100), 1)
-
+            
         elif subscript != SubscriptopnType.Bronze.value:
             price = round(price * (subscription_discount_value / 100), 1)
-
         if price > wallet_balance:
             raise personalized_exceptions.WalletBalanceNotEnough()
         queryset.add_buy_ticket_query(user_id, seat_id, price)
@@ -129,7 +132,7 @@ class Ticket:
         tickets = []
         r = queryset.show_all_tickets_by_user_query(user_id=user_id)
         for i in r:
-            tickets.append([i[0],i[1],i[2]])
+            tickets.append([i[0], i[1], i[2], i[3]])
         return tickets
 
     @classmethod
@@ -139,5 +142,7 @@ class Ticket:
         for i in r:
             start_time = i[1]
             if start_time < datetime.now():
-                tickets.append([i[0], i[1], i[2], i[4]])
+                tickets.append([i[0], i[1], i[2], i[3]])
         return tickets
+    
+print(Ticket.buy_ticket('be3cf15b-e11b-4e62-9bbf-79b330700f09',50))
