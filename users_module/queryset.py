@@ -85,7 +85,7 @@ def update_last_login_query(user_id):
 def get_user_birthday_query(user_id) -> datetime:
     query = f"""SELECT birthday FROM cinemaswift.users
             where id = '{user_id}';"""
-    r = database_manager.execute_query(query)
+    r = database_manager.execute_query_select(query)
     return r[0][0]
 
 
@@ -135,7 +135,13 @@ def get_subscription_type_name_query(user_id: str):
     query = f"""SELECT name FROM subscriptions
                     where
                     id = (SELECT subscription_type_id FROM cinemaswift.users where id = '{user_id}');"""
-    return database_manager.execute_query_select(query)[0][0]
+    return database_manager.execute_query_select(query)
+
+def get_subscription_discount_value_query(user_id: str):
+    query = f"""SELECT discount_value FROM subscriptions
+                    where
+                    id = (SELECT subscription_id FROM cinemaswift.userssubscriptions where user_id = '{user_id}');"""
+    return database_manager.execute_query_select(query)
 
 
 def get_subscription_discount_number_query(subscription_name: str):
