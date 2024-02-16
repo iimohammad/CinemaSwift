@@ -3,7 +3,10 @@ from db.database_manager import DatabaseManager
 
 database_manager = DatabaseManager()
 
-
+def get_film_query(film_id):
+    query = f"""SELECT * FROM cinemaswift.films
+                WHERE id = '{film_id}';"""
+    return database_manager.execute_query_select(query)
 def add_film_query(film_name, film_age_rating, film_duration):
     query = f"""INSERT INTO `films` (`name`, `age_rating`, `duration`, `point`,`weighted_point`) 
                     VALUES 
@@ -19,11 +22,6 @@ def get_films_list_query():
 
 def get_filmid_by_name_query(filmname):
     query = f"""SELECT id from films WHERE name = '{filmname}';"""
-    r = database_manager.execute_query_select(query)
-    return r
-
-def get_films_list_query():
-    query = "SELECT id,name,age_rating,duration,point,weighted_point FROM films;"
     r = database_manager.execute_query_select(query)
     return r
 
@@ -99,8 +97,12 @@ def add_comment_query(comment_film_id, comment_user_id, comment_text, comment_pa
     query = f"""INSERT INTO `comments` 
             (`film_id`,`user_id`, `text` , `parent_comment`) 
             VALUES 
-            ('{comment_film_id}', '{comment_user_id}', '{comment_text}',{comment_parent_comments_id});"""
-
+            ('{comment_film_id}', '{comment_user_id}', '{comment_text}','{comment_parent_comments_id}');"""
+    if comment_parent_comments_id==None:
+        query = f"""INSERT INTO `comments` 
+            (`film_id`,`user_id`, `text`) 
+            VALUES 
+            ('{comment_film_id}', '{comment_user_id}', '{comment_text}');"""
     database_manager.execute_query(query)
 
 

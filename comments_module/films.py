@@ -116,6 +116,8 @@ class FilmsPoints:
         Returns:
             bool: True if the point is added successfully, False otherwise.
         """
+        if point<0 or point>5:
+            raise personalized_exceptions.InvalidPointError()
         type = users.Subscriptions.get_subscription_type_name(user_id)
         coefficient = 1
         if (type == 'Golden'):
@@ -159,7 +161,10 @@ class Comments:
         Returns:
             bool: True if the comment is added successfully, False otherwise.
         """
-        queryset.add_comment_query(comment.film_id, comment.user_id, comment.text, comment.parent_comments_id)
+        parrent = comment.parent_comments_id
+        if parrent<0:
+            parrent = None
+        queryset.add_comment_query(comment.film_id, comment.user_id, comment.text,parrent )
         return True
 
     @staticmethod
@@ -196,5 +201,8 @@ class Comments:
         Returns:
             list: A list of comments related to the specified film.
         """
-        result = queryset.get_comments_of_film_query(film_id)
-        return result
+        resault_list = []
+        r = queryset.get_comments_of_film_query(film_id)
+        for i in r:
+            resault_list.append([i[0],i[1],i[2],i[3],i[4]])
+        return resault_list
