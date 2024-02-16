@@ -51,6 +51,7 @@ class TCPServer:
             self.server_socket.bind((self.host, self.port))
             self.server_socket.listen()
             self.logged_in_users = {}
+            self.logged_in_admins = {}
             self.lock = threading.Lock()
 
     def run_server(self):
@@ -102,34 +103,66 @@ class TCPServer:
             username = data_dict['username']
             password = data_dict['password']
             user_id = Users.log_in(username, password)
+            user_admin = Users.is_admin(user_id)
             if user_id:
-                print(f"User '{username}'Login successful!")
+                print(f"User '{username}' logged in successfully!")
                 with self.lock:
                     self.logged_in_users[client_socket] = username
+                    if user_admin:
+                        self.logged_in_admins[client_socket] = username
 
-                if Users.is_admin(user_id):
+                if user_admin:
                     response = "Admin Login successful"
                 else:
                     response = "Login successful!"
 
                 while True:
-                    client_socket.sendall(response.encode('utf-8'))
+                    if str(type(response)) == "<class 'str'>":
+                        client_socket.sendall(response.encode('utf-8'))
+                    elif str(type(response)) == "<class 'list'>":
+                        json_data = json.dumps(response)
+                        client_socket.sendall(json_data.encode('utf-8'))
+                    elif response.get('action', 'None') == 'chat' \
+                                and response.get('status', 'None') != "Send online admins' list":
+                        admin_socket = response.pop('admin_socket')
+                        json_data = json.dumps(response)
+                        admin_socket.sendall(json_data.encode('utf-8'))
+                    elif response.get('action', 'None') == 'chat':
+                        admin_socket = response.pop('admin_socket')
+                        json_data = json.dumps(response)
+                        admin_socket.sendall(json_data.encode('utf-8'))
                     # Continuously receive and process data from the client
                     received_data = client_socket.recv(1024).decode('utf-8')
                     data_dict_command = json.loads(received_data)
                     final_command = data_dict_command['action']
+                    
+                    # Kicking out logged out users from the dictionary
+                    if final_command.lower() == 'logout':
+                        for user_socket, user_username in self.logged_in_users.items():
+                            if user_username == username:
+                                del self.logged_in_users[user_socket]
+                                break
+                        if user_admin:
+                            for admin_socket, admin_username in self.logged_in_admins.items():
+                                if admin_username == username:
+                                    del self.logged_in_admins[admin_socket]
+                                    break
 
-                    if Users.is_admin(user_id):
-                        try:
+                    if user_admin:
+                        # try:
                             # This part use for admin users
                             print("------------")
-                            if final_command in interation_commands.interactions_commands:
+                            if final_command == 'chat':
+                                print('chat')
+                                response = interation_commands.interactions_commands[final_command](
+                                    self.logged_in_admins, username, client_socket, data_dict_command)
+                            elif final_command in interation_commands.interactions_commands:
                                 print("find")
                                 response = interation_commands.interactions_commands[final_command](
                                     user_id, data_dict_command)
                                 # client_socket.sendall(response.encode('utf-8'))
-                        except:
-                            response = "Not find this Command"
+                        # except:
+                        #     response = "Not find this Command"
                     else:
                         # This part is use for normal users
                         try:
