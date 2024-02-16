@@ -132,13 +132,20 @@ class TCPServer:
                                     response = "Done!"
                                 elif response == False:
                                     response = "Failed!"
+                                elif response == None or response == '':
+                                    response = "Not found!"
+                                else:
+                                    response = str(response)
+                                    
+                                print('++++++++++++')
+                                print(response)
                                 client_socket.sendall(response.encode('utf-8'))
                         except:
                             response = "Not find this Command"
                     else:
                         # This part is use for normal users
                         try:
-                            if final_command in interation_commands.sinteractions_commands:
+                            if final_command in interation_commands.interactions_commands:
                                 print("find")
                                 response = interation_commands.interactions_commands[final_command](
                                     user_id, data_dict_command)

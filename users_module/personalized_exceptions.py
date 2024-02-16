@@ -28,6 +28,10 @@ class InvalidEmailError(Exception):
 class InvalidPhoneError(Exception):
     def __init__(self):
         super().__init__("Invalid phone number. phone number must start with 09 and maximum 11 characters.")
+        
+class InvalidPointError(Exception):
+    def __init__(self):
+        super().__init__("Invalid point, point must be less or equal 5 and more than 0.")
 
 
 class UsernameTakenError(Exception):

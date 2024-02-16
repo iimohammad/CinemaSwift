@@ -19,10 +19,11 @@ def add_bank_account_query(data):
 
 
 def get_bank_accounts_query(user_id):
-    query = f"""SELECT name FROM cinemaswift.bankaccounts
+    query = f"""SELECT name,balance FROM cinemaswift.bankaccounts
                     WHERE
                     user_id = '{user_id}';"""
     r = database_manager.execute_query_select(query)
+    return r
 
 
 def get_bank_accounts_balance_query(user_id, account_name):
@@ -46,7 +47,7 @@ def update_balance_query(id_bank,balance,amount):
     database_manager.execute_query(query)
 
 
-def harvest_from_account(account_name, user_id):
+def select_bank_account(account_name, user_id):
     query = f"""SELECT * FROM bankaccounts
                     WHERE user_id = '{user_id}' AND name = '{account_name}';"""
     result = database_manager.execute_query_select(query)

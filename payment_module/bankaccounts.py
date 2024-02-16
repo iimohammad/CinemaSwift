@@ -1,3 +1,8 @@
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 import bcrypt
 from datetime import datetime
 from db import models
@@ -11,9 +16,7 @@ from payment_module import queryset
 
 
 class BankAccounts:
-    def __int__(self):
-        self.log_file = local_settings.log_file
-
+    log_file = "BankAccountsLogs.txt"
     @staticmethod
     def _hashPassword(password: str):
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -22,12 +25,12 @@ class BankAccounts:
     def cvv2_validator(cvv: int):
         if len(str(cvv)) > 4 or len(str(cvv)) < 3:
             raise personalized_exceptions.InvalidCvv2()
-
-    def add_log(self, txt: str):
-        if not os.path.exists(self.log_file):
-            with open(self.log_file, 'w') as f:
+    @classmethod
+    def add_log(cls,txt: str):
+        if not os.path.exists(cls.log_file):
+            with open(cls.log_file, 'w') as f:
                 pass
-        with open(self.log_file, 'a') as f:
+        with open(cls.log_file, 'a') as f:
             f.write(
                 txt +
                 f""" _ at {
@@ -50,10 +53,7 @@ class BankAccounts:
         }
         queryset.add_bank_account_query(data)
 
-        BankAccounts.add_log(
-            f"""Bank account created _ {
-                account.user_id=} _ {
-                account.name=}""")
+        BankAccounts.add_log(f"""Bank account created _ {account.user_id = } _ {account.name = }""")
 
         return True
 
@@ -109,7 +109,7 @@ class BankAccounts:
             amount: float,
             account_name: str) -> bool:
 
-        r = queryset.harvest_from_account(account_name, user_id)
+        r = queryset.select_bank_account(account_name, user_id)
 
         if len(r) == 0:
             raise personalized_exceptions.BankAccountNotFound()
@@ -117,7 +117,7 @@ class BankAccounts:
         account = models.bank_account_model(
             r[0][0], r[0][1], r[0][2], r[0][3], r[0][4], r[0][5])
 
-        if cvv != account.cvv2 or not bcrypt.checkpw(
+        if str(cvv) != str(account.cvv2) or not bcrypt.checkpw(
                 password_account.encode('utf-8'), r[0][5].encode('utf-8')):
             raise personalized_exceptions.InvalidAccountSecurityInformation()
         if account.balance < amount:
@@ -155,11 +155,3 @@ class BankAccounts:
             transaction.abort()
             return False
         return True
-
-    @staticmethod
-    def remove_bank_account(name):
-        pass
-
-
-
-

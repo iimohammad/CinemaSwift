@@ -7,7 +7,7 @@ def select_seat_query(seat_id):
     query = f"""SELECT status FROM seats
                     WHERE id = '{seat_id}';"""
     r = database_manager.execute_query_select(query)
-
+    return r
 
 def find_seat_price_query(seat_id):
     query = f"""SELECT ticket_price FROM sessions

@@ -22,12 +22,12 @@ class Subscriptions:
     @staticmethod
     def get_subscription_type_name(user_id: str) -> str:
         result = queryset.get_subscription_type_name_query(user_id=user_id)
-        return result
+        return result[0][0]
 
     @staticmethod
-    def get_subscription_discount_value(subscription_name: str):
-        result = queryset.get_subscription_type_name_query(subscription_name)
-        return result
+    def get_subscription_discount_value(user_id: str):
+        result = queryset.get_subscription_discount_value_query(user_id)
+        return result[0][0]
 
     @staticmethod
     def get_subscription_discount_number(subscription_name: str):
