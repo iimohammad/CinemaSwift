@@ -79,7 +79,7 @@ class TestBankAccounts(unittest.TestCase):
         password = "password123"
         amount = 500
         account_name = "Test Account"
-        queryset.harvest_from_account.return_value = [(1, "Test Account", 1000, 123, "password123", 500)]  # حساب موجود و با موجودی و کلمه عبور و سی‌وی‌وی درست
+        queryset.select_bank_account.return_value = [(1, "Test Account", 1000, 123, "password123", 500)]  # حساب موجود و با موجودی و کلمه عبور و سی‌وی‌وی درست
         result = bankaccounts.harvest_from_bank_account(user_id, cvv, password, amount, account_name)
         self.assertTrue(result) 
 

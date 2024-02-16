@@ -44,7 +44,7 @@ class TestDatabaseFunctions(unittest.TestCase):
     def test_harvest_from_account(self):
         mock_user_id = '123456'
         mock_account_name = 'mock_account'
-        result = harvest_from_account(mock_account_name, mock_user_id)
+        result = select_bank_account(mock_account_name, mock_user_id)
         self.assertTrue(result)
 
     def test_update_new_balance_query(self):
