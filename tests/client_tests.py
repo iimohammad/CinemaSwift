@@ -1,55 +1,65 @@
+
 # Import necessary modules
-import getpass
-from client import TCPClient, clientSettings, main, show_services
+import unittest
+from unittest.mock import patch
+from io import StringIO
+import argparse
+from client import TCPClient, clientSettings,main
 
 # Initialize client and settings
 client = TCPClient()
 client_settings = clientSettings()
 
+
 # Test connect
-try:
-    client.connect()
-    print("Connection successful.")
-except Exception as e:
-    print(f"Connection failed. Error: {e}")
+class TCPClient(unittest.TestCase):
+    def connect(self):
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            self.client.connect()
+            self.assertIn("Connected to", mock_stdout.getvalue().strip())
 
 # Test send_dict_to_server
-try:
-    data_dict = {"key": "value"}
-    response = client.send_dict_to_server(data_dict)
-    print(f"Server response: {response.decode('utf-8')}")
-except Exception as e:
-    print(f"Sending data to server failed. Error: {e}")
-
-# Test show_services
-print("Available services:")
-show_services()
+    def send_dict_to_server(self):
+        data_dict = {"key": "value"}
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout, \
+             patch.object(self.client.client_socket, 'recv', return_value=b'MockResponse'):
+            response = self.client.send_dict_to_server(data_dict)
+            self.assertEqual(response, b'MockResponse')
+            self.assertIn("Sent dictionary to the server", mock_stdout.getvalue().strip())
+            self.assertIn("Received response from the server", mock_stdout.getvalue().strip())
 
 # Test main
-try:
-    # Test signup functionality
-    print("Testing signup functionality:")
-    args_signup = argparse.Namespace(action='signup', username='testuser')
-    main(args_signup)
+    def main(self , mock_input, mock_getpass):
     
-    # Test login functionality
-    print("Testing login functionality:")
-    args_login = argparse.Namespace(action='login', username='testuser')
-    main(args_login)
-    
-    # Test admin login functionality
-    print("Testing admin login functionality:")
-    args_admin_login = argparse.Namespace(action='login', username='admin')
-    main(args_admin_login)
-    
-    # Test invalid action
-    print("Testing invalid action:")
-    args_invalid_action = argparse.Namespace(action='invalid_action')
-    main(args_invalid_action)
-    
-    print("Main function executed successfully.")
-except Exception as e:
-    print(f"Error executing main function: {e}")
-finally:
-    # Close connection
-    client.close_connection()
+        # Test signup functionality
+         with patch('client.TCPClient.send_dict_to_server', return_value=b"Signup successful!") as mock_send:
+            args_signup = {'action': 'signup', 'username': 'testuser'}
+            main(args_signup)
+            mock_send.assert_called_once_with({
+                'action': 'signup',
+                'username': 'testuser',
+                'password': 'password',
+                'email': 'test@example.com',
+                'phone': '1234567890',
+                'birthday': '2000-01-01'
+            })
+
+        
+        # Test login functionality
+         with patch('client.TCPClient.send_dict_to_server', return_value=b"Login successful!") as mock_send:
+            args_login = {'action': 'login', 'username': 'testuser'}
+            main(args_login)
+            mock_send.assert_called_once_with({
+                'action': 'login',
+                'username': 'testuser',
+                'password': 'password'
+         })
+        # Test admin login functionality
+         with patch('client.TCPClient.send_dict_to_server', return_value=b"Login successful!") as mock_send:
+            args_admin_login = {'action': 'login', 'username': 'admin'}
+            main(args_admin_login)
+            mock_send.assert_called_once_with({
+                'action': 'login',
+                'username': 'admin',
+                'password': 'password'
+            })
