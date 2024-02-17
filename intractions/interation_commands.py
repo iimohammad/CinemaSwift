@@ -53,7 +53,7 @@ class InteractionsCommands:
         return Users.show_profile(user_id=user_id)
 
     @classmethod
-    def show_wallet_balance_func(cls, user_id):
+    def show_wallet_balance_func(cls, user_id,data_dict_command):
         try:
             return Wallets.get_balance(user_id)
         except Exception as e:
@@ -73,7 +73,6 @@ class InteractionsCommands:
     def show_bank_accounts_func(cls, user_id, data_dict_command):
         try:
             resault_list = BankAccounts.get_bank_accounts(user_id=user_id)
-            print(resault_list)
             r = ''
             for i in resault_list:
                 r+=f"bank account name : {i[0]} - bank account balance : {i[1]}\n"
@@ -126,8 +125,8 @@ class InteractionsCommands:
         
     @classmethod
     def buy_subscription_func(cls, user_id, data_dict_command):
-        # Subscriptions.buy_subscription(user_id, subs_type)
-        pass
+        subscription_id = data_dict_command['subscription_id']
+        return Subscriptions.add_subscription(user_id,subscription_id)
     @classmethod
     def buy_ticket_func(cls, user_id, data_dict_command):
         try:
@@ -166,7 +165,6 @@ class InteractionsCommands:
             film_name = item[1]
             number_of_sans = item[2]
             response += f"screen_id = {screen_id} - film_name = {film_name} -number_of_sans= {number_of_sans} \n"
-        print(response)
         return response
 
     @classmethod
@@ -192,7 +190,6 @@ class InteractionsCommands:
             seat_number = item[1]
             status = item[2]
             response += f"seat_id = {seat_id} - seat_number = {seat_number} - status = {status}\n"
-        print(response)
         return response
 
     @classmethod
@@ -261,7 +258,6 @@ class InteractionsCommands:
         responselist = list()
         for i in interactions_commands:
             responselist.append(i)
-        # print(responselist)
         response = ""
         if Users.is_admin(user_id=user_id):
             for i in responselist:
@@ -269,7 +265,6 @@ class InteractionsCommands:
         else:
             for i in range(min(23, len(responselist))):
                 response += (responselist[i] + "\n")
-        print(response)
         return response
 
     @classmethod
@@ -322,9 +317,6 @@ interactions_commands_instance = InteractionsCommands()
 
 interactions_commands = {
     'add_bank_account': interactions_commands_instance.add_bank_Account_func,
-    'add_session': interactions_commands_instance.add_session,
-    'add_film': interactions_commands_instance.add_film,
-    'add_screens': interactions_commands_instance.add_screens_func,
     'buy_subscription': interactions_commands_instance.buy_subscription_func,
     'buy_ticket': interactions_commands_instance.buy_ticket_func,
     'cancel_reservation': interactions_commands_instance.cancel_reservation_func,
@@ -347,12 +339,11 @@ interactions_commands = {
     'charge_bank_account': interactions_commands_instance.charge_bank_account_func,
     'send_point': interactions_commands_instance.send_point_func,
     'send_comment': interactions_commands_instance.send_comment,
-    'send_message_to_support': interactions_commands_instance.send_message_to_support_func,
-    'send_message_employee': interactions_commands_instance.send_message_employee,
+    # 'send_message_to_support': interactions_commands_instance.send_message_to_support_func,
+    # 'send_message_employee': interactions_commands_instance.send_message_employee,
+    
+    'add_screens': interactions_commands_instance.add_screens_func,
+    'add_session': interactions_commands_instance.add_session,
+    'add_film': interactions_commands_instance.add_film,
     'remove_film': interactions_commands_instance.remove_film,
 }
-
-# user_interactions_commands_instance.
-# admin_interaction_commands_instance.show_admin_services()
-# common_interactions_commands_instance.change_password_func("mohammad")
-# interactions_commands_instance.show_films_func()
