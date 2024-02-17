@@ -1,8 +1,3 @@
-import sys
-import os
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
 import bcrypt
 from datetime import datetime
 from db import models
@@ -13,10 +8,11 @@ from users_module import personalized_exceptions
 import transaction
 from settings import local_settings
 from payment_module import queryset
+import os
 
 
 class BankAccounts:
-    log_file = "BankAccountsLogs.txt"
+    log_file = "transaction.log"
     @staticmethod
     def _hashPassword(password: str):
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())

@@ -15,7 +15,7 @@ def add_film_query(film_name, film_age_rating, film_duration):
 
 
 def get_films_list_query():
-    query = "SELECT id,name,age_rating,duration,point,weighted_point FROM films;"
+    query = "SELECT id,name,age_rating,duration,point,weighted_point FROM films ORDER BY point DESC;"
     r = database_manager.execute_query_select(query)
     return r
 
@@ -69,15 +69,15 @@ def update_film_query(film_name, film_id, film_age_rating, film_duration):
 
 
 def select_point_query(user_id: str, film_id: int):
-    query = f"SELECT point FROM filmspoints WHERE user_id='{user_id}' AND film_id='{film_id}'"
+    query = f"SELECT point FROM filmspoints WHERE user_id='{user_id}' AND film_id='{film_id}';"
     r = database_manager.execute_query_select(query)
     return r
 
 
 def update_point_film(user_id, film_id, point,coefficient):
-    query = f"""UPDATE `filmspoints` SET `point` = '{point}' AND `coefficient` = ''{coefficient}
+    query = f"""UPDATE `filmspoints` SET `point` = '{point}' , `coefficient` = '{coefficient}'
                         WHERE 
-                        (`film_id` = '{film_id}') and (`user_id` = '{user_id}');"""
+                        `film_id` = '{film_id}' and `user_id` = '{user_id}';"""
     database_manager.execute_query(query)
 
 

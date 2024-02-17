@@ -37,6 +37,10 @@ class InvalidPointError(Exception):
 class UsernameTakenError(Exception):
     def __init__(self):
         super().__init__("The username is already taken.")
+        
+class AgeLimiteError(Exception):
+    def __init__(self):
+        super().__init__("age limite for this film!")
 
 
 class CreateWalletError(Exception):

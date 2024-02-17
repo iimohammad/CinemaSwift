@@ -1,10 +1,6 @@
 import inspect
 import mysql.connector
-# from db import models
-import sys
-sys.path.append('../')
 from settings import local_settings
-
 
 class DatabaseManager:
     _instance = None

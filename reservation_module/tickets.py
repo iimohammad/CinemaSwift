@@ -1,19 +1,26 @@
-import sys
-import os
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
 from screen_module import screens
 from users_module import personalized_exceptions
+from screen_module.screens import Seats
 from datetime import datetime, timedelta
 from payment_module.wallet import Wallets
 from users_module.users import Subscriptions, Users
 from db.models import SubscriptopnType
 from reservation_module import queryset
-
+import os
 
 class Ticket:
-
+    log_file = "ticket.log"
+    @classmethod
+    def add_log(cls,txt: str):
+        if not os.path.exists(cls.log_file):
+            with open(cls.log_file, 'w') as f:
+                pass
+        with open(cls.log_file, 'a') as f:
+            f.write(
+                txt +
+                f""" _ at {
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S')}""" +
+                os.linesep)
     @staticmethod
     def buy_ticket(user_id: str, seat_id: int) -> bool:
         """
@@ -47,20 +54,22 @@ class Ticket:
 
         if subscript == SubscriptopnType.Golden.value:
             start_date = Subscriptions.get_subscription_start_date(user_id)
-            # date_format = '%Y-%m-%d %H:%M:%S'
-            # converted_datetime = datetime.strptime(start_date, date_format)
-
             if start_date - datetime.now() > timedelta(days=30):
                 Subscriptions.change_subscription(user_id, SubscriptopnType.Bronze.value)
-
-        subscription_discount_value = Subscriptions.get_subscription_discount_value(user_id)
+        discount_reason = 'SubscriptionType'
+        discount_percent = Subscriptions.get_subscription_discount_value(user_id)
         user_birthday = Users.get_user_birthday(user_id)
+        age = Users.calculateAge(user_birthday.date())
+        film_age_rating = Seats.get_age_rating(seat_id)
+        if age<film_age_rating:
+            raise personalized_exceptions.AgeLimiteError()
         now = datetime.now().date()
         if user_birthday.day == now.day and user_birthday.month == now.month:
             price = round(price * (50 / 100), 1)
+            discount_reason = 'BirthDay'
             
         elif subscript != SubscriptopnType.Bronze.value:
-            price = round(price * (subscription_discount_value / 100), 1)
+            price = round(price * (discount_percent / 100), 1)
         if price > wallet_balance:
             raise personalized_exceptions.WalletBalanceNotEnough()
         queryset.add_buy_ticket_query(user_id, seat_id, price)
@@ -72,6 +81,9 @@ class Ticket:
             discount_numbers_taken = Subscriptions.get_total_discounts_taken(user_id)
             if discount_number == discount_numbers_taken:
                 Subscriptions.change_subscription(user_id, SubscriptopnType.Bronze.value)
+        Ticket.add_log(f"""Ticket Buy _ {user_id = } _ {seat_id = } _ 
+                       {discount_reason = } _ {discount_percent = } _ 
+                       {price = }""")
         return True
 
     @staticmethod
@@ -117,14 +129,17 @@ class Ticket:
         seat_id = r[0][0]
         user_id = r[0][1]
         price = r[0][2]
-
+        cancellation_penalty = 0
         if remain_time < 61:
             price = round(price * (18 / 100), 1)
+            cancellation_penalty = 18
 
         queryset.delete_reserve_ticket(ticket_id)
 
         screens.Seats.update_seat(seat_id, screens.SeatType.FREE)
         Wallets.deposit_to_wallet(user_id, price)
+        Ticket.add_log(f"""Ticket Cancel _ {user_id = } _ {seat_id = } _ 
+                       {cancellation_penalty = } _ {price = }""")
         return r[0][1]
 
     @classmethod
@@ -144,5 +159,3 @@ class Ticket:
             if start_time < datetime.now():
                 tickets.append([i[0], i[1], i[2], i[3]])
         return tickets
-    
-print(Ticket.buy_ticket('be3cf15b-e11b-4e62-9bbf-79b330700f09',50))

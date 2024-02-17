@@ -39,7 +39,6 @@ class ClientThread(threading.Thread):
         finally:
             self.client_socket.close()
 
-
 class TCPServer:
     def __init__(
             self,
@@ -102,13 +101,15 @@ class TCPServer:
             username = data_dict['username']
             password = data_dict['password']
             user_id = Users.log_in(username, password)
+            
             if user_id:
+                is_admin = Users.is_admin(user_id)
                 print(f"User '{username}'Login successful!")
                 with self.lock:
                     self.logged_in_users[client_socket] = username
                 response = ""
                 #print(Users.is_admin(user_id))
-                if Users.is_admin(user_id):
+                if is_admin:
                     response = "Admin Login successful"
                 else:
                     response = "Login successful!"
@@ -120,39 +121,23 @@ class TCPServer:
                     data_dict_command = json.loads(received_data)
                     final_command = data_dict_command['action']
 
-                    if Users.is_admin(user_id):
-                        try:
-                            # This part use for admin susers
-                            print("------------")
-                            if final_command in interation_commands.interactions_commands:
-                                print("find in admin")
-                                response = interation_commands.interactions_commands[final_command](
-                                    user_id, data_dict_command)
-                                if response == True:
-                                    response = "Done!"
-                                elif response == False:
-                                    response = "Failed!"
-                                elif response == None or response == '':
-                                    response = "Not found!"
-                                else:
-                                    response = str(response)
-                                    
-                                print('++++++++++++')
-                                print(response)
-                                client_socket.sendall(response.encode('utf-8'))
-                        except:
-                            response = "Not find this Command"
-                    else:
-                        # This part is use for normal users
-                        try:
-                            if final_command in interation_commands.interactions_commands:
-                                print("find")
-                                response = interation_commands.interactions_commands[final_command](
-                                    user_id, data_dict_command)
-
-                        except:
-                            response = "Not find this Command"
+                    try:
+                        if final_command in interation_commands.interactions_commands:
+                            response = interation_commands.interactions_commands[final_command](
+                                user_id, data_dict_command)
+                            if response == True:
+                                response = "Done!"
+                            elif response != 0 and response == False:
+                                response = "Failed!"
+                            elif response == None or response == '':
+                                response = "Not found!"
+                            else:
+                                response = str(response)
                             client_socket.sendall(response.encode('utf-8'))
+                        else:
+                            client_socket.sendall('command not found!'.encode('utf-8'))
+                    except Exception as e:
+                        client_socket.sendall(f"Failed! {e}".encode('utf-8'))
             else:
                 print(f"Login failed for user '{username}'")
                 response = "Login failed. Check your credentials."

@@ -42,6 +42,15 @@ def get_screen_list_query():
     return database_manager.execute_query_select(query)
 
 
+def get_age_rating_query(seat_id):
+    query = f"""SELECT films.age_rating FROM seats
+                    JOIN sessions ON sessions.id = seats.session_id
+                    JOIN screens ON sessions.screen_id = screens.id
+                    JOIN films ON films.id = screens.film_id
+                    WHERE seats.id = '{seat_id}';"""
+    return database_manager.execute_query_select(query)[0][0]
+
+
 def get_screens_list_for_a_film_query(film_id):
     query = f"""SELECT cinemaswift.films.name , cinemaswift.screens.number_of_sans FROM cinemaswift.screens
                     join films

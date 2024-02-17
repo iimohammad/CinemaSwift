@@ -41,10 +41,8 @@ class Films:
     def get_films_list() -> list:
         films = []
         r = queryset.get_films_list_query()
-        # print(r)
         for i in r:
             film = models.film_model(i[0], i[1], i[2], i[3], i[4], i[5])
-            # print(film)
             films.append(film)
 
         return films
@@ -116,13 +114,13 @@ class FilmsPoints:
         Returns:
             bool: True if the point is added successfully, False otherwise.
         """
-        if point<0 or point>5:
+        if int(point)<1 or int(point)>5:
             raise personalized_exceptions.InvalidPointError()
-        type = users.Subscriptions.get_subscription_type_name(user_id)
+        user_type = users.Subscriptions.get_subscription_type_name(user_id)
         coefficient = 1
-        if (type == 'Golden'):
+        if (user_type == 'Golden'):
             coefficient = 3
-        elif (type == 'Silver'):
+        elif (user_type == 'Silver'):
             coefficient = 2
         r = queryset.select_point_query(user_id=user_id, film_id=film_id)
         if len(r) > 0:

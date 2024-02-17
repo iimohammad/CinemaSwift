@@ -54,7 +54,7 @@ class Subscriptions(unittest.TestCase):
         user_id = "valid_user_id"
         subs_type = "valid_subscription_type"
         # Assuming you have mocked the necessary dependencies to test this function
-        result = Subscriptions.buy_subscription(user_id, subs_type)
+        result = Subscriptions.buy_subscriptio(user_id, subs_type)
         self.assertIsNone(result)
         print("buy_subscription test passed")
 

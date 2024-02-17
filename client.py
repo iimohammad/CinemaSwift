@@ -17,7 +17,6 @@ class clientSettings:
     def get_is_admin(self):
         return self.is_admin
 
-
 class TCPClient:
     def __init__(
             self,
@@ -58,7 +57,6 @@ class TCPClient:
 def show_services():
     for key, value in interation_commands.interactions_commands.items():
         print(key)
-
 
 def main():
     global send_data, comment, parent_id
@@ -117,7 +115,6 @@ def main():
 
         response = client.send_dict_to_server(data_dict=data_to_send)
         local_client_settings = clientSettings()
-
         if response.decode('utf-8') == "Admin Login successful":
             local_client_settings.set_is_admin()
 
@@ -140,6 +137,16 @@ def main():
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
+                    elif command == "buy_subscription":
+                        print("""subscriptions:
+                              1- Gold: 50 percent discount with free drink for 1 month
+                              2- Silver: 20 percent discount for 3 next buy""")
+                        subscription_id  = input("please choose your subscription type : ")
+                        command_to_send = {'action': command,
+                                           'subscription_id': subscription_id}
+                        login_response = client.send_dict_to_server(
+                            data_dict=command_to_send)
+                        print(login_response.decode('utf-8'))
                     elif command == "change_username":
                         send_data = input("Enter new username please:")
                         command_to_send = {'action': command,
@@ -149,10 +156,13 @@ def main():
                         print(login_response.decode('utf-8'))
 
                     elif command == "change_password":
-                        send_data = getpass.getpass("Enter new password:")
-
+                        password = getpass.getpass("Enter new password:")
+                        password_repeat = getpass.getpass("Enter new password again:")
+                        if password != password_repeat:
+                            print('password and repeat must be same!')
+                            continue
                         command_to_send = {'action': command,
-                                           'password': send_data}
+                                           'password': password}
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
@@ -180,7 +190,6 @@ def main():
                         login_response = client.send_dict_to_server(
                             data_dict=command_to_send)
                         print(login_response.decode('utf-8'))
-
                     elif command == "add_screens":
                         if local_client_settings.get_is_admin():
                             film_id = input("Enter film id:")
@@ -242,7 +251,7 @@ def main():
                             datetime_format = "%Y-%m-%d %H:%M"
                             try:
                                 datetime.strptime(start_time, datetime_format)
-                            except:
+                            except Exception:
                                 print("wrong datetime format")
                                 continue
                             login_response = client.send_dict_to_server(

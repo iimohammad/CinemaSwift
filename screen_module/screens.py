@@ -153,14 +153,6 @@ class Seats:
     def get_number_of_free_seats(session_id: int):
         r = queryset.get_number_of_free_seats_query(session_id, SeatType.FREE.value)
         return r
-    
-# Screens.create_screen(models.screen_model(-1,2,5))
-# Screens.update_screen(models.screen_model(-1,2,6))
-# print(Screens.get_screens_list())
-# print(Screens.get_screens_list_for_a_film(2))
-# Seats.update_seat(1,SeatType.RESERVED)
-# print(Seats.get_number_of_free_seats(19))
-# Session.remove_session(21)
-# Session.create_session(models.session_model(-1,2,"2025-10-10 10:10",30,50))
-# print(Session.get_number_of_remain_sessions(2))
-# print(Session.get_available_sessions(1))
+    @staticmethod
+    def get_age_rating(seat_id:int):
+        return queryset.get_age_rating_query(seat_id)

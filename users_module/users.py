@@ -4,7 +4,7 @@ import uuid
 from users_module import personalized_exceptions
 import bcrypt
 from users_module import queryset
-from datetime import datetime
+from datetime import date, datetime
 from payment_module.wallet import Wallets
 
 
@@ -179,6 +179,11 @@ class Users(UserInputValidator):
             None
     """
     @staticmethod
+    def calculateAge(birthDate):
+        today = date.today()
+        age = today.year - birthDate.year -((today.month, today.day) < (birthDate.month, birthDate.day))
+        return age
+    @staticmethod
     def get_user_id_by_username(username:str):
         return queryset.get_user_id_by_username_query(username)
     @staticmethod
@@ -339,3 +344,4 @@ class Users(UserInputValidator):
 # print(Subscriptions.get_subscription_discount_value(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_subscription_discount_number(Subscriptions.get_subscription_type_name('d027e603-d459-4cf4-b533-c1c79f93fd52')))
 # print(Subscriptions.get_total_discounts_taken('d027e603-d459-4cf4-b533-c1c79f93fd52'))
+# print(Users.change_username('be3cf15b-e11b-4e62-9bbf-79b330700f09','Masih1999'))
