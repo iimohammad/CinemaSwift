@@ -71,6 +71,7 @@ def get_wallet_query(user_id):
 def select_wallet_query(user_id):
     query = f"SELECT id FROM wallets WHERE user_id = '{user_id}'"
     r = database_manager.execute_query_select(query)
+    return r
 
 
 def add_wallet_query(user_id):
