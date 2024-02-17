@@ -35,7 +35,7 @@ def change_username_query(user_id: str, user_name: str) -> None:
                 SET `user_name` = '{user_name}' 
                 WHERE (`id` = '{user_id}');
                 """
-    database_manager.execute_query_select(query)
+    database_manager.execute_query(query)
 
 
 def change_password_query(user_id: str, password: str) -> None:
@@ -45,7 +45,7 @@ def change_password_query(user_id: str, password: str) -> None:
         WHERE id = %(user_id)s;
     """
     data = {'password': password, 'user_id': user_id}
-    database_manager.execute_query_select(query, data)
+    database_manager.execute_query(query, data)
 
 
 def email_exist_check_query(email):
@@ -117,8 +117,6 @@ def add_subscription_query(user_id, subscription_id) -> None:
                     VALUES 
                     ('{user_id}', '{subscription_id}', '{datetime.now()}');"""
     database_manager.execute_query(query)
-
-
 def change_subscription_query(user_id: str, subscription_type_name: str):
     query = f"""SELECT id FROM subscriptions
                     WHERE name = '{subscription_type_name}';"""
